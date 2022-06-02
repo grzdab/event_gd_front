@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import '../css/datatables.css';
 
-class LayoutContent extends Component {
-    render() {
+const LayoutContent = () => {
+
         return (
             <div id="layoutSidenav_content">
                 <main>
@@ -139,7 +139,7 @@ class LayoutContent extends Component {
                 </footer>
             </div>
         );
-    }
+
 }
 
 export default LayoutContent;
