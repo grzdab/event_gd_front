@@ -5,19 +5,19 @@ const Events = () => {
 
     const [eventsList, setEvents] = useState([]);
 
-    useEffect(() => {
-        const getEvents = async() => {
-            const data = await fetchEvents();
-            setEvents(data);
-        }
-        getEvents();
-    }, []);
-
-    const fetchEvents = async () => {
-        const response = await fetch('http://localhost:5111/Events');
-        const data = await response.json();
-        return data;
-    }
+    // useEffect(() => {
+    //     const getEvents = async() => {
+    //         const data = await fetchEvents();
+    //         setEvents(data);
+    //     }
+    //     getEvents();
+    // }, []);
+    //
+    // const fetchEvents = async () => {
+    //     const response = await fetch('http://localhost:5111/Events');
+    //     const data = await response.json();
+    //     return data;
+    // }
 
     // hardcoded version
     const [hardEventsList, setHardEvents] = useState([

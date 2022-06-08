@@ -1,0 +1,45 @@
+.modal-header {
+    background-color: var(--bs-bluegray);
+}
+
+.modal-title {
+    color: white;
+}
+
+.text-center.w-responsive.mx-auto.mb-5.form_test {
+    margin: 0px 0px 12px !important;
+}
+
+
+.margin-top {
+    margin-top: 20px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    color: black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--bs-bluegray);
+    color: white;
+    text-align: left;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 10;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.required {
+    color: red;
+    /*font-size: 2rem;*/
+}
+

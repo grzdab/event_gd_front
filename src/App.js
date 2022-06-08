@@ -11,6 +11,10 @@ import Equipment from "./components/Equipment";
 import Clients from "./components/Clients";
 import Events from "./components/Events";
 import Main from "./components/Main";
+import EquipmentDetails from "./components/EquipmentDetails";
+
+let simpleDataTable;
+let tableData;
 
 export function addScript(url, crossOrigin) {
     const script = document.createElement('script');
@@ -20,13 +24,25 @@ export function addScript(url, crossOrigin) {
     document.body.appendChild(script);
 }
 
+
 window.addEventListener('DOMContentLoaded', event => {
     const datatablesSimple = document.getElementById('datatablesSimple');
-    if (datatablesSimple) {
-        new DataTable(datatablesSimple);
-    }
-});
+    const getDataButton = document.getElementById("getData");
 
+    if (getDataButton) {
+        getDataButton.addEventListener("click", function() {
+                if (datatablesSimple) {
+                    simpleDataTable = new DataTable(datatablesSimple, {
+                        searchable: true
+                    });
+                    // simpleDataTable.import({
+                    //     type: "json",
+                    //     data: JSON.stringify(tableData)
+                    // });
+                }
+            }
+        )};
+});
 
 const App = () => {
     return (
@@ -39,6 +55,7 @@ const App = () => {
                     <Route path='/' element={<Main />} />
                     <Route path='/clients' element={<Clients />} />
                     <Route path='/equipment' element={<Equipment />} />
+                    <Route path='/equipment/:id' element={<EquipmentDetails />}></Route>
                     <Route path='/events' element={<Events />} />
                 </Routes>
             </div>
@@ -48,7 +65,7 @@ const App = () => {
             <script src="http://localhost:3001/datatables-demo.js" />
 
                 {/*<script src="./js/simple-databases.js" />*/}
-                {/*<script src="./js/datatables-demo.js" />*/}
+
 
         </div>
     </Router>

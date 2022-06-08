@@ -1,24 +1,19 @@
-import React, {Component} from 'react';
-import {Route} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useState} from 'react';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import React from "react";
 
-const EquipmentDetails = (show) => {
+const AddEquipment = ({show}) => {
 
-    const [showDetails, setShowDetails] = useState(true);
+    const [showDetails, setShowDetails] = useState(false);
     const handleCloseDetails = (id) => {
         setShowDetails(false)
     };
     const handleShowDetails = () => setShowDetails(true);
 
-    useEffect(() => {
-        setShowDetails(show);
-    })
-
     return (
         <>
-            <Modal show={ showDetails }
+            <Modal show={show}
                    size="xl"
                    backdrop="static"
                    keyboard={false}
@@ -47,6 +42,8 @@ const EquipmentDetails = (show) => {
         </>
     );
 
-}
+ }
 
-export default EquipmentDetails;
+
+
+export default AddEquipment;

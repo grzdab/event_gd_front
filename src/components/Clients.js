@@ -5,19 +5,19 @@ const Clients = () => {
 
     const [clientsList, setClients] = useState([]);
 
-    useEffect(() => {
-        const getClients = async() => {
-            const data = await fetchClients();
-            setClients(data);
-        }
-        getClients();
-    }, []);
-
-    const fetchClients = async () => {
-        const response = await fetch('http://localhost:5111/Clients');
-        const data = await response.json();
-        return data;
-    }
+    // useEffect(() => {
+    //     const getClients = async() => {
+    //         const data = await fetchClients();
+    //         setClients(data);
+    //     }
+    //     getClients();
+    // }, []);
+    //
+    // const fetchClients = async () => {
+    //     const response = await fetch('http://localhost:5111/Clients');
+    //     const data = await response.json();
+    //     return data;
+    // }
 
     // hardcoded version
     const [hardClientsList, setHardClients] = useState([

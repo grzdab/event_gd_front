@@ -1,0 +1,367 @@
+{
+  "_id": "629b474079004054aa7e22bf",
+  "type": "form",
+  "tags": [],
+  "owner": "629b3e6ec39a2c65c6232383",
+  "components": [
+    {
+      "title": "Add new",
+      "collapsible": false,
+      "key": "addNew",
+      "type": "panel",
+      "label": "Panel",
+      "input": false,
+      "tableView": false,
+      "components": [
+        {
+          "label": "Columns",
+          "columns": [
+            {
+              "components": [
+                {
+                  "label": "aaa",
+                  "placeholder": "Enter something",
+                  "tableView": true,
+                  "validate": {
+                    "required": true
+                  },
+                  "key": "aaa",
+                  "type": "textfield",
+                  "input": true
+                }
+              ],
+              "width": 8,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "size": "md",
+              "currentWidth": 8
+            },
+            {
+              "components": [
+                {
+                  "label": "bbb",
+                  "widget": "choicesjs",
+                  "tableView": true,
+                  "data": {
+                    "values": [
+                      {
+                        "label": "a",
+                        "value": "a"
+                      },
+                      {
+                        "label": "b",
+                        "value": "b"
+                      },
+                      {
+                        "label": "c",
+                        "value": "c"
+                      }
+                    ]
+                  },
+                  "key": "bbb",
+                  "type": "select",
+                  "input": true
+                }
+              ],
+              "width": 3,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "size": "md",
+              "currentWidth": 3
+            },
+            {
+              "components": [
+                {
+                  "label": "seq",
+                  "tableView": true,
+                  "key": "seq",
+                  "type": "textfield",
+                  "input": true,
+                  "defaultValue": "0"
+                }
+              ],
+              "size": "md",
+              "width": 1,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "currentWidth": 1
+            }
+          ],
+          "key": "columns",
+          "type": "columns",
+          "input": false,
+          "tableView": false
+        },
+        {
+          "label": "Desc",
+          "autoExpand": false,
+          "tableView": true,
+          "key": "desc",
+          "type": "textarea",
+          "input": true
+        },
+        {
+          "label": "HTML",
+          "tag": "img",
+          "attrs": [
+            {
+              "attr": "",
+              "value": ""
+            }
+          ],
+          "refreshOnChange": false,
+          "key": "html",
+          "type": "htmlelement",
+          "input": false,
+          "tableView": false
+        },
+        {
+          "label": "Columns",
+          "columns": [
+            {
+              "components": [
+                {
+                  "title": "Technical",
+                  "collapsible": false,
+                  "key": "technical",
+                  "type": "panel",
+                  "label": "Panel",
+                  "input": false,
+                  "tableView": false,
+                  "components": [
+                    {
+                      "label": "Columns",
+                      "columns": [
+                        {
+                          "components": [
+                            {
+                              "label": "a",
+                              "tableView": true,
+                              "key": "a",
+                              "type": "textfield",
+                              "input": true
+                            },
+                            {
+                              "label": "b",
+                              "tableView": true,
+                              "key": "b",
+                              "type": "textfield",
+                              "input": true
+                            },
+                            {
+                              "label": "c",
+                              "tableView": true,
+                              "key": "c",
+                              "type": "textfield",
+                              "input": true
+                            }
+                          ],
+                          "width": 6,
+                          "offset": 0,
+                          "push": 0,
+                          "pull": 0,
+                          "size": "md",
+                          "currentWidth": 6
+                        },
+                        {
+                          "components": [
+                            {
+                              "label": "d",
+                              "tableView": true,
+                              "key": "d",
+                              "type": "textfield",
+                              "input": true
+                            },
+                            {
+                              "label": "e",
+                              "tableView": true,
+                              "key": "e",
+                              "type": "textfield",
+                              "input": true
+                            },
+                            {
+                              "label": "f",
+                              "tableView": true,
+                              "key": "f",
+                              "type": "textfield",
+                              "input": true
+                            }
+                          ],
+                          "width": 6,
+                          "offset": 0,
+                          "push": 0,
+                          "pull": 0,
+                          "size": "md",
+                          "currentWidth": 6
+                        }
+                      ],
+                      "key": "columns2",
+                      "type": "columns",
+                      "input": false,
+                      "tableView": false
+                    }
+                  ]
+                }
+              ],
+              "width": 8,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "size": "md",
+              "currentWidth": 8
+            },
+            {
+              "components": [
+                {
+                  "title": "Conditions",
+                  "collapsible": true,
+                  "key": "conditions",
+                  "type": "panel",
+                  "label": "Panel",
+                  "input": false,
+                  "tableView": false,
+                  "components": [
+                    {
+                      "label": "a",
+                      "tableView": true,
+                      "key": "a1",
+                      "type": "textfield",
+                      "input": true
+                    },
+                    {
+                      "label": "b",
+                      "tableView": true,
+                      "key": "b1",
+                      "type": "textfield",
+                      "input": true
+                    },
+                    {
+                      "label": "c",
+                      "tableView": true,
+                      "key": "c1",
+                      "type": "textfield",
+                      "input": true
+                    }
+                  ],
+                  "collapsed": false
+                }
+              ],
+              "width": 2,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "size": "md",
+              "currentWidth": 2
+            },
+            {
+              "components": [
+                {
+                  "title": "Status",
+                  "collapsible": true,
+                  "key": "status",
+                  "type": "panel",
+                  "label": "Panel",
+                  "input": false,
+                  "tableView": false,
+                  "components": [
+                    {
+                      "label": "Checkbox a",
+                      "tableView": false,
+                      "key": "checkboxA",
+                      "type": "checkbox",
+                      "input": true,
+                      "defaultValue": false
+                    },
+                    {
+                      "label": "Text Field b",
+                      "tableView": true,
+                      "key": "textFieldB",
+                      "type": "textfield",
+                      "input": true
+                    },
+                    {
+                      "label": "Select c",
+                      "widget": "choicesjs",
+                      "tableView": true,
+                      "data": {
+                        "values": [
+                          {
+                            "label": "a",
+                            "value": "a"
+                          },
+                          {
+                            "label": "b",
+                            "value": "b"
+                          }
+                        ]
+                      },
+                      "key": "selectC",
+                      "type": "select",
+                      "input": true
+                    },
+                    {
+                      "label": "Text Field",
+                      "widget": {
+                        "type": "calendar",
+                        "altInput": true,
+                        "allowInput": true,
+                        "clickOpens": true,
+                        "enableDate": true,
+                        "enableTime": true,
+                        "mode": "single",
+                        "noCalendar": false,
+                        "format": "yyyy-MM-dd hh:mm a",
+                        "dateFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                        "useLocaleSettings": false,
+                        "hourIncrement": 1,
+                        "minuteIncrement": 5,
+                        "time_24hr": false,
+                        "saveAs": "text",
+                        "displayInTimezone": "viewer",
+                        "locale": "en"
+                      },
+                      "tableView": true,
+                      "key": "textField",
+                      "type": "textfield",
+                      "input": true
+                    }
+                  ],
+                  "collapsed": false
+                }
+              ],
+              "size": "md",
+              "width": 2,
+              "offset": 0,
+              "push": 0,
+              "pull": 0,
+              "currentWidth": 2
+            }
+          ],
+          "key": "columns1",
+          "type": "columns",
+          "input": false,
+          "tableView": false
+        }
+      ]
+    },
+    {}
+  ],
+  "revisions": "",
+  "_vid": 0,
+  "title": "Add New",
+  "display": "form",
+  "access": [],
+  "submissionAccess": [],
+  "controller": "",
+  "properties": {},
+  "settings": {},
+  "name": "addNew",
+  "path": "addnew",
+  "project": "629b3ef363852d2428316be0",
+  "created": "2022-06-04T11:51:28.313Z",
+  "modified": "2022-06-04T11:51:45.147Z",
+  "machineName": "xotqwnfduxnmmpc:addNew"
+}

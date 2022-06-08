@@ -1,7 +1,11 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBuilding, faCalendarAlt, faListAlt, faCubes} from "@fortawesome/free-solid-svg-icons";
+import {faBuilding, faCalendarAlt, faListAlt, faCubes, faUsers} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import logo from '../assets/ram-logo.png';
+import {faFileInvoice} from "@fortawesome/free-solid-svg-icons/faFileInvoice";
+import {faFileContract} from "@fortawesome/free-solid-svg-icons/faFileContract";
+import {faFaceGrinWide} from "@fortawesome/free-solid-svg-icons/faFaceGrinWide";
+import {faGrip} from "@fortawesome/free-solid-svg-icons/faGrip";
 
 const LayoutSidebarLeft = () => {
   return (
@@ -11,8 +15,12 @@ const LayoutSidebarLeft = () => {
             <div className="nav">
               <div className="sb-sidenav-menu-heading">Core</div>
               <a className="nav-link" href="/">
-                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
+              </a>
+              <a className="nav-link" href="/">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
+                Scheduler
               </a>
               <div className="sb-sidenav-menu-heading">Resources</div>
               <a className="nav-link" href="/events">
@@ -26,6 +34,19 @@ const LayoutSidebarLeft = () => {
               <a className="nav-link" href="/equipment">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCubes}></FontAwesomeIcon></div>
                 Equipment
+              </a>
+              <a className="nav-link" href="/equipment">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faUsers}></FontAwesomeIcon></div>
+                Human resources
+              </a>
+              <div className="sb-sidenav-menu-heading">Documents</div>
+              <a className="nav-link" href="/equipment">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faFileInvoice}></FontAwesomeIcon></div>
+                Invoices
+              </a>
+              <a className="nav-link" href="/equipment">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faFileContract}></FontAwesomeIcon></div>
+                Contracts
               </a>
               <div className="sb-sidenav-menu-heading">Addons</div>
               <a className="nav-link" href="charts.html">
