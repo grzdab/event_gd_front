@@ -1,14 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import '../css/Form.css';
-import {DataTable} from "simple-datatables";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
-import AddEquipment from "./AddEquipment";
-import {Link} from "react-router-dom";
-let simpleDataTable;
-let tableData;
-
-
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 
 const Equipment = () => {
 
@@ -30,6 +25,8 @@ const Equipment = () => {
     }
     const [loading, setLoading] = useState(true);
     const [itemsList, setItems] = useState([]);
+    const [categoriesList, setCategories] = useState([]);
+
     const [error, setError] = useState('');
     const [showDetails, setShowDetails] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment');
@@ -42,6 +39,21 @@ const Equipment = () => {
     };
     const handleShowDetails = () => setShowDetails(true);
 
+
+    useEffect(() => {
+        const getCategories = async () => {
+            const response = await fetch('http://localhost:5111/categories');
+            const data = await response.json();
+            if (response.status === 404) {
+                setError('Categories data not found');
+            }
+            setCategories(data);
+            setLoading(false);
+        }
+        getCategories().catch(console.error);
+
+    }, [])
+
     useEffect(() => {
         const getEquipment = async () => {
             const response = await fetch('http://localhost:5111/equipment');
@@ -50,8 +62,6 @@ const Equipment = () => {
                 setError('Equipment data not found');
             }
             setItems(data);
-            tableData = data;
-            console.log(itemsList);
             setLoading(false);
         }
         getEquipment().catch(console.error);
@@ -60,7 +70,7 @@ const Equipment = () => {
     return (
         <div id="layoutSidenav_content">
             <div className="container-fluid px-4">
-                <h1 className="mt-4">CONTENT</h1>
+                <h1 className="mt-4">EQUIPMENT</h1>
                 <Button id="getData">Get data</Button>
                 <Button id="addData"
                         onClick={()=>{
@@ -145,16 +155,16 @@ const Equipment = () => {
                                                                 required
                                                         >
                                                             <option disabled value="DEFAULT"> -- Select Category -- </option>
-                                                            <option value="1">A</option>
-                                                            <option value="2">B</option>
-                                                            <option value="3">C</option>
+                                                            {categoriesList.map((e) => (
+                                                                <option value={e.id}>{e.name}</option>))
+                                                            }
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div className="col-md-4">
                                                     <div className="md-form mb-0">
-                                                        <label htmlFor="sequence" className="">Sequence<span
-                                                            className="tooltiptext"></span></label>
+                                                        Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
+                                                            className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
                                                         <input
                                                             type="text"
                                                             id="sequence"

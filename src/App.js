@@ -12,6 +12,7 @@ import Clients from "./components/Clients";
 import Events from "./components/Events";
 import Main from "./components/Main";
 import EquipmentDetails from "./components/EquipmentDetails";
+import EquipmentCategory from "./components/EquipmentCategory";
 
 let simpleDataTable;
 let tableData;
@@ -45,6 +46,7 @@ window.addEventListener('DOMContentLoaded', event => {
 });
 
 const App = () => {
+
     return (
     <Router>
         <div className='sb-nav-fixed'>
@@ -57,6 +59,7 @@ const App = () => {
                     <Route path='/equipment' element={<Equipment />} />
                     <Route path='/equipment/:id' element={<EquipmentDetails />}></Route>
                     <Route path='/events' element={<Events />} />
+                    <Route path='/equipment-category' element={<EquipmentCategory />} />
                 </Routes>
             </div>
             {addScript('https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', 'anonymous')}

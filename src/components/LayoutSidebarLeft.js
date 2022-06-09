@@ -48,7 +48,11 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faFileContract}></FontAwesomeIcon></div>
                 Contracts
               </a>
-              <div className="sb-sidenav-menu-heading">Addons</div>
+              <div className="sb-sidenav-menu-heading">Settings</div>
+              <a className="nav-link" href="/equipment-category">
+                <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                Equipment categories
+              </a>
               <a className="nav-link" href="charts.html">
                 <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                 Charts

@@ -15,7 +15,6 @@
       "maxParticipants": 13,
       "equipmentCategoryId": 13,
       "inUse": true
-
     },
     {
       "id": "e3e5805-5d01-ae2d-1a7c-b2aabacce5d86",
@@ -32,7 +31,6 @@
       "maxParticipants": 12,
       "equipmentCategoryId": 17,
       "inUse": true
-
     },
     {
       "id": "d8abd0a-b5ce-1e7b-bcd2-b11e2bb86b4bd",
@@ -161,6 +159,18 @@
       "maxParticipants": 5,
       "equipmentCategoryId": 7,
       "inUse": true
+    }
+  ],
+  "categories": [
+    {
+      "name": "equipment name 1",
+      "description": "This is our best-selling equipment category",
+      "id": 1
+    },
+    {
+      "name": "equipment name 2",
+      "description": "this is a less popular equipment category",
+      "id": 2
     }
   ]
 }

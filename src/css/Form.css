@@ -6,6 +6,11 @@
     color: white;
 }
 
+.form-input-invalid {
+    /*background-color: #fee4e4;*/
+    border-bottom: 2px solid red;
+}
+
 .text-center.w-responsive.mx-auto.mb-5.form_test {
     margin: 0px 0px 12px !important;
 }
@@ -15,26 +20,27 @@
     margin-top: 20px;
 }
 
-.tooltip {
+.form_tooltip {
     position: relative;
+    margin-left: 10px;
     display: inline-block;
-    border-bottom: 1px dotted black;
-    color: black;
+    color: var(--bs-bluegray);
+    cursor: pointer;
 }
 
-.tooltip .tooltiptext {
+.form_tooltip .form_tooltip_text {
     visibility: hidden;
-    width: 120px;
+    width: 200px;
     background-color: var(--bs-bluegray);
     color: white;
     text-align: left;
     border-radius: 6px;
-    padding: 5px 0;
+    padding: 5px 5px;
     position: absolute;
-    z-index: 10;
+    z-index: 1;
 }
 
-.tooltip:hover .tooltiptext {
+.form_tooltip:hover .form_tooltip_text {
     visibility: visible;
 }
 
@@ -43,3 +49,16 @@
     /*font-size: 2rem;*/
 }
 
+.RAM_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.RAM_container .RAM_button:first-child {
+    margin-left: 0px;
+}
+
+.RAM_container .RAM_button {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
