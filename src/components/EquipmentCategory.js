@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
+import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 
 const EquipmentCategory = () => {
 
@@ -46,12 +49,13 @@ const EquipmentCategory = () => {
     const [error, setError] = useState('');
 
     const [showDetails, setShowDetails] = useState(false);
+    const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+    const [showChangesWarning, setChangesWarning] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment category');
     const [modalDescription, setModalDescription] = useState('');
     const [showEquipmentInCategory, setShowEquipmentInCategory] = useState(false);
     const [addNew, setAddNew] = useState(false);
     const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
-
 
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -75,6 +79,9 @@ const EquipmentCategory = () => {
                 .then(() => handleCloseDetails());
         }
     }
+
+    const handleCloseWarning = () => setShowDeleteWarning(false);
+    const handleShowWarning   = () => setShowDeleteWarning(true);
 
     const handleCloseDetails = () => {
         setEquipmentCategoryId('');
@@ -139,7 +146,7 @@ const EquipmentCategory = () => {
                                     <td>{e.id}</td>
                                     <td>{e.name}</td>
                                     <td>{e.description}</td>
-                                    <td><button className='btn btn-info' onClick={() => {
+                                    <td><button className='btn btn-outline-info' onClick={() => {
                                         setCurrentItem(e);
                                         setShowDetails(true);
                                         setAddNew(false);
@@ -149,7 +156,14 @@ const EquipmentCategory = () => {
                                         setEquipmentCategoryDescription(e.description);
                                         setModalHeader("Edit equipment category");
                                         setModalDescription("");
-                                    }}>View details</button></td>
+                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
+                                    <td><button className='btn btn-outline-danger' onClick={() => {
+                                        setCurrentItem(e);
+                                        setShowDeleteWarning(true);
+                                        setEquipmentCategoryId(e.id);
+                                        setEquipmentCategoryName(e.name);
+                                        setEquipmentCategoryDescription(e.description);
+                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                 </tr>
                             ))}
                             </tbody>
@@ -159,6 +173,29 @@ const EquipmentCategory = () => {
                         )}
                 </div>
             </div>
+            <Modal
+                show={showDeleteWarning}
+                onHide={handleCloseWarning}
+                backdrop="static"
+                keyboard={false}
+            >
+
+                {/*  ============== WARNING MODAL: BEGIN ============== */}
+                <Modal.Header className="form-header-warning" closeButton closeVariant="white">
+                    <Modal.Title>Warning</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to remove this category? This operation cannot be undone!
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseWarning}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger">Remove</Button>
+                    </Modal.Footer>
+                </Modal>
+            {/*  ============== WARNING MODAL: END ============== */}
+
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: BEGIN ============== */}
             <Modal show={showDetails}
                    size="xl"
@@ -245,12 +282,25 @@ const EquipmentCategory = () => {
                     </section>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseDetails}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={onSubmit} disabled={saveButtonDisabled}>
-                        Save Changes
-                    </Button>
+                    <div className="col-md-12">
+                    <div className="col-md-6">
+                        <div className="md-form mb-0">
+                        <Button variant="danger" onClick={handleCloseDetails}>
+                            Delete
+                        </Button>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="md-form mb-0">
+                        <Button variant="secondary" onClick={handleCloseDetails}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={onSubmit} disabled={saveButtonDisabled}>
+                            Save Changes
+                        </Button>
+                        </div>
+                    </div>
+                    </div>
                 </Modal.Footer>
             </Modal>
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: END ============== */}

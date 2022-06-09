@@ -1,14 +1,25 @@
-.modal-header {
+.form-header {
     background-color: var(--bs-bluegray);
+}
+
+.form-footer {
+    background-color: yellow;
+    width: 100%;
+}
+
+
+.form-header-warning {
+    background-color: var(--bs-danger);
 }
 
 .modal-title {
     color: white;
 }
 
+
+
 .form-input-invalid {
-    /*background-color: #fee4e4;*/
-    border-bottom: 2px solid red;
+    border-bottom: 2px solid var(--bs-red);
 }
 
 .text-center.w-responsive.mx-auto.mb-5.form_test {
