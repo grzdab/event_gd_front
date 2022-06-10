@@ -7,38 +7,6 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 
 const EquipmentCategory = () => {
 
-    const addEquipmentCategory = async (equipmentCategory) => {
-        const response = await fetch('http://localhost:5111/categories', {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(equipmentCategory)
-        });
-        const data = await response.json();
-        setItems([...itemsList, data]);
-    }
-
-    const fetchEquipmentCategory = async (id) => {
-        const response = await fetch(`http://localhost:5111/categories/${id}`);
-        const data = await response.json();
-        return data;
-    }
-
-    const updateEquipmentCategory = async (equipmentCategory) => {
-        const updated = {
-            name: equipmentCategoryName,
-            description: equipmentCategoryDescription
-        };
-        const response = await fetch(`http://localhost:5111/categories/${equipmentCategory.id}`, {
-            method: 'PUT',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(updated)
-        });
-        const data = await response.json();
-        setItems(
-            itemsList.map((item) =>
-                item.id === equipmentCategory.id ? data : item));
-    }
-
     const defaultItem = {
         "id": "",
         "name": "",
@@ -63,6 +31,21 @@ const EquipmentCategory = () => {
     const [equipmentCategoryName, setEquipmentCategoryName] = useState('');
     const [equipmentCategoryDescription, setEquipmentCategoryDescription] = useState('');
 
+    const delay = (time) => {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+
+    const addEquipmentCategory = async (equipmentCategory) => {
+        const response = await fetch('http://localhost:5111/categories', {
+            method: 'POST',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify(equipmentCategory)
+        });
+        const data = await response.json();
+        setItems([...itemsList, data]);
+    }
+
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
         if(!equipmentCategoryName) {
@@ -73,25 +56,74 @@ const EquipmentCategory = () => {
         }
         if (addNew) {
             addEquipmentCategory({name: equipmentCategoryName, description: equipmentCategoryDescription})
-                .then(() => handleCloseDetails());
+                .then(() => onCloseDetails());
         } else {
             updateEquipmentCategory({id: equipmentCategoryID, name: equipmentCategoryName, description: equipmentCategoryDescription})
-                .then(() => handleCloseDetails());
+                .then(() => onCloseDetails());
         }
     }
 
-    const handleCloseWarning = () => setShowDeleteWarning(false);
-    const handleShowWarning   = () => setShowDeleteWarning(true);
+    const onDelete = (e) => {
+        e.preventDefault() // prevents from submitting to the page which is default behavior
+        deleteEquipmentCategory(currentItem.id).then(() => {
+            handleCloseWarning();
+            setShowDetails(false);
+        });
+    }
 
-    const handleCloseDetails = () => {
+    const fetchEquipmentCategory = async (id) => {
+        const response = await fetch(`http://localhost:5111/categories/${id}`);
+        const data = await response.json();
+        return data;
+    }
+
+    const updateEquipmentCategory = async (equipmentCategory) => {
+        const updated = {
+            name: equipmentCategoryName,
+            description: equipmentCategoryDescription
+        };
+        const response = await fetch(`http://localhost:5111/categories/${equipmentCategory.id}`, {
+            method: 'PUT',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify(updated)
+        });
+        const data = await response.json();
+        setItems(
+            itemsList.map((item) =>
+                item.id === equipmentCategory.id ? data : item));
+    }
+
+    const deleteEquipmentCategory = async (id) => {
+        await fetch(`http://localhost:5111/categories/${id}`, {method: 'DELETE',});
+        setItems(itemsList.filter((equipmentCategory) => equipmentCategory.id !== id));
+    }
+
+    const clearCurrentItem = () => {
         setEquipmentCategoryId('');
         setEquipmentCategoryName('');
         setEquipmentCategoryDescription('');
-        setShowDetails(false);
         setCurrentItem(defaultItem);
+    }
+
+
+    const handleCloseWarning = () => {
+        setShowDeleteWarning(false);
+        if (!showDetails) {
+            clearCurrentItem();
+            setAddNew(false);
+            setSaveButtonDisabled(true);
+            setShowEquipmentInCategory(false);
+        }
+    };
+
+    const handleShowWarning   = () => setShowDeleteWarning(true);
+
+    const onCloseDetails = () => {
+        setShowDetails(false);
+        clearCurrentItem();
         setShowEquipmentInCategory(false);
-        setAddNew(false);
         setSaveButtonDisabled(true);
+        delay(250).then(() => setAddNew(false)); // TODO make it prettier!
     };
 
     useEffect(() => {
@@ -120,6 +152,7 @@ const EquipmentCategory = () => {
                                 setModalDescription('Here you can add new equipment category.');
                                 setModalHeader('Add new equipment category');
                                 setShowDetails(true);
+                                clearCurrentItem();
                                 setAddNew(true);
                             }}
                     >Add new equipment category</Button>
@@ -169,7 +202,7 @@ const EquipmentCategory = () => {
                             </tbody>
                         </table>
                     </div>) : (
-                            <h3> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h3>
+                            <h6> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h6>
                         )}
                 </div>
             </div>
@@ -185,13 +218,13 @@ const EquipmentCategory = () => {
                     <Modal.Title>Warning</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Are you sure you want to remove this category? This operation cannot be undone!
+                        Are you sure you want to delete this category? This operation cannot be undone!
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseWarning}>
                             Cancel
                         </Button>
-                        <Button variant="danger">Remove</Button>
+                        <Button variant="danger" onClick={onDelete}>Delete</Button>
                     </Modal.Footer>
                 </Modal>
             {/*  ============== WARNING MODAL: END ============== */}
@@ -201,7 +234,7 @@ const EquipmentCategory = () => {
                    size="xl"
                    backdrop="static"
                    keyboard={false}
-                   onHide={handleCloseDetails}>
+                   onHide={onCloseDetails}>
                 <Modal.Header className="form-header" closeButton closeVariant="white">
                     <Modal.Title>Equipment category details</Modal.Title>
                 </Modal.Header>
@@ -228,6 +261,11 @@ const EquipmentCategory = () => {
                                                         setEquipmentCategoryName(e.target.value);
                                                         setSaveButtonDisabled(false);
                                                     }}
+                                                    onClick={() => {
+                                                        const b = document.getElementById("name");
+                                                        b.placeholder = "";
+                                                        b.classList.remove("form-input-invalid");
+                                                    }}
                                                 ></input>
                                             </div>
                                         </div>
@@ -239,7 +277,7 @@ const EquipmentCategory = () => {
                                                     type="text"
                                                     id="description"
                                                     name="description"
-                                                    rows="2"
+                                                    rows="3"
                                                     defaultValue={currentItem.description}
                                                     className="form-control md-textarea"
                                                     onChange={(e) => {
@@ -282,25 +320,32 @@ const EquipmentCategory = () => {
                     </section>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className="col-md-12">
-                    <div className="col-md-6">
-                        <div className="md-form mb-0">
-                        <Button variant="danger" onClick={handleCloseDetails}>
+                    <div className="form-confirm-delete" id="confirm-delete">
+                        Confirm delete? (This operation cannot be undone)
+                        <Button variant="secondary" onClick={() => {
+                            document.getElementById("confirm-delete").style.visibility="hidden";
+                            document.getElementById("btn-delete").style.visibility="visible";
+                        }}>
+                            No
+                        </Button>
+                        <Button variant="danger" onClick={onDelete}>
+                            Confirm
+                        </Button>
+                    </div>
+                    {!addNew &&
+                        <Button variant="danger" id="btn-delete" onClick={() => {
+                            document.getElementById("confirm-delete").style.visibility = "visible";
+                            document.getElementById("btn-delete").style.visibility = "hidden";
+                        }}>
                             Delete
                         </Button>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="md-form mb-0">
-                        <Button variant="secondary" onClick={handleCloseDetails}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={onSubmit} disabled={saveButtonDisabled}>
-                            Save Changes
-                        </Button>
-                        </div>
-                    </div>
-                    </div>
+                    }
+                    <Button variant="secondary" onClick={onCloseDetails}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={onSubmit} disabled={saveButtonDisabled}>
+                        Save & Close
+                    </Button>
                 </Modal.Footer>
             </Modal>
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: END ============== */}

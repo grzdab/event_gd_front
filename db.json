@@ -163,14 +163,24 @@
   ],
   "categories": [
     {
-      "name": "equipment name 1",
-      "description": "This is our best-selling equipment category",
+      "name": "aaa",
+      "description": "111",
       "id": 1
     },
     {
-      "name": "equipment name 22",
-      "description": "this is a less popular equipment category",
-      "id": 2
+      "name": "ccc",
+      "description": "333",
+      "id": 3
+    },
+    {
+      "name": "ddd",
+      "description": "444",
+      "id": 4
+    },
+    {
+      "name": "asdasdasd",
+      "description": "ddd",
+      "id": 5
     }
   ]
 }

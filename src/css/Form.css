@@ -7,13 +7,20 @@
     width: 100%;
 }
 
-
 .form-header-warning {
     background-color: var(--bs-danger);
 }
 
 .modal-title {
     color: white;
+}
+
+.form-confirm-delete {
+    visibility: hidden;
+}
+
+.form-confirm-delete button {
+    margin-left: 8px;
 }
 
 
