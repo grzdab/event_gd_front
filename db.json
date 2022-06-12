@@ -13,7 +13,7 @@
       "staffNeeded": 3,
       "minimumAge": 5,
       "maxParticipants": 13,
-      "equipmentCategoryId": 13,
+      "equipmentCategoryId": 1,
       "inUse": true
     },
     {
@@ -29,7 +29,7 @@
       "staffNeeded": 3,
       "minimumAge": 12,
       "maxParticipants": 12,
-      "equipmentCategoryId": 17,
+      "equipmentCategoryId": 2,
       "inUse": true
     },
     {
@@ -45,7 +45,7 @@
       "staffNeeded": 0,
       "minimumAge": 2,
       "maxParticipants": 8,
-      "equipmentCategoryId": 19,
+      "equipmentCategoryId": 3,
       "inUse": true
     },
     {
@@ -61,7 +61,7 @@
       "staffNeeded": 4,
       "minimumAge": 11,
       "maxParticipants": 9,
-      "equipmentCategoryId": 17,
+      "equipmentCategoryId": 4,
       "inUse": false
     },
     {
@@ -77,7 +77,7 @@
       "staffNeeded": 5,
       "minimumAge": 6,
       "maxParticipants": 8,
-      "equipmentCategoryId": 17,
+      "equipmentCategoryId": 5,
       "inUse": true
     },
     {
@@ -125,7 +125,7 @@
       "staffNeeded": 1,
       "minimumAge": 6,
       "maxParticipants": 12,
-      "equipmentCategoryId": 15,
+      "equipmentCategoryId": 2,
       "inUse": true
     },
     {
@@ -141,7 +141,7 @@
       "staffNeeded": 0,
       "minimumAge": 9,
       "maxParticipants": 8,
-      "equipmentCategoryId": 6,
+      "equipmentCategoryId": 5,
       "inUse": false
     },
     {
@@ -157,30 +157,40 @@
       "staffNeeded": 3,
       "minimumAge": 12,
       "maxParticipants": 5,
-      "equipmentCategoryId": 7,
+      "equipmentCategoryId": 5,
       "inUse": true
     }
   ],
   "categories": [
     {
-      "name": "aaa",
-      "description": "111",
+      "name": "a",
+      "description": "Lorem ipsum",
       "id": 1
     },
     {
-      "name": "bbb",
-      "description": "222",
+      "name": "b",
+      "description": "B jak bulba",
       "id": 2
     },
     {
-      "name": "ccc",
-      "description": "333",
+      "name": "c",
+      "description": "",
       "id": 3
     },
     {
-      "name": "3",
-      "description": "3",
+      "name": "d",
+      "description": "1",
       "id": 4
+    },
+    {
+      "name": "yyyy",
+      "description": "yyyy",
+      "id": 5
+    },
+    {
+      "name": "new",
+      "description": "nnn",
+      "id": 6
     }
   ]
 }

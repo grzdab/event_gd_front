@@ -9,8 +9,7 @@ import {compareObjects, resetInvalidInputField} from "../js/helpers";
 
 const EquipmentCategory = () => {
 
-    const defaultItem = {
-        "id": "",
+    const defaultItem = {        "id": "",
         "name": "",
         "description": ""
     }
@@ -29,6 +28,7 @@ const EquipmentCategory = () => {
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
+    const [equipmentList, setEquipmentList] = useState([]);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [itemChanged, setItemChanged] = useState(false);
 
@@ -49,6 +49,16 @@ const EquipmentCategory = () => {
         setItems([...itemsList, data]);
     }
 
+    function onSaveAndClose() {
+        setCurrentFormState({
+            ...currentFormState,
+            showForm: false,
+            formSaveButtonDisabled: true,
+            formAddingDataMode: false
+        })
+        clearCurrentItem();
+    }
+
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
         if(!currentItem.name) {
@@ -59,10 +69,10 @@ const EquipmentCategory = () => {
         }
         if (currentFormState.formAddingDataMode) {
             addEquipmentCategory({name: currentItem.name, description: currentItem.description})
-                .then(() => onCloseDetails());
+                .then(() => onSaveAndClose());
         } else {
             updateEquipmentCategory({id: currentItem.id, name: currentItem.name, description: currentItem.description})
-                .then(() => onCloseDetails());
+                .then(() => onSaveAndClose());
         }
     }
 
@@ -160,18 +170,40 @@ const EquipmentCategory = () => {
     useEffect(() => {
         const compareData = () => {
             let dataChangedInfo = document.getElementById("data-changed");
+            let confirmCloseDiv = document.getElementById("confirm-close");
+            let btnClose = document.getElementById("btn-close");
+            let btnRestore = document.getElementById("btn-restore");
             if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
                 if (!compareObjects(backupItem, currentItem)) {
                     dataChangedInfo.classList.add("visible");
+                    btnRestore.classList.add("visible");
                     setCurrentFormState({...currentFormState, formSaveButtonDisabled: false})
                 } else {
+                    if (confirmCloseDiv) {
+                        confirmCloseDiv.classList.remove("div-visible")
+                    }
+                    btnClose.classList.remove("btn-invisible");
                     dataChangedInfo.classList.remove("visible");
+                    btnRestore.classList.remove("visible");
                     setCurrentFormState({...currentFormState, formSaveButtonDisabled: true})
                 }
             }
         }
         compareData()
     }, [itemChanged])
+
+
+
+    const getEquipmentByCategory = async (id) => {
+        const response = await fetch(`http://localhost:5111/equipment?equipmentCategoryId=${id}`);
+        const data = await response.json();
+        setEquipmentList(data);
+    }
+
+    // useEffect(() => {
+    //     console.log(equipmentList);
+    // }, [equipmentList])
+
 
     useEffect(() => {
         const getCategories = async () => {
@@ -221,6 +253,22 @@ const EquipmentCategory = () => {
     }
 
 
+    function restoreFormData() {
+        setCurrentItem(backupItem);
+        let nameInput = document.getElementById("name");
+        let descriptionInput = document.getElementById("description");
+        let dataChangedInfo = document.getElementById("data-changed");
+        let btnRestore = document.getElementById("btn-restore");
+        let btnSave = document.getElementById("bt")
+        nameInput.value = backupItem.name;
+        descriptionInput.value = backupItem.description;
+        dataChangedInfo.classList.remove("visible")
+        btnRestore.classList.remove("visible")
+        setCurrentFormState({
+            ...currentFormState,
+            formSaveButtonDisabled: true,
+        })
+    }
 
     return (
         <div id="layoutSidenav_content">
@@ -260,6 +308,7 @@ const EquipmentCategory = () => {
                                         <td>{e.name}</td>
                                         <td>{e.description}</td>
                                         <td><button className='btn btn-outline-info' onClick={() => {
+                                            getEquipmentByCategory(e.id);
                                             setCurrentItem(e);
                                             setBackupItem(e);
                                             onItemsListInfoButtonClick();
@@ -312,7 +361,13 @@ const EquipmentCategory = () => {
                     <section className="mb-4">
                         <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
                         <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
-                        <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                        <div>
+                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {restoreFormData()}}>
+                            Restore
+                        </Button>
+                        </div>
+
                         <div className="row">
                             <div className="col-md-12 mb-md-0 mb-5">
                                 <form id="add-equipment-category-form" name="add-equipment-category-form">
@@ -367,18 +422,19 @@ const EquipmentCategory = () => {
                                                 <div className="md-form mb-0">
                                                     <div className="card">
                                                         <div className="card-header">
-                                                            Equipment in this category (TODO: fetch corresponding equipment)
+                                                            {equipmentList.length > 0 ?
+                                                                "Equipment in this category" :
+                                                                "No equipment found in this category"
+                                                            }
                                                         </div>
                                                         <div className="card-body">
                                                             <div className="row">
                                                                 <div className="col-md-12">
-                                                                    <input
-                                                                        type="text"
-                                                                        id="length"
-                                                                        name="length"
-                                                                        value={currentItem.length}
-                                                                        className="form-control"
-                                                                    />
+                                                                    {equipmentList.map((e) => (
+                                                                        <div key={e.id}>
+                                                                            {e.name}
+                                                                        </div>
+                                                                    ))}
                                                                 </div>
                                                             </div>
                                                         </div>

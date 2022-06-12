@@ -35,6 +35,10 @@
     visibility: hidden;
 }
 
+.btn-restore {
+    visibility: hidden;
+}
+
 .form-confirm-delete button,
 .form-confirm-close button
 {
