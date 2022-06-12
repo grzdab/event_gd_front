@@ -13,6 +13,7 @@ import Events from "./components/Events";
 import Main from "./components/Main";
 import EquipmentDetails from "./components/EquipmentDetails";
 import EquipmentCategory from "./components/EquipmentCategory";
+import Backup from "./components/Backup";
 
 let simpleDataTable;
 let tableData;

@@ -4,6 +4,8 @@ import {Modal} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+import {compareObjects, resetInvalidInputField} from "../js/helpers";
 
 const EquipmentCategory = () => {
 
@@ -13,27 +15,28 @@ const EquipmentCategory = () => {
         "description": ""
     }
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const defaultFormState = {
+        "showForm": false,
+        "showDeleteWarning": false,
+        "showItemChangedWarning": false,
+        "formHeader": "Edit equipment category",
+        "formDescription": "",
+        "formDataChangedWarning": "Data has been changed",
+        "formAddingDataMode": false,
+        "formSaveButtonDisabled": false
+    }
 
-    const [showDetails, setShowDetails] = useState(false);
-    const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-    const [showChangesWarning, setChangesWarning] = useState(false);
-    const [modalHeader, setModalHeader] = useState('Edit equipment category');
-    const [modalDescription, setModalDescription] = useState('');
-    const [showEquipmentInCategory, setShowEquipmentInCategory] = useState(false);
-    const [addNew, setAddNew] = useState(false);
-    const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
-
+    const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
-    const [equipmentCategoryID, setEquipmentCategoryId] = useState('');
-    const [equipmentCategoryName, setEquipmentCategoryName] = useState('');
-    const [equipmentCategoryDescription, setEquipmentCategoryDescription] = useState('');
+    const [backupItem, setBackupItem] = useState(defaultItem);
+    const [itemChanged, setItemChanged] = useState(false);
 
     const delay = (time) => {
-        return new Promise(resolve => setTimeout(resolve, time));
+        return new Promise(r => setTimeout(r, time));
     }
+
+
 
 
     const addEquipmentCategory = async (equipmentCategory) => {
@@ -48,17 +51,17 @@ const EquipmentCategory = () => {
 
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
-        if(!equipmentCategoryName) {
+        if(!currentItem.name) {
             let nameInput = document.getElementById("name");
             nameInput.classList.add("form-input-invalid");
             nameInput.placeholder = "Category name cannot be empty"
             return;
         }
-        if (addNew) {
-            addEquipmentCategory({name: equipmentCategoryName, description: equipmentCategoryDescription})
+        if (currentFormState.formAddingDataMode) {
+            addEquipmentCategory({name: currentItem.name, description: currentItem.description})
                 .then(() => onCloseDetails());
         } else {
-            updateEquipmentCategory({id: equipmentCategoryID, name: equipmentCategoryName, description: equipmentCategoryDescription})
+            updateEquipmentCategory({id: currentItem.id, name: currentItem.name, description: currentItem.description})
                 .then(() => onCloseDetails());
         }
     }
@@ -66,9 +69,18 @@ const EquipmentCategory = () => {
     const onDelete = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
         deleteEquipmentCategory(currentItem.id).then(() => {
-            handleCloseWarning();
-            setShowDetails(false);
+            onCloseDeleteWarningDialog();
         });
+    }
+
+    const onAddDataClick = () => {
+        setCurrentFormState({...currentFormState,
+            formDescription: 'Here you can add new equipment category.',
+            formHeader: 'Add new equipment category',
+            formAddingDataMode: true,
+            formSaveButtonDisabled: false,
+            showForm: true})
+        // delay(1000).then(() => console.log(currentFormState));
     }
 
     const fetchEquipmentCategory = async (id) => {
@@ -79,8 +91,8 @@ const EquipmentCategory = () => {
 
     const updateEquipmentCategory = async (equipmentCategory) => {
         const updated = {
-            name: equipmentCategoryName,
-            description: equipmentCategoryDescription
+            name: currentItem.name,
+            description: currentItem.description
         };
         const response = await fetch(`http://localhost:5111/categories/${equipmentCategory.id}`, {
             method: 'PUT',
@@ -99,46 +111,116 @@ const EquipmentCategory = () => {
     }
 
     const clearCurrentItem = () => {
-        setEquipmentCategoryId('');
-        setEquipmentCategoryName('');
-        setEquipmentCategoryDescription('');
         setCurrentItem(defaultItem);
+        setBackupItem(defaultItem);
     }
 
+    const onCloseDeleteWarningDialog = () => {
+        clearCurrentItem();
+        setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
+    };
 
-    const handleCloseWarning = () => {
-        setShowDeleteWarning(false);
-        if (!showDetails) {
+    const handleShowWarning   = () => setCurrentFormState({...currentFormState, showDeleteWarning: true});
+
+    const onCloseDetails = () => {
+
+        if (compareObjects(backupItem, currentItem)) {
+            setCurrentFormState({
+                ...currentFormState,
+                showForm: false,
+                formSaveButtonDisabled: true,
+                formAddingDataMode: false
+            })
             clearCurrentItem();
-            setAddNew(false);
-            setSaveButtonDisabled(true);
-            setShowEquipmentInCategory(false);
+        } else {
+            let closeWithoutSaving = document.getElementById("confirm-close");
+            let btnClose = document.getElementById("btn-close");
+            closeWithoutSaving.classList.add("div-visible");
+            btnClose.classList.add("btn-invisible");
         }
     };
 
-    const handleShowWarning   = () => setShowDeleteWarning(true);
+    function onFormCancelCloseButtonClick() {
+        let closeWithoutSaving = document.getElementById("confirm-close");
+        let btnClose = document.getElementById("btn-close");
+        closeWithoutSaving.classList.remove("div-visible");
+        btnClose.classList.remove("btn-invisible");
+    }
 
-    const onCloseDetails = () => {
-        setShowDetails(false);
+    function onFormCloseWithoutSavingButtonClick() {
+        setCurrentFormState({
+            ...currentFormState,
+            showForm: false,
+            formSaveButtonDisabled: true,
+            formAddingDataMode: false
+        })
         clearCurrentItem();
-        setShowEquipmentInCategory(false);
-        setSaveButtonDisabled(true);
-        delay(250).then(() => setAddNew(false)); // TODO make it prettier!
-    };
+    }
+
+    useEffect(() => {
+        const compareData = () => {
+            let dataChangedInfo = document.getElementById("data-changed");
+            if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
+                if (!compareObjects(backupItem, currentItem)) {
+                    dataChangedInfo.classList.add("visible");
+                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false})
+                } else {
+                    dataChangedInfo.classList.remove("visible");
+                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: true})
+                }
+            }
+        }
+        compareData()
+    }, [itemChanged])
 
     useEffect(() => {
         const getCategories = async () => {
             const response = await fetch('http://localhost:5111/categories');
             const data = await response.json();
-            if (response.status === 404) {
-                setError('Categories data not found');
+            switch(response.status) {
+                case 401:
+                    // TODO Unauthenticated
+                    break;
+                case 403:
+                    // TODO Forbidden
+                    break;
+                case 404:
+                    // TODO Not found
+                    break;
+                default:
+                // TODO Other errors
             }
-            setItems(data);
-            setLoading(false);
+            if (response.ok) {
+                setItems(data);
+            }
         }
         getCategories().catch(console.error);
-
     }, [])
+
+    function onItemsListInfoButtonClick() {
+        setCurrentFormState({...currentFormState,
+            formAddingDataMode: false,
+            formHeader: "Edit equipment category",
+            formDescription: "",
+            formSaveButtonDisabled: true,
+            showForm: true})
+    }
+
+    function onItemsListDeleteButtonClick() {
+        setCurrentFormState({...currentFormState, showDeleteWarning: true})
+    }
+
+    function onFormCancelDeleteButtonClick() {
+        document.getElementById("confirm-delete").classList.add("div-hidden");
+        document.getElementById("btn-delete").classList.remove("btn-invisible");
+    }
+
+    function onFormConfirmDeleteButtonClick() {
+        document.getElementById("confirm-delete").classList.remove("div-hidden");
+        document.getElementById("btn-delete").classList.add("btn-invisible");
+    }
+
+
 
     return (
         <div id="layoutSidenav_content">
@@ -146,16 +228,14 @@ const EquipmentCategory = () => {
                 <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                    <Button className="RAM_button" id="getData">Get data</Button>
-                    <Button className="RAM_button" id="addData"
-                            onClick={()=>{
-                                setModalDescription('Here you can add new equipment category.');
-                                setModalHeader('Add new equipment category');
-                                setShowDetails(true);
-                                clearCurrentItem();
-                                setAddNew(true);
-                            }}
-                    >Add new equipment category</Button>
+                        <Button className="RAM_button" id="getData">Get data</Button>
+                        <Button className="RAM_button" id="addData"
+                                onClick={()=>{
+                                    clearCurrentItem();
+                                    onAddDataClick();
+
+                                }}>
+                            Add new equipment category</Button>
                     </div>
                 </div>
                 <div className="card mb-4">
@@ -164,73 +244,63 @@ const EquipmentCategory = () => {
                         Equipment categories list
                     </div>
                     { itemsList.length > 0 ? (
-                    <div className="card-body">
-                        <table id={"datatablesSimple"}>
-                            <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>description</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {itemsList.map((e) => (
-                                <tr key={e.id}>
-                                    <td>{e.id}</td>
-                                    <td>{e.name}</td>
-                                    <td>{e.description}</td>
-                                    <td><button className='btn btn-outline-info' onClick={() => {
-                                        setCurrentItem(e);
-                                        setShowDetails(true);
-                                        setAddNew(false);
-                                        setShowEquipmentInCategory(true);
-                                        setEquipmentCategoryId(e.id);
-                                        setEquipmentCategoryName(e.name);
-                                        setEquipmentCategoryDescription(e.description);
-                                        setModalHeader("Edit equipment category");
-                                        setModalDescription("");
-                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
-                                    <td><button className='btn btn-outline-danger' onClick={() => {
-                                        setCurrentItem(e);
-                                        setShowDeleteWarning(true);
-                                        setEquipmentCategoryId(e.id);
-                                        setEquipmentCategoryName(e.name);
-                                        setEquipmentCategoryDescription(e.description);
-                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
+                        <div className="card-body">
+                            <table id={"datatablesSimple"}>
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>name</th>
+                                    <th>description</th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>) : (
-                            <h6> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h6>
-                        )}
+                                </thead>
+                                <tbody>
+                                {itemsList.map((e) => (
+                                    <tr key={e.id}>
+                                        <td>{e.id}</td>
+                                        <td>{e.name}</td>
+                                        <td>{e.description}</td>
+                                        <td><button className='btn btn-outline-info' onClick={() => {
+                                            setCurrentItem(e);
+                                            setBackupItem(e);
+                                            onItemsListInfoButtonClick();
+                                        }}><FontAwesomeIcon icon={faEye}/></button></td>
+                                        <td><button className='btn btn-outline-danger' onClick={() => {
+                                            setCurrentItem(e);
+                                            onItemsListDeleteButtonClick();
+                                        }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>) : (
+                        <h6> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h6>
+                    )}
                 </div>
             </div>
+            {/*  ============== WARNING MODAL: BEGIN ============== */}
             <Modal
-                show={showDeleteWarning}
-                onHide={handleCloseWarning}
+                show={currentFormState.showDeleteWarning}
+                onHide={onCloseDeleteWarningDialog}
                 backdrop="static"
                 keyboard={false}
             >
-
-                {/*  ============== WARNING MODAL: BEGIN ============== */}
                 <Modal.Header className="form-header-warning" closeButton closeVariant="white">
                     <Modal.Title>Warning</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Are you sure you want to delete this category? This operation cannot be undone!
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseWarning}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={onDelete}>Delete</Button>
-                    </Modal.Footer>
-                </Modal>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this category? This operation cannot be undone!
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={onCloseDeleteWarningDialog}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={onDelete}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
             {/*  ============== WARNING MODAL: END ============== */}
 
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: BEGIN ============== */}
-            <Modal show={showDetails}
+            <Modal show={currentFormState.showForm}
                    size="xl"
                    backdrop="static"
                    keyboard={false}
@@ -240,8 +310,9 @@ const EquipmentCategory = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <section className="mb-4">
-                        <h2 className="h1-responsive font-weight-bold text-center my-2">{ modalHeader }</h2>
-                        <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }</p>
+                        <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
+                        <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
+                        <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
                         <div className="row">
                             <div className="col-md-12 mb-md-0 mb-5">
                                 <form id="add-equipment-category-form" name="add-equipment-category-form">
@@ -258,13 +329,13 @@ const EquipmentCategory = () => {
                                                     className="form-control"
                                                     required
                                                     onChange={(e) => {
-                                                        setEquipmentCategoryName(e.target.value);
-                                                        setSaveButtonDisabled(false);
-                                                    }}
+                                                        setItemChanged(!itemChanged);
+                                                        setCurrentItem({...currentItem,
+                                                            name: e.target.value});
+                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                       }}
                                                     onClick={() => {
-                                                        const b = document.getElementById("name");
-                                                        b.placeholder = "";
-                                                        b.classList.remove("form-input-invalid");
+                                                        resetInvalidInputField("name");
                                                     }}
                                                 ></input>
                                             </div>
@@ -281,38 +352,40 @@ const EquipmentCategory = () => {
                                                     defaultValue={currentItem.description}
                                                     className="form-control md-textarea"
                                                     onChange={(e) => {
-                                                        setEquipmentCategoryDescription(e.target.value);
-                                                        setSaveButtonDisabled(false);
+                                                        setItemChanged(!itemChanged);
+                                                        setCurrentItem({...currentItem,
+                                                            description: e.target.value});
+                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
                                                     }}
                                                 ></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    { showEquipmentInCategory &&
-                                    <div className="row margin-top">
-                                        <div className="col-md-12">
-                                            <div className="md-form mb-0">
-                                                <div className="card">
-                                                    <div className="card-header">
-                                                        Equipment in this category (TODO: fetch corresponding equipment)
-                                                    </div>
-                                                    <div className="card-body">
-                                                        <div className="row">
-                                                            <div className="col-md-12">
-                                                                <input
-                                                                    type="text"
-                                                                    id="length"
-                                                                    name="length"
-                                                                    value={currentItem.length}
-                                                                    className="form-control"
-                                                                />
+                                    { !currentFormState.formAddingDataMode &&
+                                        <div className="row margin-top">
+                                            <div className="col-md-12">
+                                                <div className="md-form mb-0">
+                                                    <div className="card">
+                                                        <div className="card-header">
+                                                            Equipment in this category (TODO: fetch corresponding equipment)
+                                                        </div>
+                                                        <div className="card-body">
+                                                            <div className="row">
+                                                                <div className="col-md-12">
+                                                                    <input
+                                                                        type="text"
+                                                                        id="length"
+                                                                        name="length"
+                                                                        value={currentItem.length}
+                                                                        className="form-control"
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     }
                                 </form>
                             </div>
@@ -320,30 +393,33 @@ const EquipmentCategory = () => {
                     </section>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className="form-confirm-delete" id="confirm-delete">
+                    <div className="form-confirm-delete div-hidden" id="confirm-delete">
                         Confirm delete? (This operation cannot be undone)
-                        <Button variant="secondary" onClick={() => {
-                            document.getElementById("confirm-delete").style.visibility="hidden";
-                            document.getElementById("btn-delete").style.visibility="visible";
-                        }}>
+                        <Button variant="secondary" onClick={() => onFormCancelDeleteButtonClick()}>
                             No
                         </Button>
                         <Button variant="danger" onClick={onDelete}>
                             Confirm
                         </Button>
                     </div>
-                    {!addNew &&
-                        <Button variant="danger" id="btn-delete" onClick={() => {
-                            document.getElementById("confirm-delete").style.visibility = "visible";
-                            document.getElementById("btn-delete").style.visibility = "hidden";
-                        }}>
+                    {!currentFormState.formAddingDataMode &&
+                        <Button variant="danger" id="btn-delete" onClick={() => onFormConfirmDeleteButtonClick()}>
                             Delete
                         </Button>
                     }
-                    <Button variant="secondary" onClick={onCloseDetails}>
+                    <div className="form-confirm-close" id="confirm-close">
+                        Close without saving?
+                        <Button variant="secondary" onClick={() => onFormCancelCloseButtonClick()}>
+                            No
+                        </Button>
+                        <Button variant="warning" onClick={() => onFormCloseWithoutSavingButtonClick()}>
+                            Close
+                        </Button>
+                    </div>
+                    <Button variant="secondary" id="btn-close" onClick={onCloseDetails}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={onSubmit} disabled={saveButtonDisabled}>
+                    <Button variant="primary" onClick={onSubmit} disabled={currentFormState.formSaveButtonDisabled}>
                         Save & Close
                     </Button>
                 </Modal.Footer>
@@ -351,7 +427,6 @@ const EquipmentCategory = () => {
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: END ============== */}
         </div>
     )
-
 
 }
 

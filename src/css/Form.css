@@ -15,15 +15,31 @@
     color: white;
 }
 
-.form-confirm-delete {
+.form-confirm-close {
+    display: none;
+}
+
+*.div-hidden {
     visibility: hidden;
 }
 
-.form-confirm-delete button {
-    margin-left: 8px;
+*.div-visible {
+    display: block;
 }
 
+.form-confirm-delete .btn-delete {
+    visibility: visible;
+}
 
+.btn-invisible {
+    visibility: hidden;
+}
+
+.form-confirm-delete button,
+.form-confirm-close button
+{
+    margin-left: 8px;
+}
 
 .form-input-invalid {
     border-bottom: 2px solid var(--bs-red);
@@ -33,6 +49,15 @@
     margin: 0px 0px 12px !important;
 }
 
+.text-center.w-responsive.mx-auto.mb-5.data_changed {
+    visibility: hidden;
+    font-weight: 700;
+    color: var(--bs-teal) !important;
+}
+
+.text-center.w-responsive.mx-auto.mb-5.data_changed.visible {
+    visibility: visible;
+}
 
 .margin-top {
     margin-top: 20px;
