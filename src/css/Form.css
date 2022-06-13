@@ -27,6 +27,21 @@
     display: block;
 }
 
+*.mb10px {
+    margin-bottom: 10px !important;
+}
+
+.data-changed-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.data-changed-div button {
+    margin-left: 20px;
+}
+
+
 .form-confirm-delete .btn-delete {
     visibility: visible;
 }
@@ -53,7 +68,7 @@
     margin: 0px 0px 12px !important;
 }
 
-.text-center.w-responsive.mx-auto.mb-5.data_changed {
+*.data_changed {
     visibility: hidden;
     font-weight: 700;
     color: var(--bs-teal) !important;

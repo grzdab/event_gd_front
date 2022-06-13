@@ -86,7 +86,7 @@ const Equipment = () => {
                             Equipment list
                     </div>
                     <div className="card-body">
-                        <table id={"datatablesSimple"}>
+                        <table id="datatablesSimple">
                             <thead>
                                 <tr>
                                     <th>name</th>

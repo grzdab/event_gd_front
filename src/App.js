@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './css/App.css';
+import './css/Form.css';
 import './css/datatables.css';
 import sidebarToggler from './js/scripts';
 import LayoutSidebarLeft from "./components/LayoutSidebarLeft.js";
@@ -13,10 +14,11 @@ import Events from "./components/Events";
 import Main from "./components/Main";
 import EquipmentDetails from "./components/EquipmentDetails";
 import EquipmentCategory from "./components/EquipmentCategory";
-import Backup from "./components/Backup";
+import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
+import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
+
 
 let simpleDataTable;
-let tableData;
 
 export function addScript(url, crossOrigin) {
     const script = document.createElement('script');
@@ -26,27 +28,87 @@ export function addScript(url, crossOrigin) {
     document.body.appendChild(script);
 }
 
-
-window.addEventListener('DOMContentLoaded', event => {
-    const datatablesSimple = document.getElementById('datatablesSimple');
-    const getDataButton = document.getElementById("getData");
-
-    if (getDataButton) {
-        getDataButton.addEventListener("click", function() {
-                if (datatablesSimple) {
-                    simpleDataTable = new DataTable(datatablesSimple, {
-                        searchable: true
-                    });
-                    // simpleDataTable.import({
-                    //     type: "json",
-                    //     data: JSON.stringify(tableData)
-                    // });
-                }
-            }
-        )};
-});
-
 const App = () => {
+
+    const [dataReady, setDataReady] = useState(false);
+    const [dataLoaded, setDataLoaded] = useState(1);
+    const [tableItemsList, setTableItemsList] = useState([]);
+
+    useEffect(()=>{
+
+        if (dataReady) {
+            // setDataReady(false);
+            const datatablesSimple = document.getElementById('datatablesSimple');
+            if (datatablesSimple) {
+                console.log(simpleDataTable);
+                if (simpleDataTable) {simpleDataTable.destroy();}
+                    simpleDataTable = new DataTable(datatablesSimple, {
+                        searchable: true,
+                        columns: [{
+                            select: 3,
+                            render: function(data, cell, row) {
+                                let id = row.cells.item(0).innerText;
+                                return "" +
+                                    "<Button class='btn btn-outline-info' onClick='console.log(&apos;" + id + "&apos;)'><FontAwesomeIcon icon={faEye}/>V</i></Button>&nbsp;" +
+                                    "<Button class='btn btn-outline-danger' onClick='console.log(&apos;" + id + "&apos;)'><FontAwesomeIcon icon={faTrashAlt}/>D</Button>";
+                            }
+                        }]
+                    });
+
+
+
+                const dummy = [{
+                    'Heading X': 'Value 1',
+                    'Heading A': 'Value 2',
+                    'Heading C': 'Value 3'
+                },
+                    {
+                        'Heading X': 'Value 4',
+                        'Heading A': 'Value 5',
+                        'Heading C': 'Value 6'
+                    }]
+
+
+                const dummy1 = [
+                    {
+                        "id": "1-id",
+                        "name": "A-name",
+                        "description": "1-description"
+                    },
+                    {
+                        "id": "evapNH8",
+                        "name": "d",
+                        "description": ""
+                    },
+                    {
+                        "id": "LPogeF5",
+                        "name": "fff",
+                        "description": ""
+                    }
+                ]
+
+               simpleDataTable.import({
+                     type: "json",
+                     data: JSON.stringify(tableItemsList)
+                });
+            }
+            // const getDataButton = document.getElementById("getData");
+            // if (getDataButton) {
+            //     getDataButton.addEventListener("click", function() {
+            //             if (datatablesSimple) {
+            //                 simpleDataTable = new DataTable(datatablesSimple, {
+            //                     searchable: true
+            //                 });
+            //                 // simpleDataTable.import({
+            //                 //     type: "json",
+            //                 //     data: JSON.stringify(tableData)
+            //                 // });
+            //             }
+            //         }
+            //     )};
+        }
+    }, [tableItemsList])
+
 
     return (
     <Router>
@@ -60,7 +122,13 @@ const App = () => {
                     <Route path='/equipment' element={<Equipment />} />
                     <Route path='/equipment/:id' element={<EquipmentDetails />}></Route>
                     <Route path='/events' element={<Events />} />
-                    <Route path='/equipment-category' element={<EquipmentCategory />} />
+                    <Route path='/equipment-category' element={<EquipmentCategory
+                        setDataReady={setDataReady}
+                        dataLoaded={dataLoaded}
+                        setDataLoaded={setDataLoaded}
+                        tableItemsList={tableItemsList}
+                        setTableItemsList={setTableItemsList}/>}
+                    />
                 </Routes>
             </div>
             {addScript('https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', 'anonymous')}

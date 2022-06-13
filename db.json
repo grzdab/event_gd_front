@@ -163,34 +163,39 @@
   ],
   "categories": [
     {
-      "name": "a",
-      "description": "Lorem ipsum",
-      "id": 1
+      "id": "aaaID",
+      "name": "name111",
+      "description": "desc111"
     },
     {
+      "id": "968c784f",
       "name": "b",
-      "description": "B jak bulba",
-      "id": 2
+      "description": ""
     },
     {
-      "name": "c",
-      "description": "",
-      "id": 3
+      "id": "bf0c8678",
+      "name": "ccc",
+      "description": "cccc"
     },
     {
-      "name": "d",
-      "description": "1",
-      "id": 4
+      "id": "0b7ad1e2",
+      "name": "ddd",
+      "description": "ddddd"
     },
     {
-      "name": "yyyy",
-      "description": "yyyy",
-      "id": 5
+      "id": "11e2966e",
+      "name": "eee",
+      "description": "eeeee"
     },
     {
-      "name": "new",
-      "description": "nnn",
-      "id": 6
+      "id": "1ec96a9a",
+      "name": "vsdg",
+      "description": "sdsdfsdf"
+    },
+    {
+      "id": "fa8abe21",
+      "name": "olo",
+      "description": "lolo lolo"
     }
   ]
 }
