@@ -1,9 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import '../css/Form.css';
 import Button from "react-bootstrap/Button";
-import {Modal} from "react-bootstrap";
+import {Modal, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
+import ModalFooter from "./ModalFooter";
+import {
+    addItem,
+    clearCurrentItem,
+    compareData,
+    deleteItem,
+    getItemById,
+    getItems,
+    onAddDataClick, onFormCancelCloseButtonClick,
+    onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
+    onFormConfirmDeleteButtonClick,
+    onItemsListDeleteButtonClick,
+    onItemsListInfoButtonClick,
+    onSaveAndClose,
+    restoreFormData,
+    updateItem
+} from "./ComponentHelper";
+import {compareObjects} from "../js/CommonHelper";
+import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
+import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
+import ModalDeleteWarning from "./ModalDeleteWarning";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 
 const Equipment = () => {
 
@@ -23,112 +45,197 @@ const Equipment = () => {
         "equipmentCategoryId": 0,
         "inUse": false
     }
-    const [loading, setLoading] = useState(true);
+
+    const defaultFormState = {
+        "showForm": false,
+        "showDeleteWarning": false,
+        "showItemChangedWarning": false,
+        "formHeader": "Edit equipment",
+        "formDescription": "",
+        "formDataChangedWarning": "Data has been changed",
+        "formAddingDataMode": false,
+        "formSaveButtonDisabled": false
+    }
+
+    const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
+    const [currentItem, setCurrentItem] = useState(defaultItem);
+    const [backupItem, setBackupItem] = useState(defaultItem);
+    const [itemChanged, setItemChanged] = useState(false);
+    // elements related to the item
     const [categoriesList, setCategories] = useState([]);
 
-    const [error, setError] = useState('');
-    const [showDetails, setShowDetails] = useState(false);
-    const [modalHeader, setModalHeader] = useState('Edit equipment');
-    const [modalDescription, setModalDescription] = useState('');
-    const [currentItem, setCurrentItem] = useState(defaultItem);
+    const onSubmit = (e) => {
+        e.preventDefault()
+        if(!currentItem.name) {
+            let nameInput = document.getElementById("name");
+            nameInput.classList.add("form-input-invalid");
+            nameInput.placeholder = "Category name cannot be empty"
+            return;
+        }
+        if (currentFormState.formAddingDataMode) {
+            const item = {name: currentItem.name, description: currentItem.description};
+            addItem(item, 'http://localhost:5111/equipment', setItems, itemsList)
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
+        } else {
+            const item = {
+                id: currentItem.id,
+                sortingId: currentItem.sortingId,
+                name: currentItem.name,
+                notes: currentItem.notes,
+                width: currentItem.width,
+                length: currentItem.length,
+                height: currentItem.height,
+                weight: currentItem.weight,
+                powerRequired: currentItem.powerRequired,
+                staffNeeded: currentItem.staffNeeded,
+                minimumAge: currentItem.minimumAge,
+                maxParticipants: currentItem.maxParticipants,
+                equipmentCategoryId: currentItem.equipmentCategoryId,
+                inUse: currentItem.inUse
+                };
 
-    const handleCloseDetails = () => {
-        setShowDetails(false);
-        setCurrentItem(defaultItem);
+            updateItem(item, currentItem, `http://localhost:5111/equipment/${item.id}`, setItems, itemsList)
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
+        }
+    }
+
+    const onDelete = (e) => {
+        e.preventDefault()
+        deleteItem(currentItem.id, `http://localhost:5111/equipment/${currentItem.id}`, setItems, itemsList)
+            .then(() => {
+                onCloseDeleteWarningDialog();
+            });
+    }
+
+    const onCloseDeleteWarningDialog = () => {
+        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
     };
-    const handleShowDetails = () => setShowDetails(true);
 
+    const onCloseDetails = () => {
+        if (compareObjects(backupItem, currentItem)) {
+            setCurrentFormState({
+                ...currentFormState,
+                showForm: false,
+                formSaveButtonDisabled: true,
+                formAddingDataMode: false
+            })
+            clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        } else {
+            let closeWithoutSaving = document.getElementById("confirm-close");
+            let btnClose = document.getElementById("btn-close");
+            closeWithoutSaving.classList.add("div-visible");
+            btnClose.classList.add("btn-invisible");
+        }
+    };
+
+    useEffect(() => {
+        compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
+    }, [currentItem])
+
+    useEffect(() => {
+        getItems('http://localhost:5111/equipment', setItems).catch(console.error);
+    }, [])
 
     useEffect(() => {
         const getCategories = async () => {
             const response = await fetch('http://localhost:5111/categories');
             const data = await response.json();
             if (response.status === 404) {
-                setError('Categories data not found');
+                alert('Categories data not found');
             }
             setCategories(data);
-            setLoading(false);
         }
         getCategories().catch(console.error);
 
-    }, [])
-
-    useEffect(() => {
-        const getEquipment = async () => {
-            const response = await fetch('http://localhost:5111/equipment');
-            const data = await response.json();
-            if (response.status === 404) {
-                setError('Equipment data not found');
-            }
-            setItems(data);
-            setLoading(false);
-        }
-        getEquipment().catch(console.error);
     }, [])
 
     return (
         <div id="layoutSidenav_content">
             <div className="container-fluid px-4">
                 <h1 className="mt-4">EQUIPMENT</h1>
-                <Button id="getData">Get data</Button>
-                <Button id="addData"
-                        onClick={()=>{
-                            setModalDescription('Here you can add new equipment. Name and equipment category are required for the application to properly use the equipment. You can add remaining properties at any time.');
-                            setModalHeader('Add new equipment');
-                            setShowDetails(true);
-                        }}
-                >Add new equipment</Button>
-                <h3>Equipment: { itemsList.length > 0 ? "?" : itemsList.length }</h3>
+                <div className="container-fluid">
+                    <div className="RAM_container">
+                        <Button className="RAM_button" id="getData">Format table</Button>
+                        <Button className="RAM_button" id="addData"
+                                onClick={()=>{
+                                    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment.', 'Add new equipment');
+                                }}>
+                            Add new equipment</Button>
+                    </div>
+                </div>
                 <div className="card mb-4">
                     <div className="card-header">
                         <i className="fas fa-table me-1"></i>
                             Equipment list
                     </div>
                     <div className="card-body">
-                        <table id="datatablesSimple">
+                        <Table id="datatablesSimple">
                             <thead>
                                 <tr>
+                                    <th>id</th>
                                     <th>name</th>
-                                    <th>description</th>
+                                    <th>notes</th>
+                                    <th>details</th>
+                                    <th>delete</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {itemsList.map((e) => (
                                 <tr key={e.id}>
+                                    <td>{e.id}</td>
                                     <td>{e.name}</td>
                                     <td>{e.notes}</td>
-                                    {/*<td><Link to={`/equipment/${e.id}`}>View Details</Link></td>*/}
-                                    <td><button className='btn btn-info' onClick={() => {
+                                    <td><button className='btn btn-outline-info' onClick={() => {
                                         setCurrentItem(e);
-                                        setShowDetails(true);
-                                        setModalHeader("Edit equipment");
-                                        setModalDescription("");
-                                    }}>View details</button></td>
+                                        setBackupItem(e);
+                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment data");
+                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
+                                    <td><button className='btn btn-outline-danger' onClick={() => {
+                                        setCurrentItem(e);
+                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
+                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                 </tr>
                             ))}
                             </tbody>
-                        </table>
+                        </Table>
                     </div>
                 </div>
             </div>
+            {/*  ============== WARNING MODAL: BEGIN ============== */}
+            <ModalDeleteWarning
+                currentFormState={currentFormState}
+                onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
+                onDelete={onDelete}
+                deleteItemName="equipment"
+            />
+            {/*  ============== WARNING MODAL: END ============== */}
+
             {/*  ============== EQUIPMENT DETAILS MODAL: BEGIN ============== */}
-            <Modal show={showDetails}
+            <Modal show={currentFormState.showForm}
                    size="xl"
                    backdrop="static"
                    keyboard={false}
-                   onHide={handleCloseDetails}>
+                   onHide={onCloseDetails}>
                 <Modal.Header className="form-header" closeButton closeVariant="white">
                     <Modal.Title>Equipment details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <section className="mb-4">
-                        <h2 className="h1-responsive font-weight-bold text-center my-2">{ modalHeader }</h2>
-                        <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }
-                        </p>
+                        <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
+                        <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
+                        <div>
+                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
+                                restoreFormData(backupItem, setCurrentItem, currentFormState, setCurrentFormState)}}>
+                                Restore
+                            </Button>
+                        </div>
                         <div className="row">
                             <div className="col-md-12 mb-md-0 mb-5">
-                                <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
+                                <form id="add-equipment-form" name="add-equipment-form">
                                     <div className="row">
                                         <div className="col-md-8">
                                             <div className="row">
@@ -139,8 +246,14 @@ const Equipment = () => {
                                                         type="text"
                                                         id="name"
                                                         name="name"
-                                                        value={currentItem.name}
-                                                        className="form-control" required
+                                                        defaultValue={currentItem.name}
+                                                        className="form-control"
+                                                        required
+                                                        onChange={(e) => {
+                                                            setCurrentItem({...currentItem,
+                                                                name: e.target.value});
+                                                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -156,7 +269,7 @@ const Equipment = () => {
                                                         >
                                                             <option disabled value="DEFAULT"> -- Select Category -- </option>
                                                             {categoriesList.map((e) => (
-                                                                <option value={e.id}>{e.name}</option>))
+                                                                <option key={e.id} value={e.id}>{e.name}</option>))
                                                             }
                                                         </select>
                                                     </div>
@@ -166,11 +279,18 @@ const Equipment = () => {
                                                         Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
                                                             className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
                                                         <input
-                                                            type="text"
-                                                            id="sequence"
-                                                            name="sequence"
-                                                            value={currentItem.sortingId}
+                                                            type="number"
+                                                            min="0"
+                                                            max="255"
+                                                            id="sortingId"
+                                                            name="sortingId"
+                                                            defaultValue={currentItem.sortingId}
                                                             className="form-control"
+                                                            onChange={(e) => {
+                                                                setCurrentItem({...currentItem,
+                                                                    sortingId: parseInt(e.target.value)});
+                                                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                            }}
                                                         />
                                                     </div>
                                                 </div>
@@ -182,11 +302,16 @@ const Equipment = () => {
                                                                className="">Description</label>
                                                         <textarea
                                                             type="text"
-                                                            id="description"
-                                                            name="description"
+                                                            id="notes"
+                                                            name="notes"
                                                             rows="2"
-                                                            value={currentItem.notes}
+                                                            defaultValue={currentItem.notes}
                                                             className="form-control md-textarea"
+                                                            onChange={(e) => {
+                                                                setCurrentItem({...currentItem,
+                                                                    notes: e.target.value});
+                                                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                            }}
                                                         ></textarea>
                                                     </div>
                                                 </div>
@@ -213,29 +338,47 @@ const Equipment = () => {
                                                                 <label htmlFor="length" className="">Length
                                                                     (cm)</label>
                                                                 <input
-                                                                    type="text"
+                                                                    type="number"
+                                                                    min="0"
                                                                     id="length"
                                                                     name="length"
-                                                                    value={currentItem.length}
+                                                                    defaultValue={currentItem.length}
                                                                     className="form-control"
+                                                                    onChange={(e) => {
+                                                                        setCurrentItem({...currentItem,
+                                                                            length: parseInt(e.target.value)});
+                                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                    }}
                                                                 />
                                                                 <label htmlFor="width" className="">Width
                                                                     (cm)</label>
                                                                 <input
-                                                                    type="text"
+                                                                    type="number"
+                                                                    min="0"
                                                                     id="width"
                                                                     name="width"
-                                                                    value={currentItem.width}
+                                                                    defaultValue={currentItem.width}
                                                                     className="form-control"
+                                                                    onChange={(e) => {
+                                                                        setCurrentItem({...currentItem,
+                                                                            width: parseInt(e.target.value)});
+                                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                    }}
                                                                 />
                                                                 <label htmlFor="height>" className="">Height
                                                                     (cm)</label>
                                                                 <input
-                                                                    type="text"
+                                                                    type="number"
+                                                                    min="0"
                                                                     id="height"
                                                                     name="height"
-                                                                    value={currentItem.height}
+                                                                    defaultValue={currentItem.height}
                                                                     className="form-control"
+                                                                    onChange={(e) => {
+                                                                        setCurrentItem({...currentItem,
+                                                                            height: parseInt(e.target.value)});
+                                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                    }}
                                                                 />
                                                             </div>
                                                             <div className="col-md-6">
@@ -243,7 +386,7 @@ const Equipment = () => {
                                                                     (m<sup>2</sup>)</label>
                                                                 <input
                                                                     disabled
-                                                                    type="text"
+                                                                    type="number"
                                                                     id="area"
                                                                     name="area"
                                                                     value={currentItem.length * currentItem.width}
@@ -252,20 +395,32 @@ const Equipment = () => {
                                                                 <label htmlFor="weight" className="">Weight
                                                                     (kg)</label>
                                                                 <input
-                                                                    type="text"
+                                                                    type="number"
+                                                                    min="0"
                                                                     id="weight"
                                                                     name="weight"
-                                                                    value={currentItem.weight}
+                                                                    defaultValue={currentItem.weight}
                                                                     className="form-control"
+                                                                    onChange={(e) => {
+                                                                        setCurrentItem({...currentItem,
+                                                                            weight: parseInt(e.target.value)});
+                                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                    }}
                                                                 />
                                                                 <label htmlFor="power>" className="">Power
                                                                     (kW)</label>
                                                                 <input
-                                                                    type="text"
+                                                                    type="number"
+                                                                    min="0"
                                                                     id="power"
                                                                     name="power"
-                                                                    value={currentItem.powerRequired}
+                                                                    defaultValue={currentItem.powerRequired}
                                                                     className="form-control"
+                                                                    onChange={(e) => {
+                                                                        setCurrentItem({...currentItem,
+                                                                            powerRequired: parseInt(e.target.value)});
+                                                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                    }}
                                                                 />
                                                             </div>
                                                         </div>
@@ -281,28 +436,46 @@ const Equipment = () => {
                                                 <div className="card-body">
                                                     <label htmlFor="staff" className="">Required staff</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
+                                                        min="0"
                                                         id="staff"
                                                         name="staff"
-                                                        value={currentItem.staffNeeded}
+                                                        defaultValue={currentItem.staffNeeded}
                                                         className="form-control"
+                                                        onChange={(e) => {
+                                                            setCurrentItem({...currentItem,
+                                                                staffNeeded: parseInt(e.target.value)});
+                                                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                        }}
                                                     />
                                                     <label htmlFor="minimum_age" className="">Minimum age</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
+                                                        min="0"
                                                         id="minimum_age"
                                                         name="minimum_age"
-                                                        value={currentItem.minimumAge}
+                                                        defaultValue={currentItem.minimumAge}
                                                         className="form-control"
+                                                        onChange={(e) => {
+                                                            setCurrentItem({...currentItem,
+                                                                minimumAge: parseInt(e.target.value)});
+                                                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                        }}
                                                     />
                                                     <label htmlFor="max_participants>" className="">Max
                                                         participants</label>
                                                     <input
-                                                        type="text"
+                                                        type="number"
+                                                        min="0"
                                                         id="max_participants"
                                                         name="max_participants"
-                                                        value={currentItem.maxParticipants}
+                                                        defaultValue={currentItem.maxParticipants}
                                                         className="form-control"
+                                                        onChange={(e) => {
+                                                            setCurrentItem({...currentItem,
+                                                                maxParticipants: parseInt(e.target.value)});
+                                                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -316,11 +489,18 @@ const Equipment = () => {
                                                     <div className="card-body">
                                                         <label htmlFor="in_use" className="">In use</label>
                                                         <input
-                                                            type="text"
+                                                            type="checkbox"
                                                             id="in_use"
                                                             name="in_use"
-                                                            value={currentItem.inUse}
+                                                            defaultValue={currentItem.inUse}
                                                             className="form-control"
+                                                            onChange={(e) => {
+                                                                setCurrentItem({...currentItem,
+                                                                    maxParticipants: e.currentTarget.checked});
+                                                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                            }}
+
+
                                                         />
                                                         <label htmlFor="ownership" className="">Ownership</label>
                                                         <input
@@ -348,18 +528,21 @@ const Equipment = () => {
                         </div>
                     </section>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseDetails}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleCloseDetails}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
+                <ModalFooter
+                    onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+                    onDelete={onDelete}
+                    currentFormState={currentFormState}
+                    onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+                    onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+                    onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+                    onCloseDetails={onCloseDetails}
+                    onSubmit={onSubmit}
+                />
             </Modal>
             {/*  ============== EQUIPMENT DETAILS MODAL: END ============== */}
     </div>
     )
+
 }
 
 export default Equipment;

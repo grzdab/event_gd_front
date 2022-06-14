@@ -5,13 +5,24 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {compareObjects, resetInvalidInputField} from "../js/helpers";
+import {compareObjects, resetInvalidInputField} from "../js/CommonHelper";
 import {Table} from "react-bootstrap";
 import ModalDeleteWarning from "./ModalDeleteWarning";
 import ModalFooter from "./ModalFooter";
-import {addItem} from "./Helper";
-import {updateItem} from "./Helper";
-import {deleteItem} from "./Helper";
+import {addItem, updateItem, deleteItem, getItems, getItemById} from "./ComponentHelper";
+import {clearCurrentItem} from "./ComponentHelper";
+import {
+    onAddDataClick,
+    onSaveAndClose,
+    onFormCancelCloseButtonClick,
+    onFormCancelDeleteButtonClick,
+    onFormConfirmDeleteButtonClick,
+    onItemsListInfoButtonClick,
+    compareData,
+    onFormCloseWithoutSavingButtonClick,
+    restoreFormData,
+    onItemsListDeleteButtonClick} from "./ComponentHelper";
+
 
 const EquipmentCategory = () => {
 
@@ -40,16 +51,6 @@ const EquipmentCategory = () => {
     // elements related to the item
     const [equipmentList, setEquipmentList] = useState([]);
 
-    const onSaveAndClose = () => {
-        setCurrentFormState({
-            ...currentFormState,
-            showForm: false,
-            formSaveButtonDisabled: true,
-            formAddingDataMode: false
-        })
-        clearCurrentItem();
-    }
-
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
         if(!currentItem.name) {
@@ -61,11 +62,11 @@ const EquipmentCategory = () => {
         if (currentFormState.formAddingDataMode) {
             const item = {name: currentItem.name, description: currentItem.description};
             addItem(item, 'http://localhost:5111/categories', setItems, itemsList)
-                .then(() => onSaveAndClose());
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
             const item = {id: currentItem.id, name: currentItem.name, description: currentItem.description};
             updateItem(item, currentItem, `http://localhost:5111/categories/${item.id}`, setItems, itemsList)
-                .then(() => onSaveAndClose());;
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
         }
     }
 
@@ -77,22 +78,8 @@ const EquipmentCategory = () => {
         });
     }
 
-    const onAddDataClick = () => {
-        setCurrentFormState({...currentFormState,
-            formDescription: 'Here you can add new equipment category.',
-            formHeader: 'Add new equipment category',
-            formAddingDataMode: true,
-            formSaveButtonDisabled: false,
-            showForm: true})
-    }
-
-    const clearCurrentItem = () => {
-        setCurrentItem(defaultItem);
-        setBackupItem(defaultItem);
-    }
-
     const onCloseDeleteWarningDialog = () => {
-        clearCurrentItem();
+        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
         setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
     };
 
@@ -104,7 +91,7 @@ const EquipmentCategory = () => {
                 formSaveButtonDisabled: true,
                 formAddingDataMode: false
             })
-            clearCurrentItem();
+            clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
         } else {
             let closeWithoutSaving = document.getElementById("confirm-close");
             let btnClose = document.getElementById("btn-close");
@@ -113,117 +100,13 @@ const EquipmentCategory = () => {
         }
     };
 
-    const onFormCancelCloseButtonClick = () => {
-        let closeWithoutSaving = document.getElementById("confirm-close");
-        let btnClose = document.getElementById("btn-close");
-        closeWithoutSaving.classList.remove("div-visible");
-        btnClose.classList.remove("btn-invisible");
-    }
-
-    const onFormCloseWithoutSavingButtonClick = () => {
-        setCurrentFormState({
-            ...currentFormState,
-            showForm: false,
-            formSaveButtonDisabled: true,
-            formAddingDataMode: false
-        })
-        clearCurrentItem();
-    }
-
     useEffect(() => {
-        const compareData = () => {
-            let dataChangedInfo = document.getElementById("data-changed");
-            let confirmCloseDiv = document.getElementById("confirm-close");
-            let btnClose = document.getElementById("btn-close");
-            let btnRestore = document.getElementById("btn-restore");
-            if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
-                if (!compareObjects(backupItem, currentItem)) {
-                    dataChangedInfo.classList.add("visible");
-                    btnRestore.classList.add("visible");
-                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false})
-                } else {
-                    if (confirmCloseDiv) {
-                        confirmCloseDiv.classList.remove("div-visible")
-                    }
-                    btnClose.classList.remove("btn-invisible");
-                    dataChangedInfo.classList.remove("visible");
-                    btnRestore.classList.remove("visible");
-                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: true})
-                }
-            }
-        }
-        compareData()
+        compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
     }, [itemChanged])
 
-    const getEquipmentByCategory = async (id) => {
-        const response = await fetch(`http://localhost:5111/equipment?equipmentCategoryId=${id}`);
-        const data = await response.json();
-        setEquipmentList(data);
-    }
-
     useEffect(() => {
-        const getCategories = async () => {
-            const response = await fetch('http://localhost:5111/categories');
-            const data = await response.json();
-            switch(response.status) {
-                case 401:
-                    // TODO Unauthenticated
-                    break;
-                case 403:
-                    // TODO Forbidden
-                    break;
-                case 404:
-                    // TODO Not found
-                    break;
-                default:
-                // TODO Other errors
-            }
-            if (response.ok) {
-                setItems(data);
-            }
-        }
-        getCategories().catch(console.error);
+        getItems('http://localhost:5111/categories', setItems).catch(console.error);
     }, [])
-
-    const onItemsListInfoButtonClick = () => {
-        setCurrentFormState({...currentFormState,
-            formAddingDataMode: false,
-            formHeader: "Edit equipment category",
-            formDescription: "",
-            formSaveButtonDisabled: true,
-            showForm: true})
-    }
-
-    const onItemsListDeleteButtonClick = () =>  {
-        setCurrentFormState({...currentFormState, showDeleteWarning: true})
-    }
-
-    const onFormCancelDeleteButtonClick = () =>  {
-        document.getElementById("confirm-delete").classList.add("div-hidden");
-        document.getElementById("btn-delete").classList.remove("btn-invisible");
-    }
-
-    const onFormConfirmDeleteButtonClick = () =>  {
-        document.getElementById("confirm-delete").classList.remove("div-hidden");
-        document.getElementById("btn-delete").classList.add("btn-invisible");
-    }
-
-    const restoreFormData = () =>  {
-        setCurrentItem(backupItem);
-        let nameInput = document.getElementById("name");
-        let descriptionInput = document.getElementById("description");
-        let dataChangedInfo = document.getElementById("data-changed");
-        let btnRestore = document.getElementById("btn-restore");
-        let btnSave = document.getElementById("bt")
-        nameInput.value = backupItem.name;
-        descriptionInput.value = backupItem.description;
-        dataChangedInfo.classList.remove("visible")
-        btnRestore.classList.remove("visible")
-        setCurrentFormState({
-            ...currentFormState,
-            formSaveButtonDisabled: true,
-        })
-    }
 
     return (
         <div id="layoutSidenav_content">
@@ -231,12 +114,11 @@ const EquipmentCategory = () => {
                 <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="getData">Get data</Button>
+                        <Button className="RAM_button" id="getData">Format table</Button>
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
-                                    clearCurrentItem();
-                                    onAddDataClick();
-
+                                    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment category.', 'Add new equipment category');
                                 }}>
                             Add new equipment category</Button>
                     </div>
@@ -265,14 +147,14 @@ const EquipmentCategory = () => {
                                         <td>{e.name}</td>
                                         <td>{e.description}</td>
                                         <td><button className='btn btn-outline-info' onClick={() => {
-                                            getEquipmentByCategory(e.id);
+                                            getItemById(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
                                             setCurrentItem(e);
                                             setBackupItem(e);
-                                            onItemsListInfoButtonClick();
+                                            onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment category");
                                         }}><FontAwesomeIcon icon={faEye}/></button></td>
                                         <td><button className='btn btn-outline-danger' onClick={() => {
                                             setCurrentItem(e);
-                                            onItemsListDeleteButtonClick();
+                                            onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
                                         }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                     </tr>
                                 ))}
@@ -307,7 +189,8 @@ const EquipmentCategory = () => {
                         <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
                         <div>
                             <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
-                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {restoreFormData()}}>
+                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
+                                restoreFormData(backupItem, setCurrentItem, currentFormState, setCurrentFormState)}}>
                                 Restore
                             </Button>
                         </div>
