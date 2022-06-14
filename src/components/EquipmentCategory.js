@@ -6,8 +6,14 @@ import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import {compareObjects, resetInvalidInputField} from "../js/helpers";
+import {DataTable} from "simple-datatables";
+let simpleDataTable;
 
-const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsList, setTableItemsList}) => {
+const EquipmentCategory = () => {
+
+    const fake = () => {
+        alert("fake from component");
+    }
 
     const defaultItem = {
         "id": "",
@@ -27,11 +33,12 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
     }
 
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
-    // const [tableItemsList, setTableItemsList] = useState([]);
+    const [tableItemsList, setTableItemsList] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [equipmentList, setEquipmentList] = useState([]);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [itemChanged, setItemChanged] = useState(false);
+    const [dataReady, setDataReady] = useState(false);
 
     const delay = (time) => {
         return new Promise(r => setTimeout(r, time));
@@ -47,12 +54,12 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
         const data = await response.json();
         console.log(data);
         setDataReady(true);
-        setDataLoaded(-dataLoaded);
+        // setDataLoaded(-dataLoaded);
         setTableItemsList([...tableItemsList, data]);
         // setTableData([...tableItemsList, data]);
     }
 
-    function onSaveAndClose() {
+    const onSaveAndClose =() => {
         setCurrentFormState({
             ...currentFormState,
             showForm: false,
@@ -155,14 +162,14 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
         }
     };
 
-    function onFormCancelCloseButtonClick() {
+    const onFormCancelCloseButtonClick = () => {
         let closeWithoutSaving = document.getElementById("confirm-close");
         let btnClose = document.getElementById("btn-close");
         closeWithoutSaving.classList.remove("div-visible");
         btnClose.classList.remove("btn-invisible");
     }
 
-    function onFormCloseWithoutSavingButtonClick() {
+    const onFormCloseWithoutSavingButtonClick = () => {
         setCurrentFormState({
             ...currentFormState,
             showForm: false,
@@ -177,6 +184,41 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
         const data = await response.json();
         setEquipmentList(data);
     }
+
+    useEffect(()=>{
+
+        if (dataReady) {
+            const datatablesSimple = document.getElementById('datatablesSimple');
+            if (datatablesSimple) {
+
+                if (simpleDataTable) {simpleDataTable.destroy();}
+                simpleDataTable = new DataTable(datatablesSimple, {
+                    searchable: true,
+                    columns: [{
+                        select: 3, sortable: false,
+                        render: function(data, cell, row) {
+                            let id = row.cells.item(0).innerText;
+                            let ci = JSON.parse(`{
+                                    "id":"${row.cells.item(0).innerText}",
+                                    "name":"${row.cells.item(1).innerText}",
+                                    "description":"${row.cells.item(2).innerText}"}`);
+                            return "" +
+                                "<Button onlick='fake()' class='btn btn-outline-info'><i class='fa fa-eye'></i></Button>&nbsp;" +
+                                "<Button class='btn btn-outline-danger' onClick='console.log(&apos;" + id + "&apos;)'><i class='fa fa-trash'></i></Button>";
+
+
+                        }
+                    }]
+                });
+
+                simpleDataTable.import({
+                    type: "json",
+                    data: JSON.stringify(tableItemsList)
+                });
+            }
+        }
+    }, [tableItemsList])
+
 
     useEffect(() => {
         const compareData = () => {
@@ -232,7 +274,7 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
             .catch(console.error);
     }, [])
 
-    function onItemsListInfoButtonClick() {
+    const onItemsListInfoButtonClick = () => {
         setCurrentFormState({...currentFormState,
             formAddingDataMode: false,
             formHeader: "Edit equipment category",
@@ -241,21 +283,21 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
             showForm: true})
     }
 
-    function onItemsListDeleteButtonClick() {
+    const onItemsListDeleteButtonClick = () => {
         setCurrentFormState({...currentFormState, showDeleteWarning: true})
     }
 
-    function onFormCancelDeleteButtonClick() {
+    const onFormCancelDeleteButtonClick = () => {
         document.getElementById("confirm-delete").classList.add("div-hidden");
         document.getElementById("btn-delete").classList.remove("btn-invisible");
     }
 
-    function onFormConfirmDeleteButtonClick() {
+    const onFormConfirmDeleteButtonClick = () => {
         document.getElementById("confirm-delete").classList.remove("div-hidden");
         document.getElementById("btn-delete").classList.add("btn-invisible");
     }
 
-    function restoreFormData() {
+    const restoreFormData = () => {
         setCurrentItem(backupItem);
         let nameInput = document.getElementById("name");
         let descriptionInput = document.getElementById("description");
@@ -278,7 +320,7 @@ const EquipmentCategory = ({setDataReady, dataLoaded, setDataLoaded, tableItemsL
                 <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="getData">Format table</Button>
+                        {/*<Button className="RAM_button" id="getData">Format table</Button>*/}
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem();
