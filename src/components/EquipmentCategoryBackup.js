@@ -7,7 +7,7 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import {compareObjects, resetInvalidInputField} from "../js/helpers";
 
-const EquipmentCategory = () => {
+const EquipmentCategoryBackup = () => {
 
     const defaultItem = {
         "id": "",
@@ -37,9 +37,6 @@ const EquipmentCategory = () => {
         return new Promise(r => setTimeout(r, time));
     }
 
-
-
-
     const addEquipmentCategory = async (equipmentCategory) => {
         const response = await fetch('http://localhost:5111/categories', {
             method: 'POST',
@@ -47,7 +44,7 @@ const EquipmentCategory = () => {
             body: JSON.stringify(equipmentCategory)
         });
         const data = await response.json();
-        setItems([...itemsList, data]);
+        setEquipmentList([...equipmentList, data]);
     }
 
     function onSaveAndClose() {
@@ -69,7 +66,10 @@ const EquipmentCategory = () => {
             return;
         }
         if (currentFormState.formAddingDataMode) {
-            addEquipmentCategory({name: currentItem.name, description: currentItem.description})
+            // TODO JSON data has to be in this particular order for datatables to work properly!
+
+            let id = crypto.randomUUID().substring(0,8);
+            addEquipmentCategory({id: id, name: currentItem.name, description: currentItem.description})
                 .then(() => onSaveAndClose());
         } else {
             updateEquipmentCategory({id: currentItem.id, name: currentItem.name, description: currentItem.description})
@@ -110,14 +110,14 @@ const EquipmentCategory = () => {
             body: JSON.stringify(updated)
         });
         const data = await response.json();
-        setItems(
-            itemsList.map((item) =>
+        setEquipmentList(
+            equipmentList.map((item) =>
                 item.id === equipmentCategory.id ? data : item));
     }
 
     const deleteEquipmentCategory = async (id) => {
         await fetch(`http://localhost:5111/categories/${id}`, {method: 'DELETE',});
-        setItems(itemsList.filter((equipmentCategory) => equipmentCategory.id !== id));
+        setEquipmentList(equipmentList.filter((equipmentCategory) => equipmentCategory.id !== id));
     }
 
     const clearCurrentItem = () => {
@@ -167,6 +167,12 @@ const EquipmentCategory = () => {
         clearCurrentItem();
     }
 
+    const getEquipmentByCategory = async (id) => {
+        const response = await fetch(`http://localhost:5111/equipment?equipmentCategoryId=${id}`);
+        const data = await response.json();
+        setEquipmentList(data);
+    }
+
     useEffect(() => {
         const compareData = () => {
             let dataChangedInfo = document.getElementById("data-changed");
@@ -192,23 +198,13 @@ const EquipmentCategory = () => {
         compareData()
     }, [itemChanged])
 
-
-
-    const getEquipmentByCategory = async (id) => {
-        const response = await fetch(`http://localhost:5111/equipment?equipmentCategoryId=${id}`);
-        const data = await response.json();
-        setEquipmentList(data);
-    }
-
-    // useEffect(() => {
-    //     console.log(equipmentList);
-    // }, [equipmentList])
-
-
     useEffect(() => {
         const getCategories = async () => {
             const response = await fetch('http://localhost:5111/categories');
             const data = await response.json();
+            // console.log("FETCH:")
+            // console.log(data);
+
             switch(response.status) {
                 case 401:
                     // TODO Unauthenticated
@@ -223,11 +219,13 @@ const EquipmentCategory = () => {
                 // TODO Other errors
             }
             if (response.ok) {
-                setItems(data);
+                setEquipmentList(data);
             }
         }
-        getCategories().catch(console.error);
+        getCategories()
+            .catch(console.error);
     }, [])
+
 
     function onItemsListInfoButtonClick() {
         setCurrentFormState({...currentFormState,
@@ -236,6 +234,7 @@ const EquipmentCategory = () => {
             formDescription: "",
             formSaveButtonDisabled: true,
             showForm: true})
+
     }
 
     function onItemsListDeleteButtonClick() {
@@ -252,14 +251,13 @@ const EquipmentCategory = () => {
         document.getElementById("btn-delete").classList.add("btn-invisible");
     }
 
-
     function restoreFormData() {
         setCurrentItem(backupItem);
         let nameInput = document.getElementById("name");
         let descriptionInput = document.getElementById("description");
         let dataChangedInfo = document.getElementById("data-changed");
         let btnRestore = document.getElementById("btn-restore");
-        let btnSave = document.getElementById("bt")
+        nameInput.classList.remove("form-input-invalid");
         nameInput.value = backupItem.name;
         descriptionInput.value = backupItem.description;
         dataChangedInfo.classList.remove("visible")
@@ -276,7 +274,7 @@ const EquipmentCategory = () => {
                 <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="getData">Get data</Button>
+                        <Button className="RAM_button" id="getData">Format table</Button>
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem();
@@ -291,18 +289,19 @@ const EquipmentCategory = () => {
                         <i className="fas fa-table me-1"></i>
                         Equipment categories list
                     </div>
-                    { itemsList.length > 0 ? (
+                    { equipmentList.length > 0 ? (
                         <div className="card-body">
-                            <table id={"datatablesSimple"}>
+                            <table id="datatablesSimple">
                                 <thead>
                                 <tr>
                                     <th>id</th>
                                     <th>name</th>
                                     <th>description</th>
+                                    <th>actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {itemsList.map((e) => (
+                                {equipmentList.map((e) => (
                                     <tr key={e.id}>
                                         <td>{e.id}</td>
                                         <td>{e.name}</td>
@@ -361,8 +360,8 @@ const EquipmentCategory = () => {
                     <section className="mb-4">
                         <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
                         <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
-                        <div>
-                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                        <div className="data-changed-div">
+                            <div className="text-center w-responsive data_changed mb10px" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</div>
                             <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {restoreFormData()}}>
                                 Restore
                             </Button>
@@ -486,4 +485,4 @@ const EquipmentCategory = () => {
 
 }
 
-export default EquipmentCategory;
+export default EquipmentCategoryBackup;
