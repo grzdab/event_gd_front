@@ -6,6 +6,12 @@ import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import {compareObjects, resetInvalidInputField} from "../js/helpers";
+import {Table} from "react-bootstrap";
+import ModalDeleteWarning from "./ModalDeleteWarning";
+import ModalFooter from "./ModalFooter";
+import {addItem} from "./Helper";
+import {updateItem} from "./Helper";
+import {deleteItem} from "./Helper";
 
 const EquipmentCategory = () => {
 
@@ -29,28 +35,12 @@ const EquipmentCategory = () => {
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
-    const [equipmentList, setEquipmentList] = useState([]);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [itemChanged, setItemChanged] = useState(false);
+    // elements related to the item
+    const [equipmentList, setEquipmentList] = useState([]);
 
-    const delay = (time) => {
-        return new Promise(r => setTimeout(r, time));
-    }
-
-
-
-
-    const addEquipmentCategory = async (equipmentCategory) => {
-        const response = await fetch('http://localhost:5111/categories', {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(equipmentCategory)
-        });
-        const data = await response.json();
-        setItems([...itemsList, data]);
-    }
-
-    function onSaveAndClose() {
+    const onSaveAndClose = () => {
         setCurrentFormState({
             ...currentFormState,
             showForm: false,
@@ -69,17 +59,20 @@ const EquipmentCategory = () => {
             return;
         }
         if (currentFormState.formAddingDataMode) {
-            addEquipmentCategory({name: currentItem.name, description: currentItem.description})
+            const item = {name: currentItem.name, description: currentItem.description};
+            addItem(item, 'http://localhost:5111/categories', setItems, itemsList)
                 .then(() => onSaveAndClose());
         } else {
-            updateEquipmentCategory({id: currentItem.id, name: currentItem.name, description: currentItem.description})
-                .then(() => onSaveAndClose());
+            const item = {id: currentItem.id, name: currentItem.name, description: currentItem.description};
+            updateItem(item, currentItem, `http://localhost:5111/categories/${item.id}`, setItems, itemsList)
+                .then(() => onSaveAndClose());;
         }
     }
 
     const onDelete = (e) => {
-        e.preventDefault() // prevents from submitting to the page which is default behavior
-        deleteEquipmentCategory(currentItem.id).then(() => {
+        e.preventDefault()
+        deleteItem(currentItem.id, `http://localhost:5111/categories/${currentItem.id}`, setItems, itemsList)
+            .then(() => {
             onCloseDeleteWarningDialog();
         });
     }
@@ -93,33 +86,6 @@ const EquipmentCategory = () => {
             showForm: true})
     }
 
-    const fetchEquipmentCategory = async (id) => {
-        const response = await fetch(`http://localhost:5111/categories/${id}`);
-        const data = await response.json();
-        return data;
-    }
-
-    const updateEquipmentCategory = async (equipmentCategory) => {
-        const updated = {
-            name: currentItem.name,
-            description: currentItem.description
-        };
-        const response = await fetch(`http://localhost:5111/categories/${equipmentCategory.id}`, {
-            method: 'PUT',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(updated)
-        });
-        const data = await response.json();
-        setItems(
-            itemsList.map((item) =>
-                item.id === equipmentCategory.id ? data : item));
-    }
-
-    const deleteEquipmentCategory = async (id) => {
-        await fetch(`http://localhost:5111/categories/${id}`, {method: 'DELETE',});
-        setItems(itemsList.filter((equipmentCategory) => equipmentCategory.id !== id));
-    }
-
     const clearCurrentItem = () => {
         setCurrentItem(defaultItem);
         setBackupItem(defaultItem);
@@ -130,10 +96,7 @@ const EquipmentCategory = () => {
         setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
     };
 
-    const handleShowWarning   = () => setCurrentFormState({...currentFormState, showDeleteWarning: true});
-
     const onCloseDetails = () => {
-
         if (compareObjects(backupItem, currentItem)) {
             setCurrentFormState({
                 ...currentFormState,
@@ -150,14 +113,14 @@ const EquipmentCategory = () => {
         }
     };
 
-    function onFormCancelCloseButtonClick() {
+    const onFormCancelCloseButtonClick = () => {
         let closeWithoutSaving = document.getElementById("confirm-close");
         let btnClose = document.getElementById("btn-close");
         closeWithoutSaving.classList.remove("div-visible");
         btnClose.classList.remove("btn-invisible");
     }
 
-    function onFormCloseWithoutSavingButtonClick() {
+    const onFormCloseWithoutSavingButtonClick = () => {
         setCurrentFormState({
             ...currentFormState,
             showForm: false,
@@ -192,18 +155,11 @@ const EquipmentCategory = () => {
         compareData()
     }, [itemChanged])
 
-
-
     const getEquipmentByCategory = async (id) => {
         const response = await fetch(`http://localhost:5111/equipment?equipmentCategoryId=${id}`);
         const data = await response.json();
         setEquipmentList(data);
     }
-
-    // useEffect(() => {
-    //     console.log(equipmentList);
-    // }, [equipmentList])
-
 
     useEffect(() => {
         const getCategories = async () => {
@@ -229,7 +185,7 @@ const EquipmentCategory = () => {
         getCategories().catch(console.error);
     }, [])
 
-    function onItemsListInfoButtonClick() {
+    const onItemsListInfoButtonClick = () => {
         setCurrentFormState({...currentFormState,
             formAddingDataMode: false,
             formHeader: "Edit equipment category",
@@ -238,22 +194,21 @@ const EquipmentCategory = () => {
             showForm: true})
     }
 
-    function onItemsListDeleteButtonClick() {
+    const onItemsListDeleteButtonClick = () =>  {
         setCurrentFormState({...currentFormState, showDeleteWarning: true})
     }
 
-    function onFormCancelDeleteButtonClick() {
+    const onFormCancelDeleteButtonClick = () =>  {
         document.getElementById("confirm-delete").classList.add("div-hidden");
         document.getElementById("btn-delete").classList.remove("btn-invisible");
     }
 
-    function onFormConfirmDeleteButtonClick() {
+    const onFormConfirmDeleteButtonClick = () =>  {
         document.getElementById("confirm-delete").classList.remove("div-hidden");
         document.getElementById("btn-delete").classList.add("btn-invisible");
     }
 
-
-    function restoreFormData() {
+    const restoreFormData = () =>  {
         setCurrentItem(backupItem);
         let nameInput = document.getElementById("name");
         let descriptionInput = document.getElementById("description");
@@ -293,12 +248,14 @@ const EquipmentCategory = () => {
                     </div>
                     { itemsList.length > 0 ? (
                         <div className="card-body">
-                            <table id={"datatablesSimple"}>
+                            <Table id={"datatablesSimple"}>
                                 <thead>
                                 <tr>
                                     <th>id</th>
                                     <th>name</th>
                                     <th>description</th>
+                                    <th>details</th>
+                                    <th>delete</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -320,32 +277,19 @@ const EquipmentCategory = () => {
                                     </tr>
                                 ))}
                                 </tbody>
-                            </table>
+                            </Table>
                         </div>) : (
                         <h6> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h6>
                     )}
                 </div>
             </div>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
-            <Modal
-                show={currentFormState.showDeleteWarning}
-                onHide={onCloseDeleteWarningDialog}
-                backdrop="static"
-                keyboard={false}
-            >
-                <Modal.Header className="form-header-warning" closeButton closeVariant="white">
-                    <Modal.Title>Warning</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Are you sure you want to delete this category? This operation cannot be undone!
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={onCloseDeleteWarningDialog}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={onDelete}>Delete</Button>
-                </Modal.Footer>
-            </Modal>
+            <ModalDeleteWarning
+                currentFormState={currentFormState}
+                onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
+                onDelete={onDelete}
+                deleteItemName="category"
+            />
             {/*  ============== WARNING MODAL: END ============== */}
 
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: BEGIN ============== */}
@@ -448,37 +392,16 @@ const EquipmentCategory = () => {
                         </div>
                     </section>
                 </Modal.Body>
-                <Modal.Footer>
-                    <div className="form-confirm-delete div-hidden" id="confirm-delete">
-                        Confirm delete? (This operation cannot be undone)
-                        <Button variant="secondary" onClick={() => onFormCancelDeleteButtonClick()}>
-                            No
-                        </Button>
-                        <Button variant="danger" onClick={onDelete}>
-                            Confirm
-                        </Button>
-                    </div>
-                    {!currentFormState.formAddingDataMode &&
-                        <Button variant="danger" id="btn-delete" onClick={() => onFormConfirmDeleteButtonClick()}>
-                            Delete
-                        </Button>
-                    }
-                    <div className="form-confirm-close" id="confirm-close">
-                        Close without saving?
-                        <Button variant="secondary" onClick={() => onFormCancelCloseButtonClick()}>
-                            No
-                        </Button>
-                        <Button variant="warning" onClick={() => onFormCloseWithoutSavingButtonClick()}>
-                            Close
-                        </Button>
-                    </div>
-                    <Button variant="secondary" id="btn-close" onClick={onCloseDetails}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={onSubmit} disabled={currentFormState.formSaveButtonDisabled}>
-                        Save & Close
-                    </Button>
-                </Modal.Footer>
+                <ModalFooter
+                    onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+                    onDelete={onDelete}
+                    currentFormState={currentFormState}
+                    onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+                    onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+                    onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+                    onCloseDetails={onCloseDetails}
+                    onSubmit={onSubmit}
+                />
             </Modal>
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: END ============== */}
         </div>
