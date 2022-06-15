@@ -43,6 +43,7 @@ const EquipmentCategory = () => {
         "formSaveButtonDisabled": false
     }
 
+    const [loading, setLoading] = useState(true);
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -66,7 +67,7 @@ const EquipmentCategory = () => {
         } else {
             const item = {id: currentItem.id, name: currentItem.name, description: currentItem.description};
             updateItem(item, currentItem, `http://localhost:5111/categories/${item.id}`, setItems, itemsList)
-                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         }
     }
 
@@ -105,7 +106,9 @@ const EquipmentCategory = () => {
     }, [itemChanged])
 
     useEffect(() => {
-        getItems('http://localhost:5111/categories', setItems).catch(console.error);
+        getItems('http://localhost:5111/categories', setItems)
+            .then(() => setLoading(false))
+            .catch(console.error);
     }, [])
 
     return (
@@ -114,7 +117,6 @@ const EquipmentCategory = () => {
                 <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="getData">Format table</Button>
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
@@ -128,41 +130,52 @@ const EquipmentCategory = () => {
                         <i className="fas fa-table me-1"></i>
                         Equipment categories list
                     </div>
-                    { itemsList.length > 0 ? (
-                        <div className="card-body">
-                            <Table id={"datatablesSimple"}>
-                                <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>name</th>
-                                    <th>description</th>
-                                    <th>details</th>
-                                    <th>delete</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {itemsList.map((e) => (
-                                    <tr key={e.id}>
-                                        <td>{e.id}</td>
-                                        <td>{e.name}</td>
-                                        <td>{e.description}</td>
-                                        <td><button className='btn btn-outline-info' onClick={() => {
-                                            getItemById(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
-                                            setCurrentItem(e);
-                                            setBackupItem(e);
-                                            onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment category");
-                                        }}><FontAwesomeIcon icon={faEye}/></button></td>
-                                        <td><button className='btn btn-outline-danger' onClick={() => {
-                                            setCurrentItem(e);
-                                            onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
-                                        }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </Table>
-                        </div>) : (
-                        <h6> NO DATA FOUND. PLEASE ADD NEW EQUIPMENT CATEGORY. </h6>
-                    )}
+                    {(() => {
+                        if (loading) {
+                            return (
+                                <h6>LOADING DATA, PLEASE WAIT...</h6>
+                            )
+                        } else {
+                            if (itemsList.length > 0) {
+                                return (
+                                    <div className="card-body">
+                                        <Table id="datatablesSimple">
+                                            <thead>
+                                            <tr>
+                                                <th>id</th>
+                                                <th>name</th>
+                                                <th>description</th>
+                                                <th>details</th>
+                                                <th>delete</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {itemsList.map((e) => (
+                                                <tr key={e.id}>
+                                                    <td>{e.id}</td>
+                                                    <td>{e.name}</td>
+                                                    <td>{e.description}</td>
+                                                    <td><button className='btn btn-outline-info' onClick={() => {
+                                                        getItemById(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
+                                                        setCurrentItem(e);
+                                                        setBackupItem(e);
+                                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment category");
+                                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
+                                                    <td><button className='btn btn-outline-danger' onClick={() => {
+                                                        setCurrentItem(e);
+                                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
+                                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                )
+                            } else {
+                                return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT CATEGORY</h6>)
+                            }
+                        }
+                    })()}
                 </div>
             </div>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
@@ -227,7 +240,6 @@ const EquipmentCategory = () => {
                                                 <label htmlFor="description"
                                                        className="">Description</label>
                                                 <textarea
-                                                    type="text"
                                                     id="description"
                                                     name="description"
                                                     rows="3"
@@ -284,6 +296,10 @@ const EquipmentCategory = () => {
                     onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
                     onCloseDetails={onCloseDetails}
                     onSubmit={onSubmit}
+                    setCurrentFormState = {setCurrentFormState}
+                    setCurrentItem = {setCurrentItem}
+                    setBackupItem = {setBackupItem}
+                    defaultItem = {defaultItem}
                 />
             </Modal>
             {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: END ============== */}

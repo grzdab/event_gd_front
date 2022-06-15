@@ -10,7 +10,11 @@ const ModalFooter = ({
                          onFormCancelCloseButtonClick,
                          onFormCloseWithoutSavingButtonClick,
                          onCloseDetails,
-                         onSubmit}) => {
+                         onSubmit,
+                         setCurrentFormState,
+                         setCurrentItem,
+                         setBackupItem,
+                         defaultItem}) => {
 
         return (
             <Modal.Footer>
@@ -33,7 +37,7 @@ const ModalFooter = ({
                     <Button variant="secondary" onClick={() => onFormCancelCloseButtonClick()}>
                         No
                     </Button>
-                    <Button variant="warning" onClick={() => onFormCloseWithoutSavingButtonClick()}>
+                    <Button variant="warning" onClick={() => onFormCloseWithoutSavingButtonClick(currentFormState, setCurrentFormState, setCurrentItem, setBackupItem, defaultItem)}>
                         Close
                     </Button>
                 </div>

@@ -126,8 +126,10 @@ export const restoreFormData = (backupItem, setCurrentItem, currentFormState, se
     let btnRestore = document.getElementById("btn-restore");
     let confirmClose = document.getElementById("confirm-close");
     let btnClose = document.getElementById("btn-close");
+
     nameInput.value = backupItem.name;
     descriptionInput.value = backupItem.description;
+
     dataChangedInfo.classList.remove("visible");
     btnRestore.classList.remove("visible");
     confirmClose.classList.remove("div-visible");

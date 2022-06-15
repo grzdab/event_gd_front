@@ -57,6 +57,7 @@ const Equipment = () => {
         "formSaveButtonDisabled": false
     }
 
+    const [loading, setLoading] = useState(true);
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -67,14 +68,52 @@ const Equipment = () => {
 
     const onSubmit = (e) => {
         e.preventDefault()
+
+        const checkItem = {
+            id: currentItem.id,
+            sortingId: currentItem.sortingId,
+            name: currentItem.name,
+            notes: currentItem.notes,
+            width: currentItem.width,
+            length: currentItem.length,
+            height: currentItem.height,
+            weight: currentItem.weight,
+            powerRequired: currentItem.powerRequired,
+            staffNeeded: currentItem.staffNeeded,
+            minimumAge: currentItem.minimumAge,
+            maxParticipants: currentItem.maxParticipants,
+            equipmentCategoryId: currentItem.equipmentCategoryId,
+            inUse: currentItem.inUse
+        };
+        console.log(checkItem);
+
         if(!currentItem.name) {
             let nameInput = document.getElementById("name");
             nameInput.classList.add("form-input-invalid");
-            nameInput.placeholder = "Category name cannot be empty"
+            nameInput.placeholder = "Equipment name cannot be empty"
             return;
         }
+
+        if(currentItem.equipmentCategoryId === 0) {
+            alert("You have to choose an equipment category")
+        }
+
         if (currentFormState.formAddingDataMode) {
-            const item = {name: currentItem.name, description: currentItem.description};
+            const item = {
+                sortingId: currentItem.sortingId,
+                name: currentItem.name,
+                notes: currentItem.notes,
+                width: currentItem.width,
+                length: currentItem.length,
+                height: currentItem.height,
+                weight: currentItem.weight,
+                powerRequired: currentItem.powerRequired,
+                staffNeeded: currentItem.staffNeeded,
+                minimumAge: currentItem.minimumAge,
+                maxParticipants: currentItem.maxParticipants,
+                equipmentCategoryId: currentItem.equipmentCategoryId,
+                inUse: currentItem.inUse
+            };
             addItem(item, 'http://localhost:5111/equipment', setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
@@ -135,7 +174,9 @@ const Equipment = () => {
     }, [currentItem])
 
     useEffect(() => {
-        getItems('http://localhost:5111/equipment', setItems).catch(console.error);
+        getItems('http://localhost:5111/equipment', setItems)
+            .then(() => setLoading(false))
+            .catch(console.error);
     }, [])
 
     useEffect(() => {
@@ -157,7 +198,6 @@ const Equipment = () => {
                 <h1 className="mt-4">EQUIPMENT</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="getData">Format table</Button>
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
@@ -171,37 +211,51 @@ const Equipment = () => {
                         <i className="fas fa-table me-1"></i>
                             Equipment list
                     </div>
-                    <div className="card-body">
-                        <Table id="datatablesSimple">
-                            <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>name</th>
-                                    <th>notes</th>
-                                    <th>details</th>
-                                    <th>delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {itemsList.map((e) => (
-                                <tr key={e.id}>
-                                    <td>{e.id}</td>
-                                    <td>{e.name}</td>
-                                    <td>{e.notes}</td>
-                                    <td><button className='btn btn-outline-info' onClick={() => {
-                                        setCurrentItem(e);
-                                        setBackupItem(e);
-                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment data");
-                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
-                                    <td><button className='btn btn-outline-danger' onClick={() => {
-                                        setCurrentItem(e);
-                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
-                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </div>
+                    {(() => {
+                      if (loading) {
+                          return (
+                              <h6>LOADING DATA, PLEASE WAIT...</h6>
+                          )
+                      } else {
+                          if (itemsList.length > 0) {
+                                return (
+                                    <div className="card-body">
+                                        <Table id="datatablesSimple">
+                                            <thead>
+                                            <tr>
+                                                <th>id</th>
+                                                <th>name</th>
+                                                <th>notes</th>
+                                                <th>details</th>
+                                                <th>delete</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {itemsList.map((e) => (
+                                                <tr key={e.id}>
+                                                    <td>{e.id}</td>
+                                                    <td>{e.name}</td>
+                                                    <td>{e.notes}</td>
+                                                    <td><button className='btn btn-outline-info' onClick={() => {
+                                                        setCurrentItem(e);
+                                                        setBackupItem(e);
+                                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment data");
+                                                    }}><FontAwesomeIcon icon={faEye}/></button></td>
+                                                    <td><button className='btn btn-outline-danger' onClick={() => {
+                                                        setCurrentItem(e);
+                                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
+                                                    }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                )
+                          } else {
+                              return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT</h6>)
+                          }
+                      }
+                    })()}
                 </div>
             </div>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
@@ -264,10 +318,19 @@ const Equipment = () => {
                                                             className="required">*</span></label>
                                                         <select className="form-select"
                                                                 aria-label="Default select example"
-                                                                defaultValue={"DEFAULT"}
-                                                                required
+                                                                defaultValue = {
+                                                                    currentItem.equipmentCategoryId > 0
+                                                                        ? currentItem.equipmentCategoryId
+                                                                        : ""
+                                                                }
+                                                                onChange={(e) => {
+                                                                    setCurrentItem({...currentItem,
+                                                                        equipmentCategoryId: parseInt(e.target.value)});
+                                                                    console.log(e.target.value);
+                                                                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                }}
                                                         >
-                                                            <option disabled value="DEFAULT"> -- Select Category -- </option>
+                                                            <option disabled value=""> -- Select Category -- </option>
                                                             {categoriesList.map((e) => (
                                                                 <option key={e.id} value={e.id}>{e.name}</option>))
                                                             }
@@ -537,6 +600,10 @@ const Equipment = () => {
                     onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
                     onCloseDetails={onCloseDetails}
                     onSubmit={onSubmit}
+                    setCurrentFormState = {setCurrentFormState}
+                    setCurrentItem = {setCurrentItem}
+                    setBackupItem = {setBackupItem}
+                    defaultItem = {defaultItem}
                 />
             </Modal>
             {/*  ============== EQUIPMENT DETAILS MODAL: END ============== */}
