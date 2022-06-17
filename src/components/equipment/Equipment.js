@@ -1,10 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
-import '../css/Form.css';
+import '../../css/Form.css';
 import Button from "react-bootstrap/Button";
 import {Modal, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
-import ModalFooter from "./ModalFooter";
+import ModalFooter from "../layout/ModalFooter";
 import {
     addItem,
     clearCurrentItem,
@@ -20,11 +20,11 @@ import {
     onSaveAndClose,
     restoreFormData,
     updateItem
-} from "./ComponentHelper";
-import {compareObjects, resetInvalidInputField} from "../js/CommonHelper";
+} from "../helpers/ComponentHelper";
+import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import ModalDeleteWarning from "./ModalDeleteWarning";
+import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 
 const Equipment = ({appSettings, setAppSettings}) => {

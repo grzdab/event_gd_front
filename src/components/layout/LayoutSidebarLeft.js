@@ -1,7 +1,7 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBuilding, faCalendarAlt, faListAlt, faCubes, faUsers} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import logo from '../assets/ram-logo.png';
+import logo from '../../assets/ram-logo.png';
 import {faFileInvoice} from "@fortawesome/free-solid-svg-icons/faFileInvoice";
 import {faFileContract} from "@fortawesome/free-solid-svg-icons/faFileContract";
 import {faFaceGrinWide} from "@fortawesome/free-solid-svg-icons/faFaceGrinWide";
@@ -14,11 +14,11 @@ const LayoutSidebarLeft = () => {
           <div className="sb-sidenav-menu">
             <div className="nav">
               <div className="sb-sidenav-menu-heading">Core</div>
-              <a className="nav-link" href="/">
+              <a className="nav-link" href="/Codecool/El Proyecte Grande/event-front/public">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
               </a>
-              <a className="nav-link" href="/">
+              <a className="nav-link" href="/Codecool/El Proyecte Grande/event-front/public">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
                 Scheduler
               </a>

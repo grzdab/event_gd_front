@@ -5,12 +5,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {compareObjects, resetInvalidInputField} from "../js/CommonHelper";
+import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import {Table} from "react-bootstrap";
-import ModalDeleteWarning from "./ModalDeleteWarning";
-import ModalFooter from "./ModalFooter";
-import {addItem, updateItem, deleteItem, getItems, getRelatedItemsByParentId} from "./ComponentHelper";
-import {clearCurrentItem} from "./ComponentHelper";
+import ModalDeleteWarning from "../layout/ModalDeleteWarning";
+import ModalFooter from "../layout/ModalFooter";
+import {addItem, updateItem, deleteItem, getItems, getRelatedItemsByParentId} from "../helpers/ComponentHelper";
+import {clearCurrentItem} from "../helpers/ComponentHelper";
 import {
     onAddDataClick,
     onSaveAndClose,
@@ -21,7 +21,7 @@ import {
     compareData,
     onFormCloseWithoutSavingButtonClick,
     restoreFormData,
-    onItemsListDeleteButtonClick} from "./ComponentHelper";
+    onItemsListDeleteButtonClick} from "../helpers/ComponentHelper";
 
 
 const EquipmentCategory = () => {

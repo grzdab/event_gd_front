@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import '../css/datatables.css';
+import '../../css/datatables.css';
 
-const Main = () => {
+const Dashboard = () => {
         return (
             <div id="layoutSidenav_content">
                 <main>
@@ -42,7 +42,7 @@ const Main = () => {
                                 <div className="card bg-danger text-white mb-4">
                                     <div className="card-body">Settings</div>
                                     <div className="card-footer d-flex align-items-center justify-content-between">
-                                        <a className="small text-white stretched-link" href="#">View Details</a>
+                                        <a className="small text-white stretched-link" href="src/components/dashboard/Dashboard#">View Details</a>
                                         <div className="small text-white"><i className="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
@@ -55,9 +55,9 @@ const Main = () => {
                         <div className="d-flex align-items-center justify-content-between small">
                             <div className="text-muted">Copyright &copy; Your Website 2022</div>
                             <div>
-                                <a href="#">Privacy Policy</a>
+                                <a href="src/components/dashboard/Dashboard#">Privacy Policy</a>
                                 &middot;
-                                <a href="#">Terms &amp; Conditions</a>
+                                <a href="src/components/dashboard/Dashboard#">Terms &amp; Conditions</a>
                             </div>
                         </div>
                     </div>
@@ -66,4 +66,4 @@ const Main = () => {
         );
 }
 
-export default Main;
+export default Dashboard;

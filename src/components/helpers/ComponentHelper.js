@@ -1,4 +1,4 @@
-import {compareObjects} from "../js/CommonHelper";
+import {compareObjects} from "../../js/CommonHelper";
 
 export const delay = (time) => {
     return new Promise(r => setTimeout(r, time));

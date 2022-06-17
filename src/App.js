@@ -4,16 +4,15 @@ import './css/App.css';
 import './css/Form.css';
 import './css/datatables.css';
 import sidebarToggler from './js/scripts';
-import LayoutSidebarLeft from "./components/LayoutSidebarLeft.js";
-import LayoutContent from "./components/LayoutContent.js";
-import Header from "./components/Header";
+import LayoutSidebarLeft from "./components/layout/LayoutSidebarLeft.js";
+import LayoutContent from "./components/layout/LayoutContent.js";
+import Header from "./components/layout/Header";
 import { DataTable } from "simple-datatables";
-import Equipment from "./components/Equipment";
-import Clients from "./components/Clients";
-import Events from "./components/Events";
-import Main from "./components/Main";
-import EquipmentDetails from "./components/EquipmentDetails";
-import EquipmentCategory from "./components/EquipmentCategory";
+import Equipment from "./components/equipment/Equipment";
+import Clients from "./components/clients/Clients";
+import Events from "./components/events/Events";
+import Dashboard from "./components/dashboard/Dashboard";
+import EquipmentCategory from "./components/settings/EquipmentCategory";
 
 let simpleDataTable;
 
@@ -72,10 +71,9 @@ const App = () => {
             <div id="layoutSidenav">
                 <LayoutSidebarLeft />
                 <Routes>
-                    <Route path='/' element={<Main />} />
+                    <Route path='/' element={<Dashboard />} />
                     <Route path='/clients' element={<Clients />} />
                     <Route path='/equipment' element={<Equipment appSettings={appSettings} setAppSettings={setAppSettings}/>} />
-                    <Route path='/equipment/:id' element={<EquipmentDetails />}></Route>
                     <Route path='/events' element={<Events />} />
                     <Route path='/equipment-category' element={<EquipmentCategory />}></Route>
                 </Routes>
