@@ -13,6 +13,7 @@ import Clients from "./components/clients/Clients";
 import Events from "./components/events/Events";
 import Dashboard from "./components/dashboard/Dashboard";
 import EquipmentCategory from "./components/settings/EquipmentCategory";
+import ClientType from "./components/settings/ClientType";
 
 let simpleDataTable;
 
@@ -76,6 +77,7 @@ const App = () => {
                     <Route path='/equipment' element={<Equipment appSettings={appSettings} setAppSettings={setAppSettings}/>} />
                     <Route path='/events' element={<Events />} />
                     <Route path='/equipment-category' element={<EquipmentCategory />}></Route>
+                    <Route path='/client-type' element={<ClientType />}></Route>
                 </Routes>
             </div>
             {addScript('https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', 'anonymous')}

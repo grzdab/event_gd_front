@@ -53,9 +53,9 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                 Equipment categories
               </a>
-              <a className="nav-link" href="charts.html">
+              <a className="nav-link" href="/client-type">
                 <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                Charts
+                Client types
               </a>
               <a className="nav-link" href="tables.html">
                 <div className="sb-nav-link-icon"><i className="fas fa-table"></i></div>
