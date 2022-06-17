@@ -62,6 +62,7 @@
 
 .form-input-invalid {
     border-bottom: 2px solid var(--bs-red);
+    background-color: var(--bs-light-red);
 }
 
 .text-center.w-responsive.mx-auto.mb-5.form_test {
@@ -123,4 +124,28 @@
 .RAM_container .RAM_button {
     margin-left: 10px;
     margin-bottom: 10px;
+}
+
+*.btn-delete-image {
+    position: absolute;
+    right: 20px;
+    margin-top: 5px;
+}
+
+*.mrx1 {
+    margin-right: 0.5rem;
+}
+
+*.equipment-image-container {
+    height: 140px;
+    background-color: red;
+}
+
+.warning-icon {
+    font-size: 1.5rem;
+    display: none;
+}
+
+.warning-icon.div-visible {
+    display: block;
 }

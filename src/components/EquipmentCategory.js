@@ -9,7 +9,7 @@ import {compareObjects, resetInvalidInputField} from "../js/CommonHelper";
 import {Table} from "react-bootstrap";
 import ModalDeleteWarning from "./ModalDeleteWarning";
 import ModalFooter from "./ModalFooter";
-import {addItem, updateItem, deleteItem, getItems, getItemById} from "./ComponentHelper";
+import {addItem, updateItem, deleteItem, getItems, getRelatedItemsByParentId} from "./ComponentHelper";
 import {clearCurrentItem} from "./ComponentHelper";
 import {
     onAddDataClick,
@@ -26,6 +26,7 @@ import {
 
 const EquipmentCategory = () => {
 
+
     const defaultItem = {
         "id": "",
         "name": "",
@@ -40,10 +41,14 @@ const EquipmentCategory = () => {
         "formDescription": "",
         "formDataChangedWarning": "Data has been changed",
         "formAddingDataMode": false,
-        "formSaveButtonDisabled": false
+        "formSaveButtonDisabled": false,
+        "warningDescription":"",
+        "warningDeleteButtonDisabled": false,
+        "warningWarningIconVisible":false
     }
 
     const [loading, setLoading] = useState(true);
+    const [allowDelete, setAllowDelete] = useState(null);
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -71,17 +76,58 @@ const EquipmentCategory = () => {
         }
     }
 
+    // useEffect(() => {
+    //     if (equipmentList.length !== 0) {
+    //         setCurrentFormState({...currentFormState,
+    //             warningDescription: "Cannot remove equipment category, because there is equipment related to it.",
+    //             warningDeleteButtonDisabled: true,
+    //             warningWarningIconVisible: true})
+    //     } else {
+    //         setCurrentFormState({...currentFormState,
+    //             warningDescription: "Cannot remove equipment category, because there is equipment related to it.",
+    //             warningDeleteButtonDisabled: false,
+    //             warningWarningIconVisible: false})
+    //     }
+    //     onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category");
+    // }, [equipmentList])
+
+
+    useEffect(() => {
+        if (allowDelete !== null) {
+            onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category", allowDelete);
+        }
+    }, [allowDelete])
+
+
+    const checkRelatedItems = (id) => {
+        getRelatedItemsByParentId(`http://localhost:5111/equipment?equipmentCategoryId=${id}`, setEquipmentList)
+            .then((data) => {
+                if (data.length === 0) {
+                    setAllowDelete(true);
+                } else {
+                    setAllowDelete(false);
+                }
+            });
+
+    }
+
     const onDelete = (e) => {
         e.preventDefault()
         deleteItem(currentItem.id, `http://localhost:5111/categories/${currentItem.id}`, setItems, itemsList)
             .then(() => {
-            onCloseDeleteWarningDialog();
-        });
+                onCloseDeleteWarningDialog();
+            });
     }
 
     const onCloseDeleteWarningDialog = () => {
         clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
+        setAllowDelete(null);
+        setCurrentFormState({...currentFormState,
+            showDeleteWarning: false,
+            showForm: false,
+            warningDescription: "",
+            warningDeleteButtonDisabled: false,
+            warningWarningIconVisible: false});
     };
 
     const onCloseDetails = () => {
@@ -133,7 +179,9 @@ const EquipmentCategory = () => {
                     {(() => {
                         if (loading) {
                             return (
-                                <h6>LOADING DATA, PLEASE WAIT...</h6>
+                                <div className="spinner-border text-secondary" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
                             )
                         } else {
                             if (itemsList.length > 0) {
@@ -156,14 +204,15 @@ const EquipmentCategory = () => {
                                                     <td>{e.name}</td>
                                                     <td>{e.description}</td>
                                                     <td><button className='btn btn-outline-info' onClick={() => {
-                                                        getItemById(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
+                                                        getRelatedItemsByParentId(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
                                                         setCurrentItem(e);
                                                         setBackupItem(e);
                                                         onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment category");
                                                     }}><FontAwesomeIcon icon={faEye}/></button></td>
                                                     <td><button className='btn btn-outline-danger' onClick={() => {
                                                         setCurrentItem(e);
-                                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
+                                                        checkRelatedItems(e.id);
+                                                        // onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category");
                                                     }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                                 </tr>
                                             ))}

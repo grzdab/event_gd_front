@@ -112,24 +112,29 @@ export const onFormCloseWithoutSavingButtonClick = (currentFormState, setCurrent
     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
 }
 
-export const getItemById = async (url, setItemsList) => {
+export const getRelatedItemsByParentId = async (url, setItemsList) => {
     const response = await fetch(url);
     const data = await response.json();
     setItemsList(data);
+    return data;
+
 }
 
 export const restoreFormData = (backupItem, setCurrentItem, currentFormState, setCurrentFormState) =>  {
     setCurrentItem(backupItem);
-    let nameInput = document.getElementById("name");
-    let descriptionInput = document.getElementById("description");
+    for (let key in backupItem) {
+        if (backupItem.hasOwnProperty(key)) {
+            let element = document.getElementById(key);
+            if (element) {
+                element.value = backupItem[key]
+            }
+        }
+    }
+
     let dataChangedInfo = document.getElementById("data-changed");
     let btnRestore = document.getElementById("btn-restore");
     let confirmClose = document.getElementById("confirm-close");
     let btnClose = document.getElementById("btn-close");
-
-    nameInput.value = backupItem.name;
-    descriptionInput.value = backupItem.description;
-
     dataChangedInfo.classList.remove("visible");
     btnRestore.classList.remove("visible");
     confirmClose.classList.remove("div-visible");
@@ -141,8 +146,23 @@ export const restoreFormData = (backupItem, setCurrentItem, currentFormState, se
     });
 }
 
-export const onItemsListDeleteButtonClick = (currentFormState, setCurrentFormState) =>  {
-    setCurrentFormState({...currentFormState, showDeleteWarning: true})
+export const onItemsListDeleteButtonClick = (currentFormState, setCurrentFormState, itemName, allowDelete) =>  {
+    console.log(allowDelete);
+    if (allowDelete) {
+        setCurrentFormState({...currentFormState,
+            showDeleteWarning: true,
+            warningDescription: "Are you sure, you want to delete this " + itemName +"? This action cannot be undone!",
+            warningDeleteButtonDisabled: false,
+            warningWarningIconVisible: false})
+    } else {
+        setCurrentFormState({...currentFormState,
+            showDeleteWarning: true,
+            warningDescription: "Cannot delete this " + itemName +", because there are items related to it.",
+            warningDeleteButtonDisabled: true,
+            warningWarningIconVisible: true
+        })
+
+    }
 }
 
 export const getItems = async (url, setItems) => {

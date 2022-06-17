@@ -27,6 +27,8 @@ export function addScript(url, crossOrigin) {
 
 const App = () => {
 
+    const [appSettings, setAppSettings] = useState("localhost:3000/upload");
+
     // const [dataLoaded, setDataLoaded] = useState(1);
     // const [tableItemsList, setTableItemsList] = useState([]);
 
@@ -72,7 +74,7 @@ const App = () => {
                 <Routes>
                     <Route path='/' element={<Main />} />
                     <Route path='/clients' element={<Clients />} />
-                    <Route path='/equipment' element={<Equipment />} />
+                    <Route path='/equipment' element={<Equipment appSettings={appSettings} setAppSettings={setAppSettings}/>} />
                     <Route path='/equipment/:id' element={<EquipmentDetails />}></Route>
                     <Route path='/events' element={<Events />} />
                     <Route path='/equipment-category' element={<EquipmentCategory />}></Route>

@@ -22,8 +22,8 @@ function isObject(object) {
     return object != null && typeof object === 'object';
 }
 
-export function resetInvalidInputField(fieldName) {
-    const inputField = document.getElementById(fieldName);
+export function resetInvalidInputField(fieldId) {
+    const inputField = document.getElementById(fieldId);
     inputField.placeholder = "";
     inputField.classList.remove("form-input-invalid");
 }

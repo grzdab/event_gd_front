@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import '../css/Form.css';
 import Button from "react-bootstrap/Button";
 import {Modal, Table} from "react-bootstrap";
@@ -10,7 +10,7 @@ import {
     clearCurrentItem,
     compareData,
     deleteItem,
-    getItemById,
+    getRelatedItemsByParentId,
     getItems,
     onAddDataClick, onFormCancelCloseButtonClick,
     onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
@@ -21,13 +21,16 @@ import {
     restoreFormData,
     updateItem
 } from "./ComponentHelper";
-import {compareObjects} from "../js/CommonHelper";
+import {compareObjects, resetInvalidInputField} from "../js/CommonHelper";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import ModalDeleteWarning from "./ModalDeleteWarning";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 
-const Equipment = () => {
+const Equipment = ({appSettings, setAppSettings}) => {
+
+    const imagesFolder = "/images/";
+    const equipmentImagePlaceholder = "/images/placeholder.jpg"
 
     const defaultItem = {
         "id": "",
@@ -43,7 +46,8 @@ const Equipment = () => {
         "minimumAge": 0,
         "maxParticipants": 0,
         "equipmentCategoryId": 0,
-        "inUse": false
+        "inUse": false,
+        "photoURI":""
     }
 
     const defaultFormState = {
@@ -58,6 +62,7 @@ const Equipment = () => {
     }
 
     const [loading, setLoading] = useState(true);
+    const [allowDelete, setAllowDelete] = useState(true);
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [itemsList, setItems] = useState([]);
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -65,6 +70,41 @@ const Equipment = () => {
     const [itemChanged, setItemChanged] = useState(false);
     // elements related to the item
     const [categoriesList, setCategories] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
+    const [imageName, setImageName] = useState("");
+    const fileInput = useRef(null);
+
+    const deleteImage = () => {
+        setCurrentItem({...currentItem, photoURI: ""})
+    }
+
+    const selectedFileHandler = (e) => {
+        setImageFile(e.target.files[0]);
+        setImageName(e.target.files[0].name);
+        setCurrentItem({...currentItem, photoURI: imagesFolder + e.target.files[0].name})
+    }
+
+    const fileUploadHandler = async () => {
+        fetch('/images/', {
+            method: 'POST',
+            body: imageFile
+        }).then(
+            success => console.log(success)
+        ).catch(
+            error => console.log(error)
+        );
+    }
+
+    const addItem = async (item, url, setItems, itemsList) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify(item)
+        });
+        const data = await response.json();
+        setItems([...itemsList, data]);
+    }
+
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -83,19 +123,23 @@ const Equipment = () => {
             minimumAge: currentItem.minimumAge,
             maxParticipants: currentItem.maxParticipants,
             equipmentCategoryId: currentItem.equipmentCategoryId,
-            inUse: currentItem.inUse
+            inUse: currentItem.inUse,
+            photoURI: currentItem.photoURI
         };
         console.log(checkItem);
 
-        if(!currentItem.name) {
-            let nameInput = document.getElementById("name");
-            nameInput.classList.add("form-input-invalid");
-            nameInput.placeholder = "Equipment name cannot be empty"
-            return;
-        }
+        if (!currentItem.name || currentItem.equipmentCategoryId === 0) {
+            if(!currentItem.name) {
+                let nameInput = document.getElementById("name");
+                nameInput.classList.add("form-input-invalid");
+                nameInput.placeholder = "Equipment name cannot be empty"
+            }
 
-        if(currentItem.equipmentCategoryId === 0) {
-            alert("You have to choose an equipment category")
+            if(currentItem.equipmentCategoryId === 0) {
+                let categoryOption = document.getElementById("equipmentCategoryId");
+                categoryOption.classList.add("form-input-invalid");
+            }
+            return;
         }
 
         if (currentFormState.formAddingDataMode) {
@@ -112,7 +156,8 @@ const Equipment = () => {
                 minimumAge: currentItem.minimumAge,
                 maxParticipants: currentItem.maxParticipants,
                 equipmentCategoryId: currentItem.equipmentCategoryId,
-                inUse: currentItem.inUse
+                inUse: currentItem.inUse,
+                photoURI: currentItem.photoURI
             };
             addItem(item, 'http://localhost:5111/equipment', setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
@@ -131,7 +176,8 @@ const Equipment = () => {
                 minimumAge: currentItem.minimumAge,
                 maxParticipants: currentItem.maxParticipants,
                 equipmentCategoryId: currentItem.equipmentCategoryId,
-                inUse: currentItem.inUse
+                inUse: currentItem.inUse,
+                photoURI: currentItem.photoURI
                 };
 
             updateItem(item, currentItem, `http://localhost:5111/equipment/${item.id}`, setItems, itemsList)
@@ -168,6 +214,10 @@ const Equipment = () => {
             btnClose.classList.add("btn-invisible");
         }
     };
+
+    // useEffect(() => {
+    //     onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category", allowDelete);
+    // }, [allowDelete])
 
     useEffect(() => {
         compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
@@ -243,7 +293,8 @@ const Equipment = () => {
                                                     }}><FontAwesomeIcon icon={faEye}/></button></td>
                                                     <td><button className='btn btn-outline-danger' onClick={() => {
                                                         setCurrentItem(e);
-                                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState);
+                                                        setAllowDelete(true);
+                                                        onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment", allowDelete);
                                                     }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                                 </tr>
                                             ))}
@@ -308,6 +359,9 @@ const Equipment = () => {
                                                                 name: e.target.value});
                                                             setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
                                                         }}
+                                                        onClick={() => {
+                                                            resetInvalidInputField("name");
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -317,7 +371,9 @@ const Equipment = () => {
                                                         <label htmlFor="category" className="">Category <span
                                                             className="required">*</span></label>
                                                         <select className="form-select"
-                                                                aria-label="Default select example"
+                                                                aria-label="Equipment category"
+                                                                id="equipmentCategoryId"
+                                                                name="equipmentCategoryId"
                                                                 defaultValue = {
                                                                     currentItem.equipmentCategoryId > 0
                                                                         ? currentItem.equipmentCategoryId
@@ -328,6 +384,9 @@ const Equipment = () => {
                                                                         equipmentCategoryId: parseInt(e.target.value)});
                                                                     console.log(e.target.value);
                                                                     setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                                                }}
+                                                                onClick={() => {
+                                                                    resetInvalidInputField("equipmentCategoryId");
                                                                 }}
                                                         >
                                                             <option disabled value=""> -- Select Category -- </option>
@@ -382,9 +441,16 @@ const Equipment = () => {
                                         </div>
                                         <div className="col-md-4">
                                             <div className="md-form">
-                                                <label htmlFor="photos">Photos</label>
-                                                <textarea type="text" id="photos" name="photos" rows="2"
-                                                          className="form-control md-textarea"></textarea>
+                                                <label htmlFor="photos">Equipment photo</label>
+                                                <img id="photos" onClick={() => fileInput.current.click()} src={currentItem.photoURI !== "" ? currentItem.photoURI : equipmentImagePlaceholder} className="img-fluid" alt="Image"/>
+                                            </div>
+                                            <div>
+                                                <div className="mb-1 mt-1">
+                                                    <input ref={fileInput} style={{display: 'none'}} className="form-control" type="file" accept ="image/png, image/jpg, image/jpeg" id="formFile" onChange={selectedFileHandler}/>
+                                                </div>
+                                                <Button variant="primary" className="mrx1" onClick={() => fileInput.current.click()}>Pick an image</Button>
+                                                <Button variant="primary" className="mrx1" onClick={fileUploadHandler}>Upload new image</Button>
+                                                <Button variant="danger" id="delete-image" onClick={deleteImage}><FontAwesomeIcon icon={faTrashAlt}/></Button>
                                             </div>
                                         </div>
                                     </div>
@@ -454,6 +520,7 @@ const Equipment = () => {
                                                                     name="area"
                                                                     value={currentItem.length * currentItem.width}
                                                                     className="form-control"
+                                                                    readOnly
                                                                 />
                                                                 <label htmlFor="weight" className="">Weight
                                                                     (kg)</label>
@@ -475,8 +542,8 @@ const Equipment = () => {
                                                                 <input
                                                                     type="number"
                                                                     min="0"
-                                                                    id="power"
-                                                                    name="power"
+                                                                    id="powerRequired"
+                                                                    name="powerRequired"
                                                                     defaultValue={currentItem.powerRequired}
                                                                     className="form-control"
                                                                     onChange={(e) => {
@@ -501,8 +568,8 @@ const Equipment = () => {
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        id="staff"
-                                                        name="staff"
+                                                        id="staffNeeded"
+                                                        name="staffNeeded"
                                                         defaultValue={currentItem.staffNeeded}
                                                         className="form-control"
                                                         onChange={(e) => {
@@ -515,8 +582,8 @@ const Equipment = () => {
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        id="minimum_age"
-                                                        name="minimum_age"
+                                                        id="minimumAge"
+                                                        name="minimumAge"
                                                         defaultValue={currentItem.minimumAge}
                                                         className="form-control"
                                                         onChange={(e) => {
@@ -530,8 +597,8 @@ const Equipment = () => {
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        id="max_participants"
-                                                        name="max_participants"
+                                                        id="maxParticipants"
+                                                        name="maxParticipants"
                                                         defaultValue={currentItem.maxParticipants}
                                                         className="form-control"
                                                         onChange={(e) => {
@@ -550,21 +617,22 @@ const Equipment = () => {
                                                         Status
                                                     </div>
                                                     <div className="card-body">
-                                                        <label htmlFor="in_use" className="">In use</label>
+                                                        <div className="form-check form-switch">
+                                                        <label htmlFor="in_use" className="form-check-label">In use</label>
                                                         <input
+                                                            className="form-check-input"
                                                             type="checkbox"
-                                                            id="in_use"
-                                                            name="in_use"
-                                                            defaultValue={currentItem.inUse}
-                                                            className="form-control"
+                                                            id="inUse"
+                                                            name="inUse"
+                                                            checked={currentItem.inUse}
+                                                            defaultChecked={currentItem.inUse}
                                                             onChange={(e) => {
                                                                 setCurrentItem({...currentItem,
-                                                                    maxParticipants: e.currentTarget.checked});
+                                                                    inUse: e.currentTarget.checked});
                                                                 setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
                                                             }}
-
-
                                                         />
+                                                        </div>
                                                         <label htmlFor="ownership" className="">Ownership</label>
                                                         <input
                                                             type="text"
@@ -572,6 +640,7 @@ const Equipment = () => {
                                                             name="ownership"
                                                             value="TODO"
                                                             className="form-control"
+                                                            readOnly
                                                         />
                                                         <label htmlFor="status" className="">Status</label>
                                                         <input
@@ -580,6 +649,7 @@ const Equipment = () => {
                                                             name="status"
                                                             value="TODO"
                                                             className="form-control"
+                                                            readOnly
                                                         />
                                                     </div>
                                                 </div>

@@ -12,9 +12,10 @@
       "powerRequired": 15,
       "staffNeeded": 16,
       "minimumAge": 17,
-      "maxParticipants": 18,
+      "maxParticipants": true,
       "equipmentCategoryId": 1,
-      "inUse": false
+      "inUse": false,
+      "photoURI": "/images/Giewont.jpg"
     },
     {
       "id": "2bdaee2-bee8-7e84-53a0-becb33574daaa",
@@ -30,7 +31,8 @@
       "minimumAge": 6,
       "maxParticipants": 8,
       "equipmentCategoryId": 4,
-      "inUse": true
+      "inUse": true,
+      "photoURI": "/images/Giewont emboss.jpg"
     },
     {
       "id": "4cbe7bc-ae16-8574-038c-5babee56ed4a8",
@@ -46,7 +48,8 @@
       "minimumAge": 3,
       "maxParticipants": 8,
       "equipmentCategoryId": 2,
-      "inUse": true
+      "inUse": false,
+      "photoURI": "/images/Giewont żywe.jpg"
     },
     {
       "id": "7ab02bd-3582-dc70-b634-dc7baca58ee74",
@@ -62,7 +65,8 @@
       "minimumAge": 0,
       "maxParticipants": 10,
       "equipmentCategoryId": 1,
-      "inUse": true
+      "inUse": false,
+      "photoURI": "/images/Giewont old.jpg"
     },
     {
       "id": "ec6056b-33b8-25e5-1740-c47e114da5d5e",
@@ -78,45 +82,35 @@
       "minimumAge": 6,
       "maxParticipants": 12,
       "equipmentCategoryId": 2,
-      "inUse": true
-    },
-    {
-      "id": "c4ee8bc-c4da-e4c1-bd44-55b1bb822aa55",
-      "sortingId": 76,
-      "name": "Equipment 76",
-      "notes": "Equipment 76 detailed description",
-      "width": 9,
-      "length": 11,
-      "height": 2,
-      "weight": 284,
-      "powerRequired": 1459,
-      "staffNeeded": 0,
-      "minimumAge": 9,
-      "maxParticipants": 8,
-      "equipmentCategoryId": 3,
-      "inUse": false
+      "inUse": false,
+      "photoURI": ""
     }
   ],
   "categories": [
     {
-      "name": "a1",
-      "description": "aaa111",
-      "id": 1
-    },
-    {
       "name": "b2",
-      "description": "bbb222",
+      "description": "2e",
       "id": 2
     },
     {
       "name": "c3",
-      "description": "ccc333",
+      "description": "1e",
       "id": 3
     },
     {
       "name": "d44",
-      "description": "ddd444",
+      "description": "1e",
       "id": 4
+    },
+    {
+      "name": "ww",
+      "description": "www",
+      "id": 5
+    },
+    {
+      "name": "qq",
+      "description": "qqq",
+      "id": 6
     }
   ]
 }

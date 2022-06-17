@@ -1,9 +1,26 @@
 import {Modal} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import React from "react";
-
+import React, {useEffect} from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 
 const ModalDeleteWarning = ({currentFormState, onCloseDeleteWarningDialog, onDelete, deleteItemName}) => {
+
+
+    useEffect(()=> {
+
+        if (currentFormState.warningDeleteButtonDisabled & currentFormState.warningWarningIconVisible) {
+            const btnDelete = document.getElementById("delete-button");
+            const warningIcon = document.getElementById("warning-icon");
+
+            if (btnDelete && warningIcon) {
+                btnDelete.setAttribute('disabled', '');
+                warningIcon.classList.add("div-visible");
+            }
+        }
+
+    }, [currentFormState])
+
 
     return (
         <Modal
@@ -16,13 +33,23 @@ const ModalDeleteWarning = ({currentFormState, onCloseDeleteWarningDialog, onDel
                 <Modal.Title>Warning</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Are you sure you want to delete this {deleteItemName}? This operation cannot be undone!
+                {currentFormState.warningDescription}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onCloseDeleteWarningDialog}>
+                <div className="row" style={{width: "100%"}}>
+                    <div className="col-md-6">
+                <div>
+                    <span className="warning-icon" id="warning-icon"><FontAwesomeIcon icon={faExclamationTriangle}/></span>
+                </div>
+                    </div>
+                        <div className="col-md-6" style={{textAlign: "right"}}>
+                <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>
                     Cancel
                 </Button>
-                <Button variant="danger" onClick={onDelete}>Delete</Button>
+                <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>
+
+                    </div>
+                </div>
             </Modal.Footer>
         </Modal>
     )
