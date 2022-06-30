@@ -1,11 +1,12 @@
 import React, {Component, useMemo} from 'react';
 import { useState, useEffect } from 'react';
-import BasicPagination from "./Pagination";
-import Stack from "@mui/material/Stack";
+import Modal from "./Modal";
 import Pagination from "@mui/material/Pagination";
 import {Fab} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import ReactPaginate from "react-paginate";
 let tableData;
+let setData;
 
 const Events = () => {
 
@@ -23,6 +24,7 @@ const Events = () => {
     const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
+
 
     const handleCloseDetails = () => {
         setShowDetails(false);
@@ -128,6 +130,7 @@ const Events = () => {
                                             color="inherit"
                                             aria-label="edit">
                                             <EditIcon />
+<Modal />
                                         </Fab>
                                         </td>
 
@@ -136,8 +139,10 @@ const Events = () => {
                                 ))}
                                 </tbody>
                             </table>
-                                <Pagination
-                                    count={paginationSize}                                    variant="outlined"
+{/*<Pagination />*/}
+                            <Pagination
+                                    count={10}
+                                    variant="outlined"
                                     color="primary"
                                     size="small"
                                     totalItems={tableData.length}
@@ -146,6 +151,7 @@ const Events = () => {
                                     boundaryCount={1}
                                     showFirstButton
                                     showLastButton />
+
                         </div>
                     </div>
                 </div>
