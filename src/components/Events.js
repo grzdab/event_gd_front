@@ -31,8 +31,8 @@ const Events = () => {
     const handleShowDetails = () => setShowDetails(true);
 
     useEffect(() => {
-        const getEvents = async() => {
-            const response = await fetch('http://localhost:8080/admin/language');
+        const getEvents = async(pageNum =1) => {
+            const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
             const data = await response.json();
             if (response.status === 404) {
                 setError('Equipment data not found');
@@ -111,7 +111,8 @@ const Events = () => {
                                 <thead>
                                 <tr>
                                     <th>id</th>
-                                    <th>Language</th>
+                                    <th>Language
+                                    </th>
                                     <th>Details</th>
                                 </tr>
                                 </thead>
@@ -135,18 +136,16 @@ const Events = () => {
                                 ))}
                                 </tbody>
                             </table>
-                            {/*<Stack spacing={2}>*/}
                                 <Pagination
                                     count={paginationSize}                                    variant="outlined"
                                     color="primary"
                                     size="small"
                                     totalItems={tableData.length}
                                     itemPerPage={10}
-                                    onChangePage={(pageNumber) => setCurrentPage(pageNumber)}
+                                    onChangePage={(pageNum) => setCurrentPage(pageNum)}
                                     boundaryCount={1}
                                     showFirstButton
                                     showLastButton />
-                            {/*</Stack>*/}
                         </div>
                     </div>
                 </div>
@@ -169,3 +168,4 @@ const Events = () => {
 }
 
 export default Events;
+
