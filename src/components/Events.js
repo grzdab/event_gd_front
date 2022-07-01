@@ -26,6 +26,7 @@ const Events = () => {
     const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
+    const [languageName, setLanguageName] = useState('');
 
 
 
@@ -109,7 +110,7 @@ const Events = () => {
                     <div className="card mb-4">
                         <div className="card-header">
                             <i className="fas fa-table me-1"></i>
-                            DataTable Example
+                            Language - Admin section
                         </div>
                         <div className="card-body">
                             <table id="datatablesSimple">
@@ -137,13 +138,11 @@ const Events = () => {
                                                     setModalDescription('Here you can edit language details.');
                                                     setModalHeader('Edit');
                                                     setShowDetails(true);
+                                                    setLanguageName(e.propertyName);
                                                 }}
                                             />
-                            {/*<Modal />*/}
                                         </Fab>
                                         </td>
-
-                                        {/*<td><button className = "btn btn-info" onClick={() => alert("Eq:" + e.propertyName)}>View details</button></td>*/}
                                     </tr>
                                 ))}
                                 </tbody>
@@ -158,8 +157,8 @@ const Events = () => {
                                     onChangePage={(pageNum) => setCurrentPage(pageNum)}
                                     boundaryCount={1}
                                     showFirstButton
-                                    showLastButton />
-
+                                    showLastButton
+                            />
                         </div>
                     </div>
                 </div>
@@ -204,209 +203,12 @@ const Events = () => {
                                                 type="text"
                                                 id="name"
                                                 name="name"
-                                                value={tableData.propertyName}
+                                                value={ languageName }
                                                 className="form-control" required
                                             />
                                         </div>
                                     </div>
-                            {/*        <div className="row">*/}
-                            {/*            <div className="col-md-8">*/}
-                            {/*                <div className="md-form mb-0">*/}
-                            {/*                    <label htmlFor="category" className="">Category <span*/}
-                            {/*                        className="required">*</span></label>*/}
-                            {/*                    <select className="form-select"*/}
-                            {/*                            aria-label="Default select example"*/}
-                            {/*                            defaultValue={"DEFAULT"}*/}
-                            {/*                            required*/}
-                            {/*                    >*/}
-                            {/*                        <option disabled value="DEFAULT"> -- Select Category -- </option>*/}
-                            {/*                        <option value="1">A</option>*/}
-                            {/*                        <option value="2">B</option>*/}
-                            {/*                        <option value="3">C</option>*/}
-                            {/*                    </select>*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*            <div className="col-md-4">*/}
-                            {/*                <div className="md-form mb-0">*/}
-                            {/*                    <label htmlFor="sequence" className="">Sequence<span*/}
-                            {/*                        className="tooltiptext"></span></label>*/}
-                            {/*                    <input*/}
-                            {/*                        type="text"*/}
-                            {/*                        id="sequence"*/}
-                            {/*                        name="sequence"*/}
-                            {/*                        value={tableData.id}*/}
-                            {/*                        className="form-control"*/}
-                            {/*                    />*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*        <div className="row">*/}
-                            {/*            <div className="col-md-12">*/}
-                            {/*                <div className="md-form mb-0">*/}
-                            {/*                    <label htmlFor="description"*/}
-                            {/*                           className="">Description</label>*/}
-                            {/*                    <textarea*/}
-                            {/*                        type="text"*/}
-                            {/*                        id="description"*/}
-                            {/*                        name="description"*/}
-                            {/*                        rows="2"*/}
-                            {/*                        value={currentItem.notes}*/}
-                            {/*                        className="form-control md-textarea"*/}
-                            {/*                    ></textarea>*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="col-md-4">*/}
-                            {/*        <div className="md-form">*/}
-                            {/*            <label htmlFor="photos">Photos</label>*/}
-                            {/*            <textarea type="text" id="photos" name="photos" rows="2"*/}
-                            {/*                      className="form-control md-textarea"></textarea>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            </div>
-                            {/*<div className="row margin-top">*/}
-                            {/*    <div className="col-md-7">*/}
-                            {/*        <div className="md-form mb-0">*/}
-                            {/*            <div className="card">*/}
-                            {/*                <div className="card-header">*/}
-                            {/*                    Technical data*/}
-                            {/*                </div>*/}
-                            {/*                <div className="card-body">*/}
-                            {/*                    <div className="row">*/}
-                            {/*                        <div className="col-md-6">*/}
-                            {/*                            <label htmlFor="length" className="">Length*/}
-                            {/*                                (cm)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="length"*/}
-                            {/*                                name="length"*/}
-                            {/*                                value={currentItem.length}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                            <label htmlFor="width" className="">Width*/}
-                            {/*                                (cm)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="width"*/}
-                            {/*                                name="width"*/}
-                            {/*                                value={currentItem.width}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                            <label htmlFor="height>" className="">Height*/}
-                            {/*                                (cm)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="height"*/}
-                            {/*                                name="height"*/}
-                            {/*                                value={currentItem.height}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                        </div>*/}
-                            {/*                        <div className="col-md-6">*/}
-                            {/*                            <label htmlFor="area" className="">Area*/}
-                            {/*                                (m<sup>2</sup>)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                disabled*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="area"*/}
-                            {/*                                name="area"*/}
-                            {/*                                value={currentItem.length * currentItem.width}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                            <label htmlFor="weight" className="">Weight*/}
-                            {/*                                (kg)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="weight"*/}
-                            {/*                                name="weight"*/}
-                            {/*                                value={currentItem.weight}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                            <label htmlFor="power>" className="">Power*/}
-                            {/*                                (kW)</label>*/}
-                            {/*                            <input*/}
-                            {/*                                type="text"*/}
-                            {/*                                id="power"*/}
-                            {/*                                name="power"*/}
-                            {/*                                value={currentItem.powerRequired}*/}
-                            {/*                                className="form-control"*/}
-                            {/*                            />*/}
-                            {/*                        </div>*/}
-                            {/*                    </div>*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="col-md-3">*/}
-                            {/*        <div className="card">*/}
-                            {/*            <div className="card-header">*/}
-                            {/*                Conditions*/}
-                            {/*            </div>*/}
-                            {/*            <div className="card-body">*/}
-                            {/*                <label htmlFor="staff" className="">Required staff</label>*/}
-                            {/*                <input*/}
-                            {/*                    type="text"*/}
-                            {/*                    id="staff"*/}
-                            {/*                    name="staff"*/}
-                            {/*                    value={currentItem.staffNeeded}*/}
-                            {/*                    className="form-control"*/}
-                            {/*                />*/}
-                            {/*                <label htmlFor="minimum_age" className="">Minimum age</label>*/}
-                            {/*                <input*/}
-                            {/*                    type="text"*/}
-                            {/*                    id="minimum_age"*/}
-                            {/*                    name="minimum_age"*/}
-                            {/*                    value={currentItem.minimumAge}*/}
-                            {/*                    className="form-control"*/}
-                            {/*                />*/}
-                            {/*                <label htmlFor="max_participants>" className="">Max*/}
-                            {/*                    participants</label>*/}
-                            {/*                <input*/}
-                            {/*                    type="text"*/}
-                            {/*                    id="max_participants"*/}
-                            {/*                    name="max_participants"*/}
-                            {/*                    value={currentItem.maxParticipants}*/}
-                            {/*                    className="form-control"*/}
-                            {/*                />*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="col-md-2">*/}
-                            {/*        <div className="md-form mb-0">*/}
-                            {/*            <div className="card">*/}
-                            {/*                <div className="card-header">*/}
-                            {/*                    Status*/}
-                            {/*                </div>*/}
-                            {/*                <div className="card-body">*/}
-                            {/*                    <label htmlFor="in_use" className="">In use</label>*/}
-                            {/*                    <input*/}
-                            {/*                        type="text"*/}
-                            {/*                        id="in_use"*/}
-                            {/*                        name="in_use"*/}
-                            {/*                        value={currentItem.inUse}*/}
-                            {/*                        className="form-control"*/}
-                            {/*                    />*/}
-                            {/*                    <label htmlFor="ownership" className="">Ownership</label>*/}
-                            {/*                    <input*/}
-                            {/*                        type="text"*/}
-                            {/*                        id="ownership"*/}
-                            {/*                        name="ownership"*/}
-                            {/*                        value="TODO"*/}
-                            {/*                        className="form-control"*/}
-                            {/*                    />*/}
-                            {/*                    <label htmlFor="status" className="">Status</label>*/}
-                            {/*                    <input*/}
-                            {/*                        type="text"*/}
-                            {/*                        id="status"*/}
-                            {/*                        name="status"*/}
-                            {/*                        value="TODO"*/}
-                            {/*                        className="form-control"*/}
-                            {/*                    />*/}
-                            {/*                </div>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
+                                </div>
                             </div>
                         </form>
                     </div>
