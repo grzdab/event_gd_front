@@ -26,7 +26,6 @@ import {
 
 const ClientType = () => {
 
-
     const defaultItem = {
         "id": "",
         "name": "",
@@ -37,7 +36,7 @@ const ClientType = () => {
         "showForm": false,
         "showDeleteWarning": false,
         "showItemChangedWarning": false,
-        "formHeader": "Edit equipment category",
+        "formHeader": "Edit client type",
         "formDescription": "",
         "formDataChangedWarning": "Data has been changed",
         "formAddingDataMode": false,
@@ -55,52 +54,36 @@ const ClientType = () => {
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [itemChanged, setItemChanged] = useState(false);
     // elements related to the item
-    const [equipmentList, setEquipmentList] = useState([]);
+    const [clientsList, setClientsList] = useState([]);
 
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
         if(!currentItem.name) {
             let nameInput = document.getElementById("name");
             nameInput.classList.add("form-input-invalid");
-            nameInput.placeholder = "Category name cannot be empty"
+            nameInput.placeholder = "Client type name cannot be empty"
             return;
         }
         if (currentFormState.formAddingDataMode) {
             const item = {name: currentItem.name, description: currentItem.description};
-            addItem(item, 'http://localhost:5111/categories', setItems, itemsList)
+            addItem(item, 'http://localhost:5111/client-type', setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
             const item = {id: currentItem.id, name: currentItem.name, description: currentItem.description};
-            updateItem(item, currentItem, `http://localhost:5111/categories/${item.id}`, setItems, itemsList)
+            updateItem(item, currentItem, `http://localhost:5111/client-type/${item.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         }
     }
 
-    // useEffect(() => {
-    //     if (equipmentList.length !== 0) {
-    //         setCurrentFormState({...currentFormState,
-    //             warningDescription: "Cannot remove equipment category, because there is equipment related to it.",
-    //             warningDeleteButtonDisabled: true,
-    //             warningWarningIconVisible: true})
-    //     } else {
-    //         setCurrentFormState({...currentFormState,
-    //             warningDescription: "Cannot remove equipment category, because there is equipment related to it.",
-    //             warningDeleteButtonDisabled: false,
-    //             warningWarningIconVisible: false})
-    //     }
-    //     onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category");
-    // }, [equipmentList])
-
-
     useEffect(() => {
         if (allowDelete !== null) {
-            onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category", allowDelete);
+            onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "client type", allowDelete);
         }
     }, [allowDelete])
 
 
     const checkRelatedItems = (id) => {
-        getRelatedItemsByParentId(`http://localhost:5111/equipment?equipmentCategoryId=${id}`, setEquipmentList)
+        getRelatedItemsByParentId(`http://localhost:5111/client?clientType=${id}`, setClientsList)
             .then((data) => {
                 if (data.length === 0) {
                     setAllowDelete(true);
@@ -113,7 +96,7 @@ const ClientType = () => {
 
     const onDelete = (e) => {
         e.preventDefault()
-        deleteItem(currentItem.id, `http://localhost:5111/categories/${currentItem.id}`, setItems, itemsList)
+        deleteItem(currentItem.id, `http://localhost:5111/client-type/${currentItem.id}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
@@ -152,7 +135,7 @@ const ClientType = () => {
     }, [itemChanged])
 
     useEffect(() => {
-        getItems('http://localhost:5111/categories', setItems)
+        getItems('http://localhost:5111/client-type', setItems)
             .then(() => setLoading(false))
             .catch(console.error);
     }, [])
@@ -160,21 +143,21 @@ const ClientType = () => {
     return (
         <div id="layoutSidenav_content">
             <div className="container-fluid px-4">
-                <h1 className="mt-4">EQUIPMENT CATEGORIES</h1>
+                <h1 className="mt-4">CLIENT TYPES</h1>
                 <div className="container-fluid">
                     <div className="RAM_container">
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment category.', 'Add new equipment category');
+                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new client type.', 'Add new client type');
                                 }}>
-                            Add new equipment category</Button>
+                            Add new client type</Button>
                     </div>
                 </div>
                 <div className="card mb-4">
                     <div className="card-header">
                         <i className="fas fa-table me-1"></i>
-                        Equipment categories list
+                        Client types list
                     </div>
                     {(() => {
                         if (loading) {
@@ -204,15 +187,14 @@ const ClientType = () => {
                                                     <td>{e.name}</td>
                                                     <td>{e.description}</td>
                                                     <td><button className='btn btn-outline-info' onClick={() => {
-                                                        getRelatedItemsByParentId(`http://localhost:5111/equipment?equipmentCategoryId=${e.id}`, setEquipmentList)
+                                                        getRelatedItemsByParentId(`http://localhost:5111/clients?clientTypeId=${e.id}`, setClientsList)
                                                         setCurrentItem(e);
                                                         setBackupItem(e);
-                                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment category");
+                                                        onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit client type");
                                                     }}><FontAwesomeIcon icon={faEye}/></button></td>
                                                     <td><button className='btn btn-outline-danger' onClick={() => {
                                                         setCurrentItem(e);
                                                         checkRelatedItems(e.id);
-                                                        // onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment category");
                                                     }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                                                 </tr>
                                             ))}
@@ -221,7 +203,7 @@ const ClientType = () => {
                                     </div>
                                 )
                             } else {
-                                return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT CATEGORY</h6>)
+                                return (<h6>NO DATA FOUND, PLEASE ADD A NEW CLIENT TYPE</h6>)
                             }
                         }
                     })()}
@@ -232,18 +214,18 @@ const ClientType = () => {
                 currentFormState={currentFormState}
                 onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
                 onDelete={onDelete}
-                deleteItemName="category"
+                deleteItemName="client type"
             />
             {/*  ============== WARNING MODAL: END ============== */}
 
-            {/*  ============== EQUIPMENT CATEGORY DETAILS MODAL: BEGIN ============== */}
+            {/*  ============== DETAILS MODAL: BEGIN ============== */}
             <Modal show={currentFormState.showForm}
                    size="xl"
                    backdrop="static"
                    keyboard={false}
                    onHide={onCloseDetails}>
                 <Modal.Header className="form-header" closeButton closeVariant="white">
-                    <Modal.Title>Equipment category details</Modal.Title>
+                    <Modal.Title>Client type details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <section className="mb-4">
@@ -310,7 +292,7 @@ const ClientType = () => {
                                                 <div className="md-form mb-0">
                                                     <div className="card">
                                                         <div className="card-header">
-                                                            {equipmentList.length > 0 ?
+                                                            {clientsList.length > 0 ?
                                                                 "Equipment in this category" :
                                                                 "No equipment found in this category"
                                                             }
@@ -318,7 +300,7 @@ const ClientType = () => {
                                                         <div className="card-body">
                                                             <div className="row">
                                                                 <div className="col-md-12">
-                                                                    {equipmentList.map((e) => (
+                                                                    {clientsList.map((e) => (
                                                                         <div key={e.id}>
                                                                             {e.name}
                                                                         </div>

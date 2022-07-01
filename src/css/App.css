@@ -88,8 +88,8 @@
   --bs-danger: #dc3545;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
-  --bs-primary-rgb: 33, 37, 41;
-  /* --bs-primary-rgb: 13, 110, 253; */
+  /*--bs-primary-rgb: 33, 37, 41;*/
+   --bs-primary-rgb: 13, 110, 253;
   --bs-secondary-rgb: 108, 117, 125;
   --bs-success-rgb: 25, 135, 84;
   --bs-info-rgb: 13, 202, 240;
@@ -6829,6 +6829,8 @@ textarea.form-control-lg {
   display: flex !important;
 }
 
+
+
 .d-inline-flex {
   display: inline-flex !important;
 }
@@ -11787,4 +11789,56 @@ body {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+
+/* R.A.M. */
+
+
+
+
+
+
+.ram-bg-gradient-blue {
+  /*background: rgb(36,141,231) !important;*/
+  /*background: linear-gradient(180deg, rgba(36,141,231,1) 0%, rgba(0,35,108,1) 100%) !important;*/
+  background: rgb(36,81,129);
+  background: linear-gradient(180deg, rgba(36,81,129,1) 0%, rgba(13,27,42,1) 100%);
+}
+
+.ram-bg-gradient-purple {
+  /*background: rgb(196,36,231) !important;*/
+  /*background: linear-gradient(180deg, rgba(196,36,231,1) 0%, rgba(43,0,108,1) 100%) !important;*/
+  background: rgb(56,79,124);
+  background: linear-gradient(180deg, rgba(56,79,124,1) 0%, rgba(27,38,59,1) 100%);
+}
+
+.ram-bg-gradient-pink {
+  /*background: rgb(241,36,198);*/
+  /*background: linear-gradient(180deg, rgba(241,36,198,1) 0%, rgba(116,0,148,1) 100%);*/
+  background: rgb(96,132,175);
+  background: linear-gradient(180deg, rgba(96,132,175,1) 0%, rgba(65,90,119,1) 100%);
+}
+
+.ram-bg-gradient-orange {
+  /*background: rgb(0,101,61);*/
+  /*background: linear-gradient(180deg, rgba(0,101,61,1) 0%, rgba(0,18,15,1) 100%);*/
+  background: rgb(119,141,169);
+  background: linear-gradient(180deg, rgba(119,141,169,1) 0%, rgba(152,180,215,1) 100%);
+}
+
+.ram-d-flex {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.ram-card-body {
+  flex: 1 1 auto;
+  padding: 1rem 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.card.ram-card {
+  height: 15rem;
 }

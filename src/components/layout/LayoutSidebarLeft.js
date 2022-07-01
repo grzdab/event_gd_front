@@ -14,7 +14,7 @@ const LayoutSidebarLeft = () => {
           <div className="sb-sidenav-menu">
             <div className="nav">
               <div className="sb-sidenav-menu-heading">Core</div>
-              <a className="nav-link" href="/Codecool/El Proyecte Grande/event-front/public">
+              <a className="nav-link" href="/">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
               </a>

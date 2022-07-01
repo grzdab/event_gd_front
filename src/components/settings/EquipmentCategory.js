@@ -26,7 +26,6 @@ import {
 
 const EquipmentCategory = () => {
 
-
     const defaultItem = {
         "id": "",
         "name": "",
@@ -59,6 +58,9 @@ const EquipmentCategory = () => {
 
     const onSubmit = (e) => {
         e.preventDefault() // prevents from submitting to the page which is default behavior
+        var url = 'http://localhost:5111/equipment-categories';
+        // var url = 'http://localhost:8080/equipment-category';
+
         if(!currentItem.name) {
             let nameInput = document.getElementById("name");
             nameInput.classList.add("form-input-invalid");
@@ -67,11 +69,12 @@ const EquipmentCategory = () => {
         }
         if (currentFormState.formAddingDataMode) {
             const item = {name: currentItem.name, description: currentItem.description};
-            addItem(item, 'http://localhost:5111/categories', setItems, itemsList)
+            addItem(item, url, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
             const item = {id: currentItem.id, name: currentItem.name, description: currentItem.description};
-            updateItem(item, currentItem, `http://localhost:5111/categories/${item.id}`, setItems, itemsList)
+
+            updateItem(item, currentItem, `${url}/${item.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         }
     }
@@ -108,12 +111,13 @@ const EquipmentCategory = () => {
                     setAllowDelete(false);
                 }
             });
-
     }
 
     const onDelete = (e) => {
-        e.preventDefault()
-        deleteItem(currentItem.id, `http://localhost:5111/categories/${currentItem.id}`, setItems, itemsList)
+        e.preventDefault();
+        var url = `http://localhost:5111/equipment-categories/${currentItem.id}`;
+        // var url = `http://localhost:8080/equipment-category/${currentItem.id}`;
+        deleteItem(currentItem.id, url, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
@@ -152,7 +156,9 @@ const EquipmentCategory = () => {
     }, [itemChanged])
 
     useEffect(() => {
-        getItems('http://localhost:5111/categories', setItems)
+        var url = 'http://localhost:5111/equipment-categories';
+        // var url = 'http://localhost:8080/equipment-category';
+        getItems(url, setItems)
             .then(() => setLoading(false))
             .catch(console.error);
     }, [])

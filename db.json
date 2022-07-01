@@ -15,7 +15,7 @@
       "maxParticipants": true,
       "equipmentCategoryId": 1,
       "inUse": false,
-      "photoURI": "/images/Giewont.jpg"
+      "photoURI": "/images/cat9.jpg"
     },
     {
       "id": "2bdaee2-bee8-7e84-53a0-becb33574daaa",
@@ -32,7 +32,7 @@
       "maxParticipants": 8,
       "equipmentCategoryId": 4,
       "inUse": true,
-      "photoURI": "/images/Giewont emboss.jpg"
+      "photoURI": "/images/cat5.jpg"
     },
     {
       "id": "4cbe7bc-ae16-8574-038c-5babee56ed4a8",
@@ -49,7 +49,7 @@
       "maxParticipants": 8,
       "equipmentCategoryId": 2,
       "inUse": false,
-      "photoURI": "/images/Giewont żywe.jpg"
+      "photoURI": "/images/cat3.jpg"
     },
     {
       "id": "7ab02bd-3582-dc70-b634-dc7baca58ee74",
@@ -66,56 +66,116 @@
       "maxParticipants": 10,
       "equipmentCategoryId": 1,
       "inUse": false,
-      "photoURI": "/images/Giewont old.jpg"
+      "photoURI": ""
     },
     {
-      "id": "ec6056b-33b8-25e5-1740-c47e114da5d5e",
-      "sortingId": 6,
-      "name": "Equipment 6",
-      "notes": "Equipment 6 detailed description",
-      "width": 3,
-      "length": 14,
-      "height": 3,
-      "weight": 278,
-      "powerRequired": 1955,
-      "staffNeeded": 1,
-      "minimumAge": 6,
-      "maxParticipants": 12,
-      "equipmentCategoryId": 2,
-      "inUse": false,
-      "photoURI": ""
+      "sortingId": 0,
+      "name": "new equipment",
+      "notes": "ddasdasdad",
+      "width": 0,
+      "length": 1,
+      "height": 0,
+      "weight": 0,
+      "powerRequired": 0,
+      "staffNeeded": 3,
+      "minimumAge": 0,
+      "maxParticipants": 0,
+      "equipmentCategoryId": 8,
+      "inUse": true,
+      "photoURI": "/images/cat10.jpg",
+      "id": "YY8Fjf5"
     }
   ],
-  "categories": [
+  "equipment-categories": [
     {
-      "name": "b2",
-      "description": "2e",
+      "name": "category 1",
+      "description": "Some fancy description",
       "id": 2
     },
     {
-      "name": "c3",
-      "description": "1e",
-      "id": 3
-    },
-    {
-      "name": "d44",
-      "description": "1e",
-      "id": 4
-    },
-    {
-      "name": "ww",
-      "description": "www",
+      "name": "category 2",
+      "description": "Loerm ipsum",
       "id": 5
     },
     {
-      "name": "qq",
-      "description": "qqq",
+      "name": "category 3",
+      "description": "Third category",
       "id": 6
+    },
+    {
+      "name": "category 4",
+      "description": "Out of ideas",
+      "id": 8
     }
   ],
- "clients" : [
-   {
-     
-   }
- ]
+  "clients": [
+    {}
+  ],
+  "client-type": [
+    {
+      "id": 1,
+      "name": "company"
+    },
+    {
+      "id": 2,
+      "name": "person"
+    },
+    {
+      "id": 3,
+      "name": "public"
+    },
+    {
+      "id": 4,
+      "name": "subcontractor"
+    },
+    {
+      "name": "fourth",
+      "description": "rrr",
+      "id": 5
+    }
+  ],
+  "client-branch": [
+    {
+      "id": 1,
+      "name": "finances"
+    },
+    {
+      "id": 2,
+      "name": "FMCG"
+    },
+    {
+      "id": 3,
+      "name": "industry"
+    },
+    {
+      "id": 4,
+      "name": "telecommunication"
+    }
+  ],
+  "client-category": [
+    {
+      "id": 1,
+      "name": "bank"
+    },
+    {
+      "id": 2,
+      "name": "embassy"
+    },
+    {
+      "id": 3,
+      "name": "PR agency"
+    },
+    {
+      "id": 4,
+      "name": "transport & logistics"
+    },
+    {
+      "id": 5,
+      "name": "publishing house"
+    },
+    {
+      "id": 6,
+      "name": "art agency"
+    }
+  ]
 }

@@ -23,7 +23,7 @@ class Header extends Component {
                             <li><a className="dropdown-item" href="src/components/layout/Header#!">Settings</a></li>
                             <li><a className="dropdown-item" href="src/components/layout/Header#!">Activity Log</a></li>
                             <li><hr className="dropdown-divider" /></li>
-                            <li><a className="dropdown-item" href="src/components/layout/Header#!">Logout</a></li>
+                            <li><a className="dropdown-item" href="http://localhost:8080/logout">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

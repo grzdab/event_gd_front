@@ -5,6 +5,7 @@ import {Modal, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 import ModalFooter from "../layout/ModalFooter";
+import axios from "axios";
 import {
     addItem,
     clearCurrentItem,
@@ -26,6 +27,8 @@ import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+
+// TODO: react-dropzone can be used for selecting images
 
 const Equipment = ({appSettings, setAppSettings}) => {
 
@@ -74,22 +77,38 @@ const Equipment = ({appSettings, setAppSettings}) => {
     const [imageName, setImageName] = useState("");
     const fileInput = useRef(null);
 
-    const deleteImage = () => {
+    const deleteImageLink = () => {
         setCurrentItem({...currentItem, photoURI: ""})
     }
 
     const selectedFileHandler = (e) => {
         setImageFile(e.target.files[0]);
         setImageName(e.target.files[0].name);
+        const formData = new FormData();
+        formData.append("file", e.target.files[0])
+        axios.post('http://localhost:8080/ram/equipment-category/images/upload', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+            .then(() => console.log("sent"))
+            .catch(error => console.log(error))
+
         setCurrentItem({...currentItem, photoURI: imagesFolder + e.target.files[0].name})
     }
 
     const fileUploadHandler = async () => {
-        fetch('/images/', {
+
+        // TODO separate button for uploading images
+
+        fetch('/images/equipment-category', {
+            headers: {
+                "Content-type": "multipart/form-data"
+            },
             method: 'POST',
             body: imageFile
         }).then(
-            success => console.log(success)
+            () => console.log("file uploaded")
         ).catch(
             error => console.log(error)
         );
@@ -231,7 +250,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
 
     useEffect(() => {
         const getCategories = async () => {
-            const response = await fetch('http://localhost:5111/categories');
+            const response = await fetch('http://localhost:5111/equipment-categories');
             const data = await response.json();
             if (response.status === 404) {
                 alert('Categories data not found');
@@ -450,7 +469,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                                                 </div>
                                                 <Button variant="primary" className="mrx1" onClick={() => fileInput.current.click()}>Pick an image</Button>
                                                 <Button variant="primary" className="mrx1" onClick={fileUploadHandler}>Upload new image</Button>
-                                                <Button variant="danger" id="delete-image" onClick={deleteImage}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+                                                <Button variant="danger" id="delete-image" onClick={deleteImageLink}><FontAwesomeIcon icon={faTrashAlt}/></Button>
                                             </div>
                                         </div>
                                     </div>
