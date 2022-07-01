@@ -1,70 +1,21 @@
 {
   "equipment": [
     {
-      "id": "20e3d71-cd82-6add-4aca-7ae387b860bc2",
-      "sortingId": 64,
-      "name": "Equipment 64",
-      "notes": "Equipment 64 detailed description",
-      "width": 5,
-      "length": 12,
-      "height": 3,
-      "weight": 251,
-      "powerRequired": 678,
-      "staffNeeded": 3,
-      "minimumAge": 5,
-      "maxParticipants": 13,
-      "equipmentCategoryId": 13,
-      "inUse": true
-
-    },
-    {
-      "id": "e3e5805-5d01-ae2d-1a7c-b2aabacce5d86",
-      "sortingId": 12,
-      "name": "Equipment 12",
-      "notes": "Equipment 12 detailed description",
-      "width": 6,
-      "length": 4,
-      "height": 1,
-      "weight": 42,
-      "powerRequired": 1784,
-      "staffNeeded": 3,
-      "minimumAge": 12,
-      "maxParticipants": 12,
-      "equipmentCategoryId": 17,
-      "inUse": true
-
-    },
-    {
-      "id": "d8abd0a-b5ce-1e7b-bcd2-b11e2bb86b4bd",
-      "sortingId": 69,
-      "name": "Equipment 69",
-      "notes": "Equipment 69 detailed description",
-      "width": 8,
-      "length": 12,
-      "height": 1,
-      "weight": 198,
-      "powerRequired": 2784,
-      "staffNeeded": 0,
-      "minimumAge": 2,
-      "maxParticipants": 8,
-      "equipmentCategoryId": 19,
-      "inUse": true
-    },
-    {
       "id": "12a6228-65d6-8057-3ccd-1ec2bd8d45c4e",
-      "sortingId": 93,
-      "name": "Equipment 93",
-      "notes": "Equipment 93 detailed description",
-      "width": 7,
-      "length": 13,
-      "height": 2,
-      "weight": 259,
-      "powerRequired": 641,
-      "staffNeeded": 4,
-      "minimumAge": 11,
-      "maxParticipants": 9,
-      "equipmentCategoryId": 17,
-      "inUse": false
+      "sortingId": 1,
+      "name": "Equipment 2",
+      "notes": "Equipment 2 details",
+      "width": 12,
+      "length": 11,
+      "height": 13,
+      "weight": 14,
+      "powerRequired": 15,
+      "staffNeeded": 16,
+      "minimumAge": 17,
+      "maxParticipants": true,
+      "equipmentCategoryId": 1,
+      "inUse": false,
+      "photoURI": "/images/cat9.jpg"
     },
     {
       "id": "2bdaee2-bee8-7e84-53a0-becb33574daaa",
@@ -79,8 +30,9 @@
       "staffNeeded": 5,
       "minimumAge": 6,
       "maxParticipants": 8,
-      "equipmentCategoryId": 17,
-      "inUse": true
+      "equipmentCategoryId": 4,
+      "inUse": true,
+      "photoURI": "/images/cat5.jpg"
     },
     {
       "id": "4cbe7bc-ae16-8574-038c-5babee56ed4a8",
@@ -95,8 +47,9 @@
       "staffNeeded": 3,
       "minimumAge": 3,
       "maxParticipants": 8,
-      "equipmentCategoryId": 1,
-      "inUse": true
+      "equipmentCategoryId": 2,
+      "inUse": false,
+      "photoURI": "/images/cat3.jpg"
     },
     {
       "id": "7ab02bd-3582-dc70-b634-dc7baca58ee74",
@@ -112,55 +65,117 @@
       "minimumAge": 0,
       "maxParticipants": 10,
       "equipmentCategoryId": 1,
-      "inUse": true
+      "inUse": false,
+      "photoURI": ""
     },
     {
-      "id": "ec6056b-33b8-25e5-1740-c47e114da5d5e",
-      "sortingId": 6,
-      "name": "Equipment 6",
-      "notes": "Equipment 6 detailed description",
-      "width": 3,
-      "length": 14,
-      "height": 3,
-      "weight": 278,
-      "powerRequired": 1955,
-      "staffNeeded": 1,
-      "minimumAge": 6,
-      "maxParticipants": 12,
-      "equipmentCategoryId": 15,
-      "inUse": true
-    },
-    {
-      "id": "c4ee8bc-c4da-e4c1-bd44-55b1bb822aa55",
-      "sortingId": 76,
-      "name": "Equipment 76",
-      "notes": "Equipment 76 detailed description",
-      "width": 9,
-      "length": 11,
-      "height": 2,
-      "weight": 284,
-      "powerRequired": 1459,
-      "staffNeeded": 0,
-      "minimumAge": 9,
-      "maxParticipants": 8,
-      "equipmentCategoryId": 6,
-      "inUse": false
-    },
-    {
-      "id": "b6114d2-e1a5-70e1-de8a-0252a0cc84ca7",
-      "sortingId": 2,
-      "name": "Equipment 2",
-      "notes": "Equipment 2 detailed description",
-      "width": 6,
+      "sortingId": 0,
+      "name": "new equipment",
+      "notes": "ddasdasdad",
+      "width": 0,
       "length": 1,
-      "height": 2,
-      "weight": 71,
-      "powerRequired": 603,
+      "height": 0,
+      "weight": 0,
+      "powerRequired": 0,
       "staffNeeded": 3,
-      "minimumAge": 12,
-      "maxParticipants": 5,
-      "equipmentCategoryId": 7,
-      "inUse": true
+      "minimumAge": 0,
+      "maxParticipants": 0,
+      "equipmentCategoryId": 8,
+      "inUse": true,
+      "photoURI": "/images/cat10.jpg",
+      "id": "YY8Fjf5"
+    }
+  ],
+  "equipment-categories": [
+    {
+      "name": "category 1",
+      "description": "Some fancy description",
+      "id": 2
+    },
+    {
+      "name": "category 2",
+      "description": "Loerm ipsum",
+      "id": 5
+    },
+    {
+      "name": "category 3",
+      "description": "Third category",
+      "id": 6
+    },
+    {
+      "name": "category 4",
+      "description": "Out of ideas",
+      "id": 8
+    }
+  ],
+  "clients": [
+    {}
+  ],
+  "client-type": [
+    {
+      "id": 1,
+      "name": "company"
+    },
+    {
+      "id": 2,
+      "name": "person"
+    },
+    {
+      "id": 3,
+      "name": "public"
+    },
+    {
+      "id": 4,
+      "name": "subcontractor"
+    },
+    {
+      "name": "fourth",
+      "description": "rrr",
+      "id": 5
+    }
+  ],
+  "client-branch": [
+    {
+      "id": 1,
+      "name": "finances"
+    },
+    {
+      "id": 2,
+      "name": "FMCG"
+    },
+    {
+      "id": 3,
+      "name": "industry"
+    },
+    {
+      "id": 4,
+      "name": "telecommunication"
+    }
+  ],
+  "client-category": [
+    {
+      "id": 1,
+      "name": "bank"
+    },
+    {
+      "id": 2,
+      "name": "embassy"
+    },
+    {
+      "id": 3,
+      "name": "PR agency"
+    },
+    {
+      "id": 4,
+      "name": "transport & logistics"
+    },
+    {
+      "id": 5,
+      "name": "publishing house"
+    },
+    {
+      "id": 6,
+      "name": "art agency"
     }
   ]
 }

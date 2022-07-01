@@ -1,7 +1,7 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBuilding, faCalendarAlt, faListAlt, faCubes, faUsers} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import logo from '../assets/ram-logo.png';
+import logo from '../../assets/ram-logo.png';
 import {faFileInvoice} from "@fortawesome/free-solid-svg-icons/faFileInvoice";
 import {faFileContract} from "@fortawesome/free-solid-svg-icons/faFileContract";
 import {faFaceGrinWide} from "@fortawesome/free-solid-svg-icons/faFaceGrinWide";
@@ -18,7 +18,7 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
               </a>
-              <a className="nav-link" href="/">
+              <a className="nav-link" href="/Codecool/El Proyecte Grande/event-front/public">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
                 Scheduler
               </a>
@@ -48,10 +48,14 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faFileContract}></FontAwesomeIcon></div>
                 Contracts
               </a>
-              <div className="sb-sidenav-menu-heading">Addons</div>
-              <a className="nav-link" href="charts.html">
+              <div className="sb-sidenav-menu-heading">Settings</div>
+              <a className="nav-link" href="/equipment-category">
                 <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                Charts
+                Equipment categories
+              </a>
+              <a className="nav-link" href="/client-type">
+                <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                Client types
               </a>
               <a className="nav-link" href="tables.html">
                 <div className="sb-nav-link-icon"><i className="fas fa-table"></i></div>
