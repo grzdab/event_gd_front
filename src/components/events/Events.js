@@ -267,9 +267,9 @@ const Events = () => {
                                     variant="outlined"
                                     color="primary"
                                     size="small"
-                                    totalItems={itemsList.length}
-                                    itemPerPage={10}
-                                    onChangePage={(pageNum) => setCurrentPage(pageNum)}
+                                    // totalItems={itemsList.length}
+                                    // itemPerPage={10}
+                                    // onChangePage={(pageNum) => setCurrentPage(pageNum)}
                                     boundaryCount={1}
                                     showFirstButton
                                     showLastButton
