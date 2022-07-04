@@ -1,14 +1,30 @@
-import React, {Component, useMemo} from 'react';
-import { useState, useEffect } from 'react';
-// import Modal from "./Modal";
+// import React, {Component, useMemo} from 'react';
+// import { useState, useEffect } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Pagination from "@mui/material/Pagination";
 import {Fab} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
-import ReactPaginate from "react-paginate";
-import Button from "react-bootstrap/Button";
+// import ReactPaginate from "react-paginate";
+// import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
-import {resetInvalidInputField} from "../../js/CommonHelper";
-let tableData;
+import ModalFooter from "../layout/ModalFooter";
+import ModalDeleteWarning from "../layout/ModalDeleteWarning";
+import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
+import {
+    clearCurrentItem, compareData,
+    deleteItem, getItems,
+    onFormCancelCloseButtonClick,
+    onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
+    onFormConfirmDeleteButtonClick,
+    onSaveAndClose, restoreFormData,
+    updateItem
+} from "../helpers/ComponentHelper";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+import Button from "react-bootstrap/Button";
+// import axios from "axios";
+// import {useRef} from "@types/react";
+// let tableData;
 let setData;
 
 const Events = () => {
@@ -28,9 +44,9 @@ const Events = () => {
         "formSaveButtonDisabled": false
     }
 
-    const [eventsList, setEvents] = useState([]);
+    const [eventsList, setLanguages] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [tableData, setItems] = useState([]);
+    const [itemsList, setItems] = useState([]);
     const [error, setError] = useState('');
     const [showDetails, setShowDetails] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment');
@@ -39,74 +55,162 @@ const Events = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [languageName, setLanguageName] = useState('');
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
+    const [backupItem, setBackupItem] = useState(defaultItem);
 
 
-    const handleCloseDetails = () => {
-        setShowDetails(false);
-        setCurrentItem(defaultItem);
-    };
-    const handleShowDetails = () => setShowDetails(true);
-
-    useEffect(() => {
-        const getEvents = async(pageNum =1) => {
-            const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
-            const data = await response.json();
-            if (response.status === 404) {
-                setError('Equipment data not found');
-            }
-            setItems(data);
-            tableData = data;
-            console.log(tableData);
-            // console.log(itemsList);
-            setLoading(false);
-            // console.log(response);
-        }
-        getEvents().catch(console.error)
-    }, []);
-
-    const paginationSize = useMemo(() => {
-        return Math.ceil(tableData.length / 10);
-    });
-
-    const fetchById = async (id) => {
-        const response = await fetch(`http://localhost:8080/admin/language/${id}`);
-        const data = await response.json();
-        return data;
-    }
-
-    const addEvents = async (Events) => {
-        const response = await fetch('http://localhost:8080/admin/language', {
+    // const handleCloseDetails = () => {
+    //     setShowDetails(false);
+    //     setCurrentItem(defaultItem);
+    // };
+    // const handleShowDetails = () => setShowDetails(true);
+    //
+    // useEffect(() => {
+    //     const getEvents = async(pageNum =1) => {
+    //         const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
+    //         const data = await response.json();
+    //         if (response.status === 404) {
+    //             setError('Equipment data not found');
+    //         }
+    //         setItems(data);
+    //         itemsList = data;
+    //         console.log(itemsList);
+    //         // console.log(itemsList);
+    //         setLoading(false);
+    //         // console.log(response);
+    //     }
+    //     getEvents().catch(console.error)
+    // }, []);
+    //
+    // const paginationSize = useMemo(() => {
+    //     return Math.ceil(itemsList.length / 10);
+    // });
+    //
+    // const fetchById = async (id) => {
+    //     const response = await fetch(`http://localhost:8080/admin/language/${id}`);
+    //     const data = await response.json();
+    //     return data;
+    // }
+/////
+    const addItem = async (item, url, setItems, itemsList) => {
+        const response = await fetch(url, {
             method: 'POST',
             headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(Events)
+            body: JSON.stringify(item)
         });
-
         const data = await response.json();
-        setEvents([...eventsList, data]);
+        setItems([...itemsList, data]);
     }
 
-    const deleteEvents = async (id) => {
-        await fetch(`http://localhost:8080/admin/language/${id}`, {method: 'DELETE',});
-        setEvents(eventsList.filter((Events) => Events.id !== id));
+    const onSubmit = (e) => {
+        e.preventDefault()
+
+        const checkItem = {
+            id: currentItem.id,
+            property_name: currentItem.property_name
+        };
+        console.log(checkItem);
+
+        if (!currentItem.property_name || currentItem.id === 0) {
+            if(!currentItem.property_name) {
+                let nameInput = document.getElementById("name");
+                nameInput.classList.add("form-input-invalid");
+                nameInput.placeholder = "Language name cannot be empty"
+            }
+
+            if(currentItem.id === 0) {
+                let categoryOption = document.getElementById("equipmentCategoryId");
+                categoryOption.classList.add("form-input-invalid");
+            }
+            return;
+        }
+
+        if (currentFormState.formAddingDataMode) {
+            const item = {
+                id: currentItem.id,
+                property_name: currentItem.property_name
+            };
+            addItem(item, 'http://localhost:8080/admin/language', setItems, itemsList)
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
+        } else {
+            const item = {
+                id: currentItem.id,
+                property_name: currentItem.property_name
+            };
+
+            updateItem(item, currentItem, `http://localhost:8080/admin/language/${item.id}`, setItems, itemsList)
+                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
+        }
     }
 
-    const toggleInUse = async (id) => {
-        const Events = await fetchById(id);
-        const updated = {...Events, inUse: !Events.inUse};
-        const response = await fetch(`http://localhost:8080/admin/language/${id}`, {
-            method: 'PUT',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(updated)
-        })
-
-        const data = await response.json();
-        setEvents(
-            eventsList.map((Events) =>
-                Events.id === id ? {...Events, inUse: data.inUse} : Events));
+    const onDelete = (e) => {
+        e.preventDefault()
+        deleteItem(currentItem.id, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
+            .then(() => {
+                onCloseDeleteWarningDialog();
+            });
     }
+    const onCloseDeleteWarningDialog = () => {
+        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
+    };
+
+    const onCloseDetails = () => {
+        if (compareObjects(backupItem, currentItem)) {
+            setCurrentFormState({
+                ...currentFormState,
+                showForm: false,
+                formSaveButtonDisabled: true,
+                formAddingDataMode: false
+            })
+            clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        } else {
+            let closeWithoutSaving = document.getElementById("confirm-close");
+            let btnClose = document.getElementById("btn-close");
+            closeWithoutSaving.classList.add("div-visible");
+            btnClose.classList.add("btn-invisible");
+        }
+    };
+
+    useEffect(() => {
+        compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
+    }, [currentItem])
+
+    useEffect(() => {
+        getItems(`http://localhost:8080/admin/language`, setItems)
+            .then(() => setLoading(false))
+            .catch(console.error);
+    }, [])
+    //     const getEvents = async(pageNum =1) => {
+    //         const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
+    //         const data = await response.json();
+    //         if (response.status === 404) {
+    //             setError('Equipment data not found');
+    //         }
+    //         setItems(data);
+    //         itemsList = data;
+    //         console.log(itemsList);
+    //         // console.log(itemsList);
+    //         setLoading(false);
+    //         // console.log(response);
+    //     }
+    //     getEvents().catch(console.error)
+    // }, []);
+
+    // useEffect(() => {
+    //     const getCategories = async () => {
+    //         const response = await fetch('http://localhost:5111/equipment-categories');
+    //         const data = await response.json();
+    //         if (response.status === 404) {
+    //             alert('Categories data not found');
+    //         }
+    //         setCategories(data);
+    //     }
+    //     getCategories().catch(console.error);
+    //
+    // }, [])
 
     console.log("EventsList");
-    console.log(tableData);
+    console.log(itemsList);
     console.log("hardEventsList");
     // console.log(hardEventsList);
 
@@ -134,7 +238,7 @@ const Events = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {tableData.map((e) => (
+                                {itemsList.map((e) => (
                                     <tr key={e.id}>
                                         <td>{e.id}</td>
                                         <td>{e.propertyName}</td>
@@ -163,7 +267,7 @@ const Events = () => {
                                     variant="outlined"
                                     color="primary"
                                     size="small"
-                                    totalItems={tableData.length}
+                                    totalItems={itemsList.length}
                                     itemPerPage={10}
                                     onChangePage={(pageNum) => setCurrentPage(pageNum)}
                                     boundaryCount={1}
@@ -186,21 +290,35 @@ const Events = () => {
                     </div>
                 </div>
             </footer>
+            {/*  ============== WARNING MODAL: BEGIN ============== */}
+            <ModalDeleteWarning
+                currentFormState={currentFormState}
+                onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
+                onDelete={onDelete}
+                deleteItemName="equipment"
+            />
+            {/*  ============== WARNING MODAL: END ============== */}
 
     {/*  ============== EQUIPMENT DETAILS MODAL: BEGIN ============== */}
     <Modal show={showDetails}
            size="xl"
            backdrop="static"
            keyboard={false}
-           onHide={handleCloseDetails}>
+           onHide={onCloseDetails}>
         <Modal.Header className="form-header" closeButton closeVariant="white">
             <Modal.Title>Language details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <section className="mb-4">
                 <h2 className="h1-responsive font-weight-bold text-center my-2">{ modalHeader }</h2>
-                <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }
-                </p>
+                <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }</p>
+                    <div>
+                        <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                        <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
+                            restoreFormData(backupItem, setCurrentItem, currentFormState, setCurrentFormState)}}>
+                            Restore
+                        </Button>
+                    </div>
                 <div className="row">
                     <div className="col-md-12 mb-md-0 mb-5">
                         <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
@@ -214,7 +332,7 @@ const Events = () => {
                                                 type="text"
                                                 id="name"
                                                 name="name"
-                                                defaultValue={ languageName }
+                                                defaultValue={ currentItem.property_name }
                                                 className="form-control"
                                                 required
                                                 onChange={(e)=>{
@@ -235,14 +353,20 @@ const Events = () => {
                 </div>
             </section>
         </Modal.Body>
-        <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseDetails}>
-                Close
-            </Button>
-            <Button variant="primary" onClick={handleCloseDetails}>
-                Save Changes
-            </Button>
-        </Modal.Footer>
+        <ModalFooter
+            onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+            onDelete={onDelete}
+            currentFormState={currentFormState}
+            onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+            onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+            onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+            onCloseDetails={onCloseDetails}
+            onSubmit={onSubmit}
+            setCurrentFormState = {setCurrentFormState}
+            setCurrentItem = {setCurrentItem}
+            setBackupItem = {setBackupItem}
+            defaultItem = {defaultItem}
+        />
     </Modal>
     {/*  ============== EQUIPMENT DETAILS MODAL: END ============== */}
         </div>
