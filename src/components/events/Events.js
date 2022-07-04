@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ReactPaginate from "react-paginate";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
+import {resetInvalidInputField} from "../../js/CommonHelper";
 let tableData;
 let setData;
 
@@ -15,6 +16,16 @@ const Events = () => {
     const defaultItem = {
         "id": "",
         "property_name": ""
+    }
+    const defaultFormState = {
+        "showForm": false,
+        "showDeleteWarning": false,
+        "showItemChangedWarning": false,
+        "formHeader": "Edit languages",
+        "formDescription": "",
+        "formDataChangedWarning": "Data has been changed",
+        "formAddingDataMode": false,
+        "formSaveButtonDisabled": false
     }
 
     const [eventsList, setEvents] = useState([]);
@@ -27,7 +38,7 @@ const Events = () => {
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
     const [languageName, setLanguageName] = useState('');
-
+    const [currentFormState, setCurrentFormState] = useState(defaultFormState);
 
 
     const handleCloseDetails = () => {
@@ -203,8 +214,17 @@ const Events = () => {
                                                 type="text"
                                                 id="name"
                                                 name="name"
-                                                value={ languageName }
-                                                className="form-control" required
+                                                defaultValue={ languageName }
+                                                className="form-control"
+                                                required
+                                                onChange={(e)=>{
+                                                setCurrentItem({...currentItem,
+                                                property_name: e.target.value});
+                                                setCurrentFormState({...currentFormState, formSaveButtonDisable: false});
+                                                }}
+                                                onClick={()=>{
+                                                    resetInvalidInputField("name");
+                                                }}
                                             />
                                         </div>
                                     </div>
