@@ -26,6 +26,7 @@ import Button from "react-bootstrap/Button";
 // import {useRef} from "@types/react";
 // let tableData;
 let setData;
+let clickedId = 0;
 
 const Events = () => {
 
@@ -54,9 +55,9 @@ const Events = () => {
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
     const [languageName, setLanguageName] = useState('');
+    const [languageId, setLanguageId] = useState('');
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [backupItem, setBackupItem] = useState(defaultItem);
-
 
     // const handleCloseDetails = () => {
     //     setShowDetails(false);
@@ -104,6 +105,8 @@ const Events = () => {
     const onSubmit = (e) => {
         e.preventDefault()
 
+        console.log("idOnSubmit");
+        console.log(clickedId);
         const checkItem = {
             id: currentItem.id,
             property_name: currentItem.property_name
@@ -124,20 +127,29 @@ const Events = () => {
             return;
         }
 
+        console.log("dupa");
         if (currentFormState.formAddingDataMode) {
+            console.log("dupa1");
+            console.log("clickedId");
+            console.log(clickedId);
             const item = {
-                id: currentItem.id,
+                id: clickedId,
                 property_name: currentItem.property_name
             };
-            addItem(item, 'http://localhost:8080/admin/language', setItems, itemsList)
+            console.log(item);
+            addItem(item, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
+            console.log("dupa2");
+            console.log("clickedId");
+            console.log(clickedId);
             const item = {
-                id: currentItem.id,
+                id: clickedId,
                 property_name: currentItem.property_name
             };
 
-            updateItem(item, currentItem, `http://localhost:8080/admin/language/${item.id}`, setItems, itemsList)
+            console.log(item);
+            updateItem(item, currentItem, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
         }
     }
@@ -214,6 +226,12 @@ const Events = () => {
     console.log("hardEventsList");
     // console.log(hardEventsList);
 
+    function saveId(id) {
+        console.log("id");
+        console.log(id);
+        clickedId = id;
+    }
+
     return (
         <div id="layoutSidenav_content">
             <main>
@@ -253,6 +271,7 @@ const Events = () => {
                                                     setModalDescription('Here you can edit language details.');
                                                     setModalHeader('Edit');
                                                     setShowDetails(true);
+                                                    saveId(e.id);
                                                     setLanguageName(e.propertyName);
                                                 }}
                                             />
@@ -336,7 +355,10 @@ const Events = () => {
                                                 className="form-control"
                                                 required
                                                 onChange={(e)=>{
-                                                setCurrentItem({...currentItem,
+                                                setCurrentItem({
+                                                    ...currentItem,
+                                                    // id: 1,
+                                                    // id: e.currentTarget.id,
                                                 property_name: e.target.value});
                                                 setCurrentFormState({...currentFormState, formSaveButtonDisable: false});
                                                 }}
