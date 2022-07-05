@@ -131,11 +131,11 @@ const Events = () => {
 
         if (currentFormState.formAddingDataMode) {
             const item = {
-                id: clickedId,
+
                 propertyName: currentItem.propertyName
             };
             console.log(item);
-            addItem(item, `http://localhost:8080 /admin/language/${currentItem.id}`, setItems, itemsList)
+            addItem(item, `http://localhost:8080/admin/language`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
             const item = {
