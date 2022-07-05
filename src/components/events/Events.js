@@ -163,13 +163,21 @@ const Events = () => {
 
     const onDelete = (e) => {
         e.preventDefault()
+        console.log("onDelete: e");
+        console.log(e);
+        console.log("clickedId");
+        console.log(clickedId);
+        console.log("currentItem.id");
+        console.log(currentItem.id);
         deleteItem(currentItem.id, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
     }
     const onCloseDeleteWarningDialog = () => {
+        console.log("onCLoseDeleteDialog");
         clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        console.log("clearCurrentItem");
         setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
     };
 
@@ -298,6 +306,7 @@ const Events = () => {
                                             <Button variant="danger" id="delete-image"
                                                     onClick={()=>{
                                                         setShowDelete(true);
+                                                        saveId(e.id);
                                                     }}>
                                                 <FontAwesomeIcon icon={faTrashAlt}/>
                                             </Button>
@@ -310,6 +319,7 @@ const Events = () => {
                                                 aria-label="delete">
                                                 <DeleteForeverOutlinedIcon
                                                     onClick={()=> {
+                                                        saveId(e.id);
                                                         setShowDelete(true);
                                                     }}
                                                 />
@@ -349,13 +359,6 @@ const Events = () => {
             </footer>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
           <Modal show={showDelete}>
-            {/*<ModalDeleteWarning*/}
-            {/*    currentFormState={currentFormState}*/}
-            {/*    onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}*/}
-            {/*    onDelete={onDelete}*/}
-            {/*    deleteItemName="language"*/}
-            {/*/>*/}
-            {/*  show={currentFormState.showDeleteWarning}*/}
               onHide={onCloseDeleteWarningDialog}
               backdrop="static"
               keyboard={false}
