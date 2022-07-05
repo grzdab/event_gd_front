@@ -22,6 +22,10 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import Button from "react-bootstrap/Button";
+import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+
 // import axios from "axios";
 // import {useRef} from "@types/react";
 // let tableData;
@@ -50,6 +54,7 @@ const Events = () => {
     const [itemsList, setItems] = useState([]);
     const [error, setError] = useState('');
     const [showDetails, setShowDetails] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment');
     const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
@@ -158,7 +163,7 @@ const Events = () => {
 
     const onDelete = (e) => {
         e.preventDefault()
-        deleteItem(currentItem.id, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
+        deleteItem(currentItem.id, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
@@ -244,8 +249,11 @@ const Events = () => {
                     <div className="RAM_container">
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
-                                    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment.', 'Add new equipment');
+                                    clearCurrentItem(setCurrentItem,
+                                        setBackupItem, defaultItem);
+                                    onAddDataClick(currentFormState,
+                                        setCurrentFormState,
+                                        'Here you can add new language.', 'Add new language');
                                 }}>
                             Add new language</Button>
                     </div>
@@ -286,6 +294,27 @@ const Events = () => {
                                             />
                                         </Fab>
                                         </td>
+                                        <td>
+                                            <Button variant="danger" id="delete-image"
+                                                    onClick={()=>{
+                                                        setShowDelete(true);
+                                                    }}>
+                                                <FontAwesomeIcon icon={faTrashAlt}/>
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            <Fab
+                                                variant='extended'
+                                                size='small'
+                                                color='warning'
+                                                aria-label="delete">
+                                                <DeleteForeverOutlinedIcon
+                                                    onClick={()=> {
+                                                        setShowDelete(true);
+                                                    }}
+                                                />
+                                            </Fab>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -319,12 +348,41 @@ const Events = () => {
                 </div>
             </footer>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
-            <ModalDeleteWarning
-                currentFormState={currentFormState}
-                onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
-                onDelete={onDelete}
-                deleteItemName="equipment"
-            />
+          <Modal show={showDelete}>
+            {/*<ModalDeleteWarning*/}
+            {/*    currentFormState={currentFormState}*/}
+            {/*    onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}*/}
+            {/*    onDelete={onDelete}*/}
+            {/*    deleteItemName="language"*/}
+            {/*/>*/}
+            {/*  show={currentFormState.showDeleteWarning}*/}
+              onHide={onCloseDeleteWarningDialog}
+              backdrop="static"
+              keyboard={false}
+              >
+              <Modal.Header className="form-header-warning" closeButton closeVariant="white">
+                  <Modal.Title>Warning</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                  {currentFormState.warningDescription}
+              </Modal.Body>
+              <Modal.Footer>
+                  <div className="row" style={{width: "100%"}}>
+                      <div className="col-md-6">
+                          <div>
+                              <span className="warning-icon" id="warning-icon"><FontAwesomeIcon icon={faExclamationTriangle}/></span>
+                          </div>
+                      </div>
+                      <div className="col-md-6" style={{textAlign: "right"}}>
+                          <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>
+                              Cancel
+                          </Button>
+                          <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>
+
+                      </div>
+                  </div>
+              </Modal.Footer>
+          </Modal>
             {/*  ============== WARNING MODAL: END ============== */}
 
     {/*  ============== EQUIPMENT DETAILS MODAL: BEGIN ============== */}
