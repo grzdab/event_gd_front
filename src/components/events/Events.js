@@ -12,7 +12,7 @@ import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import {
     clearCurrentItem, compareData,
-    deleteItem, getItems,
+    deleteItem, getItems, onAddDataClick,
     onFormCancelCloseButtonClick,
     onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
     onFormConfirmDeleteButtonClick,
@@ -238,8 +238,17 @@ const Events = () => {
                 <div className="container-fluid px-4">
                     <h1 className="mt-4">Events</h1>
                     <ol className="breadcrumb mb-4">
+
                         <li className="breadcrumb-item active">Events list</li>
                     </ol>
+                    <div className="RAM_container">
+                        <Button className="RAM_button" id="addData"
+                                onClick={()=>{
+                                    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment.', 'Add new equipment');
+                                }}>
+                            Add new language</Button>
+                    </div>
                     <div className="card mb-4">
                         <div className="card-header">
                             <i className="fas fa-table me-1"></i>
@@ -347,24 +356,6 @@ const Events = () => {
                                         <div className="md-form mb-0">
                                             <label htmlFor="name" className="">Language <span
                                                 className="required">*</span></label>
-                                            {/*<input*/}
-                                            {/*    type="number"*/}
-                                            {/*    id="hiddenID"*/}
-                                            {/*    name="hiddenID"*/}
-                                            {/*    value={ clickedId }*/}
-                                            {/*    hidden={true}*/}
-                                            {/*    className="form-control"*/}
-                                            {/*    required*/}
-                                            {/*    onChange={(e)=>{*/}
-                                            {/*        setCurrentItem({clickedId});*/}
-                                            {/*        console.log("KLIKED ID");*/}
-                                            {/*        console.log(clickedId);*/}
-                                            {/*        setCurrentFormState({...currentFormState, formSaveButtonDisable: false});*/}
-                                            {/*    }}*/}
-                                            {/*    onClick={()=>{*/}
-                                            {/*        resetInvalidInputField("hiddenID");*/}
-                                            {/*    }}*/}
-                                            {/*/>*/}
                                             <input
                                                 type="text"
                                                 id="name"
