@@ -32,7 +32,7 @@ const Events = () => {
 
     const defaultItem = {
         "id": "",
-        "property_name": ""
+        "propertyName": ""
     }
     const defaultFormState = {
         "showForm": false,
@@ -55,7 +55,6 @@ const Events = () => {
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
     const [languageName, setLanguageName] = useState('');
-    const [languageId, setLanguageId] = useState('');
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [backupItem, setBackupItem] = useState(defaultItem);
 
@@ -109,12 +108,12 @@ const Events = () => {
         console.log(clickedId);
         const checkItem = {
             id: currentItem.id,
-            property_name: currentItem.property_name
+            propertyName: currentItem.propertyName
         };
         console.log(checkItem);
 
-        if (!currentItem.property_name || currentItem.id === 0) {
-            if(!currentItem.property_name) {
+        if (!currentItem.propertyName || currentItem.id === 0) {
+            if(!currentItem.propertyName) {
                 let nameInput = document.getElementById("name");
                 nameInput.classList.add("form-input-invalid");
                 nameInput.placeholder = "Language name cannot be empty"
@@ -134,22 +133,25 @@ const Events = () => {
             console.log(clickedId);
             const item = {
                 id: clickedId,
-                property_name: currentItem.property_name
+                propertyName: currentItem.propertyName
             };
             console.log(item);
-            addItem(item, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
+            addItem(item, `http://localhost:8080 /admin/language/${currentItem.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
             console.log("dupa2");
             console.log("clickedId");
             console.log(clickedId);
             const item = {
-                id: clickedId,
-                property_name: currentItem.property_name
+                id: currentItem.id,
+                propertyName: currentItem.propertyName
             };
-
+            console.log("item");
             console.log(item);
-            updateItem(item, currentItem, `http://localhost:8080/admin/language/${currentItem.id}`, setItems, itemsList)
+            console.log("currentItem");
+            console.log(currentItem);
+
+            updateItem(item, currentItem, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
         }
     }
@@ -221,10 +223,8 @@ const Events = () => {
     //
     // }, [])
 
-    console.log("EventsList");
+    console.log("itemsList");
     console.log(itemsList);
-    console.log("hardEventsList");
-    // console.log(hardEventsList);
 
     function saveId(id) {
         console.log("id");
@@ -347,19 +347,35 @@ const Events = () => {
                                         <div className="md-form mb-0">
                                             <label htmlFor="name" className="">Language <span
                                                 className="required">*</span></label>
+                                            {/*<input*/}
+                                            {/*    type="number"*/}
+                                            {/*    id="hiddenID"*/}
+                                            {/*    name="hiddenID"*/}
+                                            {/*    value={ clickedId }*/}
+                                            {/*    hidden={true}*/}
+                                            {/*    className="form-control"*/}
+                                            {/*    required*/}
+                                            {/*    onChange={(e)=>{*/}
+                                            {/*        setCurrentItem({clickedId});*/}
+                                            {/*        console.log("KLIKED ID");*/}
+                                            {/*        console.log(clickedId);*/}
+                                            {/*        setCurrentFormState({...currentFormState, formSaveButtonDisable: false});*/}
+                                            {/*    }}*/}
+                                            {/*    onClick={()=>{*/}
+                                            {/*        resetInvalidInputField("hiddenID");*/}
+                                            {/*    }}*/}
+                                            {/*/>*/}
                                             <input
                                                 type="text"
                                                 id="name"
                                                 name="name"
-                                                defaultValue={ currentItem.property_name }
+                                                defaultValue={ currentItem.propertyName }
                                                 className="form-control"
                                                 required
                                                 onChange={(e)=>{
                                                 setCurrentItem({
                                                     ...currentItem,
-                                                    // id: 1,
-                                                    // id: e.currentTarget.id,
-                                                property_name: e.target.value});
+                                                propertyName: e.target.value});
                                                 setCurrentFormState({...currentFormState, formSaveButtonDisable: false});
                                                 }}
                                                 onClick={()=>{
