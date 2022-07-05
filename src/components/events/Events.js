@@ -109,13 +109,11 @@ const Events = () => {
     const onSubmit = (e) => {
         e.preventDefault()
 
-        console.log("idOnSubmit");
-        console.log(clickedId);
+
         const checkItem = {
             id: currentItem.id,
             propertyName: currentItem.propertyName
         };
-        console.log(checkItem);
 
         if (!currentItem.propertyName || currentItem.id === 0) {
             if(!currentItem.propertyName) {
@@ -131,11 +129,7 @@ const Events = () => {
             return;
         }
 
-        console.log("dupa");
         if (currentFormState.formAddingDataMode) {
-            console.log("dupa1");
-            console.log("clickedId");
-            console.log(clickedId);
             const item = {
                 id: clickedId,
                 propertyName: currentItem.propertyName
@@ -144,18 +138,10 @@ const Events = () => {
             addItem(item, `http://localhost:8080 /admin/language/${currentItem.id}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
         } else {
-            console.log("dupa2");
-            console.log("clickedId");
-            console.log(clickedId);
             const item = {
                 id: currentItem.id,
                 propertyName: currentItem.propertyName
             };
-            console.log("item");
-            console.log(item);
-            console.log("currentItem");
-            console.log(currentItem);
-
             updateItem(item, currentItem, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
         }
@@ -163,21 +149,13 @@ const Events = () => {
 
     const onDelete = (e) => {
         e.preventDefault()
-        console.log("onDelete: e");
-        console.log(e);
-        console.log("clickedId");
-        console.log(clickedId);
-        console.log("currentItem.id");
-        console.log(currentItem.id);
         deleteItem(currentItem.id, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
     }
     const onCloseDeleteWarningDialog = () => {
-        console.log("onCLoseDeleteDialog");
         clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        console.log("clearCurrentItem");
         setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
     };
 
@@ -236,8 +214,6 @@ const Events = () => {
     //
     // }, [])
 
-    console.log("itemsList");
-    console.log(itemsList);
 
     function saveId(id) {
         console.log("id");
@@ -257,6 +233,9 @@ const Events = () => {
                     <div className="RAM_container">
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
+                                    setModalDescription('Here you can add new language details.');
+                                    setModalHeader('Add');
+                                    setShowDetails(true);
                                     clearCurrentItem(setCurrentItem,
                                         setBackupItem, defaultItem);
                                     onAddDataClick(currentFormState,
