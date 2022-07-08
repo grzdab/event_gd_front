@@ -29,7 +29,6 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 // import axios from "axios";
 // import {useRef} from "@types/react";
 // let tableData;
-let setData;
 let clickedId = 0;
 let pageNum;
 
@@ -63,6 +62,8 @@ const Events = () => {
     const [languageName, setLanguageName] = useState('');
     const [currentFormState, setCurrentFormState] = useState(defaultFormState);
     const [backupItem, setBackupItem] = useState(defaultItem);
+    const [data, setData] = useState([]);
+    const [sortType, setSortType] = useState('albums');
 
     // const handleCloseDetails = () => {
     //     setShowDetails(false);
@@ -182,6 +183,9 @@ const Events = () => {
     }, [currentItem])
 
     //przyhardkodowane pierwsze 10 rekiordów
+
+    //get na  noey endpoint ilość rekordów
+
     // useEffect(() => {
     //     getItems(`http://localhost:8080/admin/language/languagePage/1`, setItems)
     //         .then(() => setLoading(false))
@@ -202,6 +206,19 @@ const Events = () => {
         console.log(id);
         clickedId = id;
     }
+
+    useEffect(() => {
+        const sortArray = type => {
+            const types = {
+                up: 'up',
+                down: 'down',
+            };
+            const sortProperty = types[type];
+            const sorted = [...itemsList].sort((a, b) => b[sortProperty] - a[sortProperty]);
+            setData(sorted);
+        };
+        sortArray(sortType);
+    }, [sortType]);
 
     return (
         <div id="layoutSidenav_content">
@@ -236,7 +253,12 @@ const Events = () => {
                                 <thead>
                                 <tr>
                                     <th>id</th>
-                                    <th>Language
+                                    <th>
+                                        Language
+                                        <select onChange={ (e) => setSortType(e.target.value)}>
+                                            <option value="up">up</option>
+                                            <option value="down">down</option>
+                                        </select>
                                     </th>
                                     <th>Details</th>
                                 </tr>
