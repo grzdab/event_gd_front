@@ -1,6 +1,6 @@
 // import React, {Component, useMemo} from 'react';
 // import { useState, useEffect } from 'react';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
 import Pagination from "@mui/material/Pagination";
 import {Fab} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,6 +31,7 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 // let tableData;
 let setData;
 let clickedId = 0;
+let pageNum;
 
 const Events = () => {
 
@@ -180,39 +181,20 @@ const Events = () => {
         compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
     }, [currentItem])
 
-    useEffect(() => {
-        getItems(`http://localhost:8080/admin/language`, setItems)
-            .then(() => setLoading(false))
-            .catch(console.error);
-    }, [])
-    //     const getEvents = async(pageNum =1) => {
-    //         const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
-    //         const data = await response.json();
-    //         if (response.status === 404) {
-    //             setError('Equipment data not found');
-    //         }
-    //         setItems(data);
-    //         itemsList = data;
-    //         console.log(itemsList);
-    //         // console.log(itemsList);
-    //         setLoading(false);
-    //         // console.log(response);
-    //     }
-    //     getEvents().catch(console.error)
-    // }, []);
-
+    //przyhardkodowane pierwsze 10 rekiordów
     // useEffect(() => {
-    //     const getCategories = async () => {
-    //         const response = await fetch('http://localhost:5111/equipment-categories');
-    //         const data = await response.json();
-    //         if (response.status === 404) {
-    //             alert('Categories data not found');
-    //         }
-    //         setCategories(data);
-    //     }
-    //     getCategories().catch(console.error);
-    //
+    //     getItems(`http://localhost:8080/admin/language/languagePage/1`, setItems)
+    //         .then(() => setLoading(false))
+    //         .catch(console.error);
     // }, [])
+
+    const paginationSize = useMemo(() => {
+        useEffect(() => {
+            getItems(`http://localhost:8080/admin/language`, setItems)
+                .then(() => setLoading(false))
+                .catch(console.error);},[]);
+        return Math.ceil(itemsList.length / 10);
+    });
 
 
     function saveId(id) {
@@ -309,7 +291,7 @@ const Events = () => {
                                 </tbody>
                             </table>
                             <Pagination
-                                    count={10}
+                                    count={paginationSize}
                                     variant="outlined"
                                     color="primary"
                                     size="small"
