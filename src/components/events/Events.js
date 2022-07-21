@@ -38,7 +38,17 @@ const Events = () => {
         "id": "",
         "propertyName": ""
     }
-    const defaultFormState = {
+    const defaultAddModalDetails = {
+        "showForm": false,
+        "showDeleteWarning": false,
+        "showItemChangedWarning": false,
+        "formHeader": "Add languages",
+        "formDescription": "",
+        "formDataChangedWarning": "Data has been changed",
+        "formAddingDataMode": false,
+        "formSaveButtonDisabled": false
+    }
+    const defaultEditModalDetails = {
         "showForm": false,
         "showDeleteWarning": false,
         "showItemChangedWarning": false,
@@ -48,29 +58,29 @@ const Events = () => {
         "formAddingDataMode": false,
         "formSaveButtonDisabled": false
     }
-
     const [eventsList, setLanguages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [itemsList, setItems] = useState([]);
     const [error, setError] = useState('');
-    const [showDetails, setShowDetails] = useState(false);
-    const [showDelete, setShowDelete] = useState(false);
+    const [showEditModalDetails, setShowEditModalDetails] = useState(defaultEditModalDetails);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment');
     const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
     const [languageName, setLanguageName] = useState('');
-    const [currentFormState, setCurrentFormState] = useState(defaultFormState);
+    const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [data, setData] = useState([]);
     const [sortType, setSortType] = useState('albums');
 
+     // //
     // const handleCloseDetails = () => {
     //     setShowDetails(false);
     //     setCurrentItem(defaultItem);
     // };
     // const handleShowDetails = () => setShowDetails(true);
-    //
+
     // useEffect(() => {
     //     const getEvents = async(pageNum =1) => {
     //         const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
@@ -131,40 +141,40 @@ const Events = () => {
             return;
         }
 
-        if (currentFormState.formAddingDataMode) {
+        if (showAddModalDetails.formAddingDataMode) {
             const item = {
 
                 propertyName: currentItem.propertyName
             };
             console.log(item);
-            addItem(item, `http://localhost:8080/admin/language`, setItems, itemsList)
-                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));
+            addItem(item, `http://localhost:8081/admin/language`, setItems, itemsList)
+                .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
         } else {
             const item = {
                 id: currentItem.id,
                 propertyName: currentItem.propertyName
             };
-            updateItem(item, currentItem, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
-                .then(() => onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem));;
+            updateItem(item, currentItem, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
+                .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));;
         }
     }
 
     const onDelete = (e) => {
         e.preventDefault()
-        deleteItem(currentItem.id, `http://localhost:8080/admin/language/${clickedId}`, setItems, itemsList)
+        deleteItem(currentItem.id, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
             });
     }
     const onCloseDeleteWarningDialog = () => {
         clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        setCurrentFormState({...currentFormState, showDeleteWarning: false, showForm: false});
+        setShowAddModalDetails({...showAddModalDetails, showDeleteWarning: false, showForm: false});
     };
 
     const onCloseDetails = () => {
         if (compareObjects(backupItem, currentItem)) {
-            setCurrentFormState({
-                ...currentFormState,
+            setShowAddModalDetails({
+                ...showAddModalDetails,
                 showForm: false,
                 formSaveButtonDisabled: true,
                 formAddingDataMode: false
@@ -179,7 +189,7 @@ const Events = () => {
     };
 
     useEffect(() => {
-        compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
+        compareData(showAddModalDetails, setShowAddModalDetails, currentItem, backupItem)
     }, [currentItem])
 
     //przyhardkodowane pierwsze 10 rekiordów
@@ -194,7 +204,7 @@ const Events = () => {
 
     const paginationSize = useMemo(() => {
         useEffect(() => {
-            getItems(`http://localhost:8080/admin/language`, setItems)
+            getItems(`http://localhost:8081/admin/language`, setItems)
                 .then(() => setLoading(false))
                 .catch(console.error);},[]);
         return Math.ceil(itemsList.length / 10);
@@ -231,16 +241,18 @@ const Events = () => {
                     </ol>
                     <div className="RAM_container">
                         <Button className="RAM_button" id="addData"
-                                onClick={()=>{
-                                    setModalDescription('Here you can add new language details.');
-                                    setModalHeader('Add');
-                                    setShowDetails(true);
+                                onClick={()=> {
+                                    // setModalDescription('Here you can add new language details.');
+                                    // setModalHeader('Add');
+                                    // setShowAddModalDetails(true);
                                     clearCurrentItem(setCurrentItem,
                                         setBackupItem, defaultItem);
-                                    onAddDataClick(currentFormState,
-                                        setCurrentFormState,
+                                    onAddDataClick(showAddModalDetails,
+                                        setShowAddModalDetails,
                                         'Here you can add new language.', 'Add new language');
-                                }}>
+                                }
+                                }
+                        >
                             Add new language</Button>
                     </div>
                     <div className="card mb-4">
@@ -276,9 +288,14 @@ const Events = () => {
                                             aria-label="edit">
                                             <EditIcon
                                                 onClick={()=>{
-                                                    setModalDescription('Here you can edit language details.');
-                                                    setModalHeader('Edit');
-                                                    setShowDetails(true);
+                                                    // setModalDescription('Here you can edit language details.');
+                                                    // setModalHeader('Edit');
+                                                    // setShowEditModalDetails(true);
+                                                    clearCurrentItem(setCurrentItem,
+                                                        setBackupItem, defaultItem);
+                                                    onAddDataClick(showEditModalDetails,
+                                                        setShowEditModalDetails,
+                                                        'Here you can edit language.', 'Edit language');
                                                     saveId(e.id);
                                                     setLanguageName(e.propertyName);
                                                 }}
@@ -288,7 +305,7 @@ const Events = () => {
                                         <td>
                                             <Button variant="danger" id="delete-image"
                                                     onClick={()=>{
-                                                        setShowDelete(true);
+                                                        setShowDeleteModal(true);
                                                         saveId(e.id);
                                                     }}>
                                                 <FontAwesomeIcon icon={faTrashAlt}/>
@@ -303,7 +320,7 @@ const Events = () => {
                                                 <DeleteForeverOutlinedIcon
                                                     onClick={()=> {
                                                         saveId(e.id);
-                                                        setShowDelete(true);
+                                                        setShowDeleteModal(true);
                                                     }}
                                                 />
                                             </Fab>
@@ -341,16 +358,20 @@ const Events = () => {
                 </div>
             </footer>
             {/*  ============== WARNING MODAL: BEGIN ============== */}
-          <Modal show={showDelete}>
+          <Modal
+              show={showDeleteModal}
+              shouldCloseOnOverlayClick={false}
               onHide={onCloseDeleteWarningDialog}
-              backdrop="static"
-              keyboard={false}
+              currentFormState={showAddModalDetails}
+              onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
+              // backdrop="static"
+              // keyboard={false}
               >
               <Modal.Header className="form-header-warning" closeButton closeVariant="white">
                   <Modal.Title>Warning</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                  {currentFormState.warningDescription}
+                  {showAddModalDetails.warningDescription}
               </Modal.Body>
               <Modal.Footer>
                   <div className="row" style={{width: "100%"}}>
@@ -371,8 +392,9 @@ const Events = () => {
           </Modal>
             {/*  ============== WARNING MODAL: END ============== */}
 
-    {/*  ============== EQUIPMENT DETAILS MODAL: BEGIN ============== */}
-    <Modal show={showDetails}
+    {/*  ============== EQUIPMENT ADD DETAILS MODAL: BEGIN ============== */}
+    <Modal show={showAddModalDetails.showForm}
+           shouldCloseOnOverlayClick={false}
            size="xl"
            backdrop="static"
            keyboard={false}
@@ -385,9 +407,9 @@ const Events = () => {
                 <h2 className="h1-responsive font-weight-bold text-center my-2">{ modalHeader }</h2>
                 <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }</p>
                     <div>
-                        <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+                        <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ showAddModalDetails.formDataChangedWarning }</p>
                         <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
-                            restoreFormData(backupItem, setCurrentItem, currentFormState, setCurrentFormState)}}>
+                            restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)}}>
                             Restore
                         </Button>
                     </div>
@@ -411,7 +433,7 @@ const Events = () => {
                                                 setCurrentItem({
                                                     ...currentItem,
                                                 propertyName: e.target.value});
-                                                setCurrentFormState({...currentFormState, formSaveButtonDisable: false});
+                                                setShowAddModalDetails({...showAddModalDetails, formSaveButtonDisable: false});
                                                 }}
                                                 onClick={()=>{
                                                     resetInvalidInputField("name");
@@ -429,19 +451,92 @@ const Events = () => {
         <ModalFooter
             onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
             onDelete={onDelete}
-            currentFormState={currentFormState}
+            currentFormState={showAddModalDetails}
             onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
             onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
             onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
             onCloseDetails={onCloseDetails}
             onSubmit={onSubmit}
-            setCurrentFormState = {setCurrentFormState}
+            setCurrentFormState = {setShowAddModalDetails}
             setCurrentItem = {setCurrentItem}
             setBackupItem = {setBackupItem}
             defaultItem = {defaultItem}
         />
     </Modal>
-    {/*  ============== EQUIPMENT DETAILS MODAL: END ============== */}
+    {/*  ============== EQUIPMENT ADD DETAILS MODAL: END ============== */}
+
+    {/*  ============== EQUIPMENT EDIT DETAILS MODAL: BEGIN ============== */}
+    <Modal show={showEditModalDetails.showForm}
+           shouldCloseOnOverlayClick={false}
+           size="xl"
+           backdrop="static"
+           keyboard={false}
+           onHide={onCloseDetails}>
+                <Modal.Header className="form-header" closeButton closeVariant="white">
+                    <Modal.Title>Language details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <section className="mb-4">
+                        <h2 className="h1-responsive font-weight-bold text-center my-2">{ modalHeader }</h2>
+                        <p className="text-center w-responsive mx-auto mb-5 form_test">{ modalDescription }</p>
+                        <div>
+                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ showAddModalDetails.formDataChangedWarning }</p>
+                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
+                                restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)}}>
+                                Restore
+                            </Button>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12 mb-md-0 mb-5">
+                                <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
+                                    <div className="row">
+                                        <div className="col-md-8">
+                                            <div className="row">
+                                                <div className="md-form mb-0">
+                                                    <label htmlFor="name" className="">Language <span
+                                                        className="required">*</span></label>
+                                                    <input
+                                                        type="text"
+                                                        id="name"
+                                                        name="name"
+                                                        defaultValue={ languageName }
+                                                        className="form-control"
+                                                        required
+                                                        onChange={(e)=>{
+                                                            setCurrentItem({
+                                                                ...currentItem,
+                                                                propertyName: e.target.value});
+                                                            setShowEditModalDetails({...showEditModalDetails, formSaveButtonDisable: false});
+                                                        }}
+                                                        onClick={()=>{
+                                                            resetInvalidInputField("name");
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </Modal.Body>
+                <ModalFooter
+                    onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+                    onDelete={onDelete}
+                    currentFormState={showEditModalDetails}
+                    onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+                    onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+                    onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+                    onCloseDetails={onCloseDetails}
+                    onSubmit={onSubmit}
+                    setCurrentFormState = {setShowEditModalDetails}
+                    setCurrentItem = {setCurrentItem}
+                    setBackupItem = {setBackupItem}
+                    defaultItem = {defaultItem}
+                />
+            </Modal>
+            {/*  ============== EQUIPMENT EDIT DETAILS MODAL: END ============== */}
         </div>
     );
 }
