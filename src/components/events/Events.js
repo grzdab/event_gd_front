@@ -42,8 +42,6 @@ const Events = () => {
         "showForm": false,
         "showDeleteWarning": false,
         "showItemChangedWarning": false,
-        "formHeader": "Add languages",
-        "formDescription": "",
         "formDataChangedWarning": "Data has been changed",
         "formAddingDataMode": false,
         "formSaveButtonDisabled": false
@@ -52,8 +50,6 @@ const Events = () => {
         "showForm": false,
         "showDeleteWarning": false,
         "showItemChangedWarning": false,
-        "formHeader": "Edit languages",
-        "formDescription": "",
         "formDataChangedWarning": "Data has been changed",
         "formAddingDataMode": false,
         "formSaveButtonDisabled": false
@@ -173,19 +169,36 @@ const Events = () => {
 
     const onCloseDetails = () => {
         if (compareObjects(backupItem, currentItem)) {
+            if (setShowAddModalDetails){
             setShowAddModalDetails({
                 ...showAddModalDetails,
                 showForm: false,
                 formSaveButtonDisabled: true,
                 formAddingDataMode: false
             })
-            clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
         } else {
             let closeWithoutSaving = document.getElementById("confirm-close");
             let btnClose = document.getElementById("btn-close");
             closeWithoutSaving.classList.add("div-visible");
             btnClose.classList.add("btn-invisible");
-        }
+        }}
+    };
+
+    const onCloseEditDetails = () => {
+        if (compareObjects(backupItem, currentItem)) {
+            if (setShowEditModalDetails) {
+                setShowEditModalDetails({
+                    ...showAddModalDetails,
+                    showForm: false,
+                    formSaveButtonDisabled: true,
+                    formAddingDataMode: false
+                })
+            } else {
+                let closeWithoutSaving = document.getElementById("confirm-close");
+                let btnClose = document.getElementById("btn-close");
+                closeWithoutSaving.classList.add("div-visible");
+                btnClose.classList.add("btn-invisible");
+            }       }
     };
 
     useEffect(() => {
@@ -242,8 +255,8 @@ const Events = () => {
                     <div className="RAM_container">
                         <Button className="RAM_button" id="addData"
                                 onClick={()=> {
-                                    // setModalDescription('Here you can add new language details.');
-                                    // setModalHeader('Add');
+                                    setModalDescription('Here you can add new language details.');
+                                    setModalHeader('Add');
                                     // setShowAddModalDetails(true);
                                     clearCurrentItem(setCurrentItem,
                                         setBackupItem, defaultItem);
@@ -288,8 +301,8 @@ const Events = () => {
                                             aria-label="edit">
                                             <EditIcon
                                                 onClick={()=>{
-                                                    // setModalDescription('Here you can edit language details.');
-                                                    // setModalHeader('Edit');
+                                                    setModalDescription('Here you can edit language details.');
+                                                    setModalHeader('Edit');
                                                     // setShowEditModalDetails(true);
                                                     clearCurrentItem(setCurrentItem,
                                                         setBackupItem, defaultItem);
@@ -471,7 +484,7 @@ const Events = () => {
            size="xl"
            backdrop="static"
            keyboard={false}
-           onHide={onCloseDetails}>
+           onHide={onCloseEditDetails}>
                 <Modal.Header className="form-header" closeButton closeVariant="white">
                     <Modal.Title>Language details</Modal.Title>
                 </Modal.Header>
@@ -528,7 +541,7 @@ const Events = () => {
                     onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
                     onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
                     onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
-                    onCloseDetails={onCloseDetails}
+                    onCloseDetails={onCloseEditDetails}
                     onSubmit={onSubmit}
                     setCurrentFormState = {setShowEditModalDetails}
                     setCurrentItem = {setCurrentItem}
