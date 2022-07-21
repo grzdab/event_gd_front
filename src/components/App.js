@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './css/App.css';
-import './css/Form.css';
-import './css/datatables.css';
-import sidebarToggler from './js/scripts';
-import LayoutSidebarLeft from "./components/layout/LayoutSidebarLeft.js";
-import LayoutContent from "./components/layout/LayoutContent.js";
-import Header from "./components/layout/Header";
+import '../css/App.css';
+import '../css/Form.css';
+import '../css/datatables.css';
+import sidebarToggler from '../js/scripts';
+import LayoutSidebarLeft from "./layout/LayoutSidebarLeft.js";
+import LayoutContent from "./layout/LayoutContent.js";
+import Header from "./layout/Header";
 import { DataTable } from "simple-datatables";
-import Equipment from "./components/equipment/Equipment";
-import Clients from "./components/clients/Clients";
-import Events from "./components/events/Events";
-import Dashboard from "./components/dashboard/Dashboard";
-import EquipmentCategory from "./components/settings/EquipmentCategory";
-import ClientType from "./components/settings/ClientType";
+import Equipment from "./equipment/Equipment";
+import Clients from "./clients/Clients";
+import Events from "./events/Events";
+import Dashboard from "./dashboard/Dashboard";
+import EquipmentCategory from "./settings/EquipmentCategory";
+import ClientType from "./settings/ClientType";
 
 let simpleDataTable;
 
