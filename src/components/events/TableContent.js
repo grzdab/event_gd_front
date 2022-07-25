@@ -13,6 +13,7 @@ const TableContent = ({ caption, data, columns }) => {
                 <TableHead {...{ columns, handleSorting }} />
                 <TableBody {...{ columns, tableData }} />
             </table>
+
         </>
     );
 };

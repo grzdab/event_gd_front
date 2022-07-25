@@ -1,8 +1,5 @@
 import React, {useEffect, useState, useRef, useMemo} from 'react';
 import Pagination from "@mui/material/Pagination";
-import {Fab} from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-// import ReactPaginate from "react-paginate";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import ModalFooter from "../layout/ModalFooter";
@@ -18,11 +15,8 @@ import {
 } from "../helpers/ComponentHelper";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
-import * as root from "react-dom";
-import Table from "./Table";
+
 import TableContent from "./TableContent";
 
 let clickedId = 0;
