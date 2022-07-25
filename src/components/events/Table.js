@@ -1,4 +1,6 @@
 import React from 'react';
+import ButtonDelete from './ButtonDelete';
+import ButtonEdit from './ButtonEdit';
 
 const sortTypes = {
 
@@ -66,8 +68,8 @@ class Table extends React.Component {
                         <tr>
                             <td>{p.id}</td>
                             <td>{p.propertyName}</td>
-                            <td></td>
-                            <td></td>
+                            <td><ButtonEdit e={p}/></td>
+                            <td><ButtonDelete e={p}/></td>
                         </tr>
                     ))}
                     </tbody>
