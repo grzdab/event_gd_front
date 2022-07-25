@@ -1,5 +1,3 @@
-// import React, {Component, useMemo} from 'react';
-// import { useState, useEffect } from 'react';
 import React, {useEffect, useState, useRef, useMemo} from 'react';
 import Pagination from "@mui/material/Pagination";
 import {Fab} from "@mui/material";
@@ -8,7 +6,6 @@ import EditIcon from '@mui/icons-material/Edit';
 // import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import ModalFooter from "../layout/ModalFooter";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import {
     clearCurrentItem, compareData,
@@ -25,10 +22,8 @@ import Button from "react-bootstrap/Button";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import Table from "./Table";
 
-// import axios from "axios";
-// import {useRef} from "@types/react";
-// let tableData;
 let clickedId = 0;
 let pageNum;
 
@@ -68,7 +63,6 @@ const Events = () => {
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [data, setData] = useState([]);
-    const [sortType, setSortType] = useState('albums');
 
      // //
     // const handleCloseDetails = () => {
@@ -169,24 +163,23 @@ const Events = () => {
 
     const onCloseDetails = () => {
         if (compareObjects(backupItem, currentItem)) {
-            if (setShowAddModalDetails){
             setShowAddModalDetails({
                 ...showAddModalDetails,
                 showForm: false,
                 formSaveButtonDisabled: true,
                 formAddingDataMode: false
             })
-        } else {
-            let closeWithoutSaving = document.getElementById("confirm-close");
-            let btnClose = document.getElementById("btn-close");
-            closeWithoutSaving.classList.add("div-visible");
-            btnClose.classList.add("btn-invisible");
-        }}
+            // } else {
+            //     let closeWithoutSaving = document.getElementById("confirm-close");
+            //     let btnClose = document.getElementById("btn-close");
+            //     closeWithoutSaving.classList.add("div-visible");
+            //     btnClose.classList.add("btn-invisible");
+            // }
+        }
     };
 
     const onCloseEditDetails = () => {
         if (compareObjects(backupItem, currentItem)) {
-            if (setShowEditModalDetails) {
                 setShowEditModalDetails({
                     ...showAddModalDetails,
                     showForm: false,
@@ -198,7 +191,7 @@ const Events = () => {
                 let btnClose = document.getElementById("btn-close");
                 closeWithoutSaving.classList.add("div-visible");
                 btnClose.classList.add("btn-invisible");
-            }       }
+            }
     };
 
     useEffect(() => {
@@ -229,19 +222,6 @@ const Events = () => {
         console.log(id);
         clickedId = id;
     }
-
-    useEffect(() => {
-        const sortArray = type => {
-            const types = {
-                up: 'up',
-                down: 'down',
-            };
-            const sortProperty = types[type];
-            const sorted = [...itemsList].sort((a, b) => b[sortProperty] - a[sortProperty]);
-            setData(sorted);
-        };
-        sortArray(sortType);
-    }, [sortType]);
 
     return (
         <div id="layoutSidenav_content">
@@ -274,74 +254,77 @@ const Events = () => {
                             Language - Admin section
                         </div>
                         <div className="card-body">
-                            <table id="datatablesSimple">
-                                <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>
-                                        Language
-                                        <select onChange={ (e) => setSortType(e.target.value)}>
-                                            <option value="up">up</option>
-                                            <option value="down">down</option>
-                                        </select>
-                                    </th>
-                                    <th>Details</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {itemsList.map((e) => (
-                                    <tr key={e.id}>
-                                        <td>{e.id}</td>
-                                        <td>{e.propertyName}</td>
-                                        <td>
-                                            <Fab
-                                                variant='extended'
-                                                size="small"
-                                            color="inherit"
-                                            aria-label="edit">
-                                            <EditIcon
-                                                onClick={()=>{
-                                                    setModalDescription('Here you can edit language details.');
-                                                    setModalHeader('Edit');
-                                                    // setShowEditModalDetails(true);
-                                                    clearCurrentItem(setCurrentItem,
-                                                        setBackupItem, defaultItem);
-                                                    onAddDataClick(showEditModalDetails,
-                                                        setShowEditModalDetails,
-                                                        'Here you can edit language.', 'Edit language');
-                                                    saveId(e.id);
-                                                    setLanguageName(e.propertyName);
-                                                }}
-                                            />
-                                        </Fab>
-                                        </td>
-                                        <td>
-                                            <Button variant="danger" id="delete-image"
-                                                    onClick={()=>{
-                                                        setShowDeleteModal(true);
-                                                        saveId(e.id);
-                                                    }}>
-                                                <FontAwesomeIcon icon={faTrashAlt}/>
-                                            </Button>
-                                        </td>
-                                        <td>
-                                            <Fab
-                                                variant='extended'
-                                                size='small'
-                                                color='warning'
-                                                aria-label="delete">
-                                                <DeleteForeverOutlinedIcon
-                                                    onClick={()=> {
-                                                        saveId(e.id);
-                                                        setShowDeleteModal(true);
-                                                    }}
-                                                />
-                                            </Fab>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+
+                            <Table  data={itemsList}/>
+                            {/*<table id="datatablesSimple">*/}
+                            {/*    <thead>*/}
+                            {/*    <tr>*/}
+                            {/*        <th>id</th>*/}
+                            {/*        <th>*/}
+                            {/*            Language*/}
+                            {/*            <select onChange={ (e) => setSortType(e.target.value)}>*/}
+                            {/*                <option value="up">up</option>*/}
+                            {/*                <option value="down">down</option>*/}
+                            {/*            </select>*/}
+                            {/*        </th>*/}
+                            {/*        <th>Details</th>*/}
+                            {/*    </tr>*/}
+                            {/*    </thead>*/}
+                            {/*    <tbody>*/}
+                            {/*    {itemsList.map((e) => (*/}
+                            {/*        // <tr key={e.id}>*/}
+                            {/*        //     <td>{e.id}</td>*/}
+                            {/*        //     <td>{e.propertyName}</td>*/}
+                            {/*        <tr>*/}
+                            {/*            <td>*/}
+                            {/*                <Fab*/}
+                            {/*                    variant='extended'*/}
+                            {/*                    size="small"*/}
+                            {/*                    color="inherit"*/}
+                            {/*                    aria-label="edit">*/}
+                            {/*                    <EditIcon*/}
+                            {/*                        onClick={()=>{*/}
+                            {/*                            setModalDescription('Here you can edit language details.');*/}
+                            {/*                            setModalHeader('Edit');*/}
+                            {/*                            // setShowEditModalDetails(true);*/}
+                            {/*                            clearCurrentItem(setCurrentItem,*/}
+                            {/*                                setBackupItem, defaultItem);*/}
+                            {/*                            onAddDataClick(showEditModalDetails,*/}
+                            {/*                                setShowEditModalDetails,*/}
+                            {/*                                'Here you can edit language.', 'Edit language');*/}
+                            {/*                            saveId(e.id);*/}
+                            {/*                            setLanguageName(e.propertyName);*/}
+                            {/*                        }}*/}
+                            {/*                    />*/}
+                            {/*                </Fab>*/}
+                            {/*            </td>*/}
+                            {/*            <td>*/}
+                            {/*                <Button variant="danger" id="delete-image"*/}
+                            {/*                        onClick={()=>{*/}
+                            {/*                            setShowDeleteModal(true);*/}
+                            {/*                            saveId(e.id);*/}
+                            {/*                        }}>*/}
+                            {/*                    <FontAwesomeIcon icon={faTrashAlt}/>*/}
+                            {/*                </Button>*/}
+                            {/*            </td>*/}
+                            {/*            <td>*/}
+                            {/*                <Fab*/}
+                            {/*                    variant='extended'*/}
+                            {/*                    size='small'*/}
+                            {/*                    color='warning'*/}
+                            {/*                    aria-label="delete">*/}
+                            {/*                    <DeleteForeverOutlinedIcon*/}
+                            {/*                        onClick={()=> {*/}
+                            {/*                            saveId(e.id);*/}
+                            {/*                            setShowDeleteModal(true);*/}
+                            {/*                        }}*/}
+                            {/*                    />*/}
+                            {/*                </Fab>*/}
+                            {/*            </td>*/}
+                            {/*        </tr>*/}
+                            {/*    ))}*/}
+                            {/*    </tbody>*/}
+                            {/*</table>*/}
                             <Pagination
                                     count={paginationSize}
                                     variant="outlined"
