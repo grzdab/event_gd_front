@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
 
 const TableHead = ({ columns, handleSorting }) => {
-
     const [sortField, setSortField] = useState("");
     const [order, setOrder] = useState("asc");
 
     const handleSortingChange = (accessor) => {
-        console.log(accessor);
         const sortOrder =
             accessor === sortField && order === "asc" ? "desc" : "asc";
         setSortField(accessor);
@@ -29,7 +27,7 @@ const TableHead = ({ columns, handleSorting }) => {
                     <th
                         key={accessor}
                         onClick={sortable ? () => handleSortingChange(accessor) : null}
-                        className = {cl}
+                        className={cl}
                     >
                         {label}
                     </th>
@@ -39,6 +37,5 @@ const TableHead = ({ columns, handleSorting }) => {
         </thead>
     );
 };
-
 
 export default TableHead;

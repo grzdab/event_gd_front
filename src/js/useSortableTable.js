@@ -30,7 +30,7 @@ export const useSortableTable = (data, columns) => {
 
     const handleSorting = (sortField, sortOrder) => {
         if (sortField) {
-            const sorted = [...tableData].sort((a, b) => {
+            const sorted = [...data].sort((a, b) => {
                 if (a[sortField] === null) return 1;
                 if (b[sortField] === null) return -1;
                 if (a[sortField] === null && b[sortField] === null) return 0;

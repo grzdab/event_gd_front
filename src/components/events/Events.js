@@ -25,7 +25,6 @@ import * as root from "react-dom";
 import Table from "./Table";
 import TableContent from "./TableContent";
 
-
 let clickedId = 0;
 let currentSort = 'default';
 let pageNum;
@@ -66,6 +65,10 @@ const Events = () => {
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
 
+    const columns = [
+        { label: "Id", accessor: "id" , sortable: true},
+        { label: "Language", accessor: "propertyName", sortable: true},
+    ];
 
     // //
     // const handleCloseDetails = () => {
@@ -213,6 +216,8 @@ const Events = () => {
     // }, [])
 
     const paginationSize = useMemo(() => {
+        console.log("WOW");
+        console.log(itemsList);
         useEffect(() => {
             getItems(`http://localhost:8081/admin/language`, setItems)
                 .then(() => setLoading(false))
@@ -228,53 +233,7 @@ const Events = () => {
         clickedId = id;
     }
 
-    // //sorting
-    // const sortTypes = {
-    //
-    //     up: {
-    //         class: 'sort-up',
-    //         fn: (a, b) => a.id - b.id
-    //     },
-    //     down: {
-    //         class: 'sort-down',
-    //         fn: (a, b) => b.id - a.id
-    //     },
-    //     default: {
-    //         class: 'sort',
-    //         fn: (a, b) => a
-    //     }
-    // };
-    // // declaring the default state
-    // const state = {
-    //     currentSort: 'default'
-    // };
-    //
-    // // method called every time the sort button is clicked
-    // // it will change the currentSort value to the next one
-    //
-    // const onSortChange = () => {
-    //     console.log("zmiana sortowania");
-    //     // const {currentSort} = this.state;
-    //     let nextSort;
-    //
-    //     if (currentSort === 'down') nextSort = 'up';
-    //     else if (currentSort === 'up') nextSort = 'default';
-    //     else if (currentSort === 'default') nextSort = 'down';
-    //
-    //     console.log("current sort");
-    //     console.log(currentSort);
-    //     console.log("sortType");
-    //     console.log(sortTypes);
-    //     // this.setState({
-    //     //     currentSort: nextSort
-    //     // });
-    // };
-    // // root.render(currentSort);
-
-    return (
-        // <Table data={itemsList} />
-        // )
-
+     return (
         <div id="layoutSidenav_content">
             <main>
                 <div className="container-fluid px-4">
@@ -305,9 +264,12 @@ const Events = () => {
                             Language - Admin section
                         </div>
                         <div className="card-body">
-
                             <div>
-                                <TableContent/>
+                                <TableContent
+                                    // caption="LoremIpsum"
+                                    data={ itemsList }
+                                    columns={ columns }
+                                />
                             </div>
                             //
                             // {/*<Table  data={itemsList}/>*/}

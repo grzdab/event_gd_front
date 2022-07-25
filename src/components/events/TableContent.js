@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
-import { useSortableTable } from "../../js/useSortableTable";
+import {useSortableTable} from "../../js/useSortableTable";
 
 const TableContent = ({ caption, data, columns }) => {
     const [tableData, handleSorting] = useSortableTable(data, columns);
