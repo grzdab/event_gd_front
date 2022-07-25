@@ -21,14 +21,18 @@ const TableContent = () => {
         { label: "Language", accessor: "propertyName" },
     ];
 
+    const handleSorting = (sortField, sortOrder) => {
+        console.log(sortField, sortOrder)
+    };
+
     return (
         <>
             <table className="table">
                 <caption>
                     Developers currently enrolled in this course, column headers are sortable.
                 </caption>
-                <TableHead columns={columns} />
-                <TableBody columns={columns} tableData={tableData} />
+                <TableHead {...{ columns, handleSorting }} />
+                <TableBody {...{ columns, tableData }} />
             </table>
         </>
     );
