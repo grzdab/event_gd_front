@@ -17,6 +17,7 @@ const ButtonDelete = ({
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+
         return (
             <Button variant="danger" id="delete-image"
                     onClick={() => {

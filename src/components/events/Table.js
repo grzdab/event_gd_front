@@ -1,6 +1,7 @@
 import React from 'react';
 import ButtonDelete from './ButtonDelete';
 import ButtonEdit from './ButtonEdit';
+import ModalEdit from "./ModalEdit";
 
 const sortTypes = {
 
@@ -50,33 +51,31 @@ class Table extends React.Component {
         const { currentSort } = this.state;
 
         return (
-            data.length > 0 && (
-                <table className='text-left'>
-                    <thead>
+            <table className='text-left'>
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>
+                        Language
+                        <button onClick={this.onSortChange}>
+                            <i className={`fas fa-${sortTypes[currentSort].class}`} />
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {[...data].sort(sortTypes[currentSort].fn).map(p => (
                     <tr>
-                        <th>Id</th>
-                        <th>
-                            Language
-                            <button onClick={this.onSortChange}>
-                                <i className={`fas fa-${sortTypes[currentSort].class}`} />
-                            </button>
-                        </th>
+                        <td>{p.id}</td>
+                        <td>{p.propertyName}</td>
+                        <td><ButtonEdit e={p}/></td>
+                        <td><ButtonDelete e={p}/></td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {[...data].sort(sortTypes[currentSort].fn).map(p => (
-                        <tr>
-                            <td>{p.id}</td>
-                            <td>{p.propertyName}</td>
-                            <td><ButtonEdit e={p}/></td>
-                            <td><ButtonDelete e={p}/></td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            )
-        );
+                ))}
+                </tbody>
+        <ModalEdit />
+            </table>
+    );
     }
 }
-
 export default Table

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Fab} from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
-import {useState} from "react";
+import ModalEdit from './ModalEdit';
 
 let clickedId = 0;
 
@@ -36,10 +36,9 @@ const ButtonEdit =({e}) => {
     const [modalDescription, setModalDescription] = useState('');
     const [languageName, setLanguageName] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
-
     const [backupItem, setBackupItem] = useState(defaultItem);
-
     const [showEditModalDetails, setShowEditModalDetails] = useState(defaultEditModalDetails);
+
     function saveId(id) {
         console.log("id");
         console.log(id);
@@ -47,7 +46,8 @@ const ButtonEdit =({e}) => {
     }
 
     return(
-<Fab
+        <div>
+            <Fab
                     variant='extended'
                     size="small"
                     color="inherit"
@@ -66,8 +66,13 @@ const ButtonEdit =({e}) => {
                             setLanguageName(e.propertyName);
                         }}
                     />
-                </Fab>
-    )
+            </Fab>
+
+            {/*  ============== EQUIPMENT EDIT DETAILS MODAL: BEGIN ============== */}
+            <ModalEdit />
+            {/*  ============== EQUIPMENT EDIT DETAILS MODAL: END ============== */}
+        </div>
+        )
 };
 
 export default ButtonEdit;
