@@ -1,36 +1,15 @@
 import React, { useState } from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
-import {useEffect, useMemo} from "react";
-import {getItems} from "../helpers/ComponentHelper";
+import { useSortableTable } from "../../js/useSortableTable";
 
-const TableContent = () => {
-    const [tableData, setTableData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    const paginationSize = useMemo(() => {
-        useEffect(() => {
-            getItems(`http://localhost:8081/admin/language`, setTableData)
-                .then(() => setLoading(false))
-                .catch(console.error);
-        }, []);
-    });
-
-    const columns = [
-        { label: "Id", accessor: "id" },
-        { label: "Language", accessor: "propertyName" },
-    ];
-
-    const handleSorting = (sortField, sortOrder) => {
-        console.log(sortField, sortOrder)
-    };
+const TableContent = ({ caption, data, columns }) => {
+    const [tableData, handleSorting] = useSortableTable(data, columns);
 
     return (
         <>
             <table className="table">
-                <caption>
-                    Developers currently enrolled in this course, column headers are sortable.
-                </caption>
+                <caption>{caption}</caption>
                 <TableHead {...{ columns, handleSorting }} />
                 <TableBody {...{ columns, tableData }} />
             </table>
