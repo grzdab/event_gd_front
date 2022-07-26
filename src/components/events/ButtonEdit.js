@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import Button from "react-bootstrap/Button";
 import {
-    deleteItem,
+    deleteItem, getItems,
     onFormCancelCloseButtonClick,
     onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
     onFormConfirmDeleteButtonClick, onSaveAndClose,
@@ -52,6 +52,7 @@ const ButtonEdit =({e}) => {
     const [modalDescription, setModalDescription] = useState('');
     const [languageName, setLanguageName] = useState('');
     const [itemsList, setItems] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     function saveId(id) {
         console.log("id");
@@ -103,9 +104,16 @@ const ButtonEdit =({e}) => {
                 id: currentItem.id,
                 propertyName: currentItem.propertyName,
             };
+            console.log("raz");
             updateItem(item, currentItem, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
+            console.log("dwa");
             onSaveAndClose(setShowEditModalDetails, showEditModalDetails, setCurrentItem, setBackupItem, defaultItem);
+            console.log("trzy");
+            getItems(`http://localhost:8081/admin/language`, setItems)
+                .then(() => setLoading(false))
+                .catch(console.error);
+            console.log("cztery");
         }
     }
 

@@ -60,7 +60,7 @@ const Events = () => {
     const [backupItem, setBackupItem] = useState(defaultItem);
 
     const columns = [
-        {label: "Id", accessor: "id", sortable: true},
+        {label: "Id", accessor: "id", sortable: true, sortbyOrder: "asc"},
         {label: "Language", accessor: "propertyName", sortable: true},
     ];
 
@@ -214,6 +214,8 @@ const Events = () => {
                 .then(() => setLoading(false))
                 .catch(console.error);
         }, []);
+        // console.log("itemList");
+        // console.log(itemsList);
         return Math.ceil(itemsList.length / 10);
     });
 
