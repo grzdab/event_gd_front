@@ -136,7 +136,6 @@ const Events = () => {
 
                 propertyName: currentItem.propertyName
             };
-            console.log(item);
             addItem(item, `http://localhost:8081/admin/language`, setItems, itemsList)
                 .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
         } else {
@@ -210,8 +209,6 @@ const Events = () => {
     // }, [])
 
     const paginationSize = useMemo(() => {
-        console.log("WOW");
-        console.log(itemsList);
         useEffect(() => {
             getItems(`http://localhost:8081/admin/language`, setItems)
                 .then(() => setLoading(false))

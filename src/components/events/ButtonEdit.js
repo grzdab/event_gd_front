@@ -9,8 +9,8 @@ import {
     deleteItem,
     onFormCancelCloseButtonClick,
     onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
-    onFormConfirmDeleteButtonClick,
-    restoreFormData
+    onFormConfirmDeleteButtonClick, onSaveAndClose,
+    restoreFormData, updateItem
 } from "../helpers/ComponentHelper";
 import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import ModalFooter from "../layout/ModalFooter";
@@ -31,7 +31,6 @@ export const onAddDataClick = (currentFormState, setCurrentFormState, formDescri
         showForm: true})
 }
 const ButtonEdit =({e}) => {
-    console.log("editButton");
 
     const defaultItem = {
         "id": "",
@@ -86,8 +85,28 @@ const ButtonEdit =({e}) => {
     //     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
     //     setShowAddModalDetails({...showAddModalDetails, showDeleteWarning: false, showForm: false});
     // };
-    const onSubmit = (e) => {
+
+
+
+    const onSaveItem = (e) => {
         e.preventDefault()
+
+        if(!currentItem.propertyName) {
+            let nameInput = document.getElementById("name");
+            nameInput.classList.add("form-input-invalid");
+            nameInput.placeholder = "Equipment name cannot be empty"
+            return;
+        }
+
+        if (showEditModalDetails.formAddingDataMode) {
+            const item = {
+                id: currentItem.id,
+                propertyName: currentItem.propertyName,
+            };
+            updateItem(item, currentItem, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
+                .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
+            onSaveAndClose(setShowEditModalDetails, showEditModalDetails, setCurrentItem, setBackupItem, defaultItem);
+        }
     }
 
     return(
@@ -177,7 +196,7 @@ const ButtonEdit =({e}) => {
                     onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
                     onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
                     onCloseDetails={onCloseEditDetails}
-                    onSubmit={onSubmit}
+                    onSubmit={onSaveItem}
                     setCurrentFormState = {setShowEditModalDetails}
                     setCurrentItem = {setCurrentItem}
                     setBackupItem = {setBackupItem}

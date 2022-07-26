@@ -18,7 +18,6 @@ function saveId(id) {
     clickedId = id;
 }
 const ButtonDelete = ({e}) => {
-    console.log("DELETEbutton");
 
     const defaultItem = {
         "id": "",
