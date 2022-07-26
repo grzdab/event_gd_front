@@ -60,8 +60,8 @@ const Events = () => {
     const [backupItem, setBackupItem] = useState(defaultItem);
 
     const columns = [
-        { label: "Id", accessor: "id" , sortable: true},
-        { label: "Language", accessor: "propertyName", sortable: true},
+        {label: "Id", accessor: "id", sortable: true},
+        {label: "Language", accessor: "propertyName", sortable: true},
     ];
 
     // //
@@ -227,7 +227,7 @@ const Events = () => {
         clickedId = id;
     }
 
-     return (
+    return (
         <div id="layoutSidenav_content">
             <main>
                 <div className="container-fluid px-4">
@@ -261,12 +261,12 @@ const Events = () => {
                             <div>
                                 <TableContent
                                     // caption="LoremIpsum"
-                                    data={ itemsList }
-                                    columns={ columns }
+                                    data={itemsList}
+                                    columns={columns}
                                 />
                             </div>
-                            //
-                            // {/*<Table  data={itemsList}/>*/}
+
+                             {/*<Table  data={itemsList}/>*/}
                             {/*//                     <table id="datatablesSimple">*/}
                             {/*//                         <thead>*/}
                             {/*//                         <tr>*/}
@@ -365,204 +365,89 @@ const Events = () => {
                     </div>
                 </div>
             </footer>
-            // {/*  ============== WARNING MODAL: BEGIN ============== */}
-            <Modal
-                show={showDeleteModal}
-                shouldCloseOnOverlayClick={false}
-                onHide={onCloseDeleteWarningDialog}
-                currentFormState={showAddModalDetails}
-                onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
-                // backdrop="static"
-                // keyboard={false}
-            >
-                <Modal.Header className="form-header-warning" closeButton closeVariant="white">
-                    <Modal.Title>Warning</Modal.Title>
+
+            {/*  ============== EQUIPMENT ADD DETAILS MODAL: BEGIN ============== */}
+            <Modal show={showAddModalDetails.showForm}
+                   shouldCloseOnOverlayClick={false}
+                   size="xl"
+                   backdrop="static"
+                   keyboard={false}
+                   onHide={onCloseDetails}>
+                <Modal.Header className="form-header" closeButton closeVariant="white">
+                    <Modal.Title>Language details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {showAddModalDetails.warningDescription}
-                    // </Modal.Body>
-                // <Modal.Footer>
-                // <div className="row" style={{width: "100%"}}>
-                // <div className="col-md-6">
-                // <div>
-                // <span className="warning-icon" id="warning-icon"><FontAwesomeIcon
-                icon={faExclamationTriangle}/></span>
-                // </div>
-                // </div>
-                // <div className="col-md-6" style={{textAlign: "right"}}>
-                // <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>
-                // Cancel
-                // </Button>
-                // <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>
-                //
-                // </div>
-                // </div>
-                // </Modal.Footer>
-                // </Modal>
-            // {/*  ============== WARNING MODAL: END ============== */}
-            //
-            // {/*  ============== EQUIPMENT ADD DETAILS MODAL: BEGIN ============== */}
-            // <Modal show={showAddModalDetails.showForm}
-                      shouldCloseOnOverlayClick={false}
-                      size="xl"
-                      backdrop="static"
-                      keyboard={false}
-                      onHide={onCloseDetails}>
-            // <Modal.Header className="form-header" closeButton closeVariant="white">
-            // <Modal.Title>Language details</Modal.Title>
-            // </Modal.Header>
-            // <Modal.Body>
-            // <section className="mb-4">
-            // <h2 className="h1-responsive font-weight-bold text-center my-2">{modalHeader}</h2>
-            // <p className="text-center w-responsive mx-auto mb-5 form_test">{modalDescription}</p>
-            // <div>
-            // <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed">
-            // <FontAwesomeIcon
-            icon={faExclamationCircle}/>&nbsp;{showAddModalDetails.formDataChangedWarning}
-            // </p>
-            // <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
-            restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)
-        }}>
-            // Restore
-            // </Button>
-            // </div>
-            // <div className="row">
-            // <div className="col-md-12 mb-md-0 mb-5">
-            // <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
-            // <div className="row">
-            // <div className="col-md-8">
-            // <div className="row">
-            // <div className="md-form mb-0">
-            // <label htmlFor="name" className="">Language <span
-            className="required">*</span></label>
-            // <input
-            type="text"
-            id="name"
-            name="name"
-            defaultValue={currentItem.propertyName}
-            className="form-control"
-            required
-            onChange={(e) => {
-                setCurrentItem({
-                    ...currentItem,
-                    propertyName: e.target.value
-                });
-                setShowAddModalDetails({
-                    ...showAddModalDetails,
-                    formSaveButtonDisable: false
-                });
-            }}
-            onClick={() => {
-                resetInvalidInputField("name");
-            }}
-        />
-            // </div>
-            // </div>
-            // </div>
-            // </div>
-            // </form>
-            // </div>
-            // </div>
-            // </section>
-            // </Modal.Body>
-            // <ModalFooter
-            onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
-            onDelete={onDelete}
-            currentFormState={showAddModalDetails}
-            onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
-            onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
-            onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
-            onCloseDetails={onCloseDetails}
-            onSubmit={onSubmit}
-            setCurrentFormState={setShowAddModalDetails}
-            setCurrentItem={setCurrentItem}
-            setBackupItem={setBackupItem}
-            defaultItem={defaultItem}
-        />
-            // </Modal>
-            // {/*  ============== EQUIPMENT ADD DETAILS MODAL: END ============== */}
-            //
-            // {/*/!*  ============== EQUIPMENT EDIT DETAILS MODAL: BEGIN ============== *!/*/}
-            {/*    <Modal show={showEditModalDetails.showForm}*/}
-            {/*//            shouldCloseOnOverlayClick={false}*/}
-            {/*//            size="xl"*/}
-            {/*//            backdrop="static"*/}
-            {/*//            keyboard={false}*/}
-            {/*//            onHide={onCloseEditDetails}>*/}
-            {/*//         <Modal.Header className="form-header" closeButton closeVariant="white">*/}
-            {/*//             <Modal.Title>Language details</Modal.Title>*/}
-            {/*//         </Modal.Header>*/}
-            {/*//         <Modal.Body>*/}
-            {/*//             <section className="mb-4">*/}
-            {/*//                 <h2 className="h1-responsive font-weight-bold text-center my-2">{modalHeader}</h2>*/}
-            {/*//                 <p className="text-center w-responsive mx-auto mb-5 form_test">{modalDescription}</p>*/}
-            {/*//                 <div>*/}
-            {/*//                     <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed">*/}
-            {/*//                         <FontAwesomeIcon*/}
-            {/*//                             icon={faExclamationCircle}/>&nbsp;{showAddModalDetails.formDataChangedWarning}*/}
-            {/*//                     </p>*/}
-            {/*//                     <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {*/}
-            {/*//                         restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)*/}
-            {/*//                     }}>*/}
-            {/*//                         Restore*/}
-            {/*//                     </Button>*/}
-            {/*//                 </div>*/}
-            {/*//                 <div className="row">*/}
-            {/*//                     <div className="col-md-12 mb-md-0 mb-5">*/}
-            {/*//                         <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">*/}
-            {/*//                             <div className="row">*/}
-            {/*//                                 <div className="col-md-8">*/}
-            {/*//                                     <div className="row">*/}
-            {/*//                                         <div className="md-form mb-0">*/}
-            {/*//                                             <label htmlFor="name" className="">Language <span*/}
-            {/*//                                                 className="required">*</span></label>*/}
-            {/*//                                             <input*/}
-            {/*//                                                 type="text"*/}
-            {/*//                                                 id="name"*/}
-            {/*//                                                 name="name"*/}
-            {/*//                                                 defaultValue={languageName}*/}
-            {/*//                                                 className="form-control"*/}
-            {/*//                                                 required*/}
-            {/*//                                                 onChange={(e) => {*/}
-            {/*//                                                     setCurrentItem({*/}
-            {/*//                                                         ...currentItem,*/}
-            {/*//                                                         propertyName: e.target.value*/}
-            {/*//                                                     });*/}
-            {/*//                                                     setShowEditModalDetails({*/}
-            {/*//                                                         ...showEditModalDetails,*/}
-            {/*//                                                         formSaveButtonDisable: false*/}
-            {/*//                                                     });*/}
-            {/*//                                                 }}*/}
-            {/*//                                                 onClick={() => {*/}
-            {/*//                                                     resetInvalidInputField("name");*/}
-            {/*//                                                 }}*/}
-            {/*//                                             />*/}
-            {/*//                                         </div>*/}
-            {/*//                                     </div>*/}
-            {/*//                                 </div>*/}
-            {/*//                             </div>*/}
-            {/*//                         </form>*/}
-            {/*//                     </div>*/}
-            {/*//                 </div>*/}
-            {/*//             </section>*/}
-            {/*//         </Modal.Body>*/}
-            {/*//         <ModalFooter*/}
-            {/*//             onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}*/}
-            {/*//             onDelete={onDelete}*/}
-            {/*//             currentFormState={showEditModalDetails}*/}
-            {/*//             onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}*/}
-            {/*//             onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}*/}
-            {/*//             onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}*/}
-            {/*//             onCloseDetails={onCloseEditDetails}*/}
-            {/*//             onSubmit={onSubmit}*/}
-            {/*//             setCurrentFormState={setShowEditModalDetails}*/}
-            {/*//             setCurrentItem={setCurrentItem}*/}
-            {/*//             setBackupItem={setBackupItem}*/}
-            {/*//             defaultItem={defaultItem}*/}
-            {/*//         />*/}
-            {/*//     </Modal>*/}
-            {/*//     /!*        /!*  ============== EQUIPMENT EDIT DETAILS MODAL: END ============== *!/*!/*/}
-            // </div>
+                    <section className="mb-4">
+                        <h2 className="h1-responsive font-weight-bold text-center my-2">{modalHeader}</h2>
+                        <p className="text-center w-responsive mx-auto mb-5 form_test">{modalDescription}</p>
+                        <div>
+                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed">
+                                <FontAwesomeIcon
+                                    icon={faExclamationCircle}/>&nbsp;{showAddModalDetails.formDataChangedWarning}
+                            </p>
+                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
+                                restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)
+                            }}>
+                                Restore
+                            </Button>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12 mb-md-0 mb-5">
+                                <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
+                                    <div className="row">
+                                        <div className="col-md-8">
+                                            <div className="row">
+                                                <div className="md-form mb-0">
+                                                    <label htmlFor="name" className="">Language <span
+                                                        className="required">*</span></label>
+                                                    <input
+                                                        type="text"
+                                                        id="name"
+                                                        name="name"
+                                                        defaultValue={currentItem.propertyName}
+                                                        className="form-control"
+                                                        required
+                                                        onChange={(e) => {
+                                                            setCurrentItem({
+                                                                ...currentItem,
+                                                                propertyName: e.target.value
+                                                            });
+                                                            setShowAddModalDetails({
+                                                                ...showAddModalDetails,
+                                                                formSaveButtonDisable: false
+                                                            });
+                                                        }}
+                                                        onClick={() => {
+                                                            resetInvalidInputField("name");
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </Modal.Body>
+                <ModalFooter
+                    onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+                    onDelete={onDelete}
+                    currentFormState={showAddModalDetails}
+                    onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+                    onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+                    onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+                    onCloseDetails={onCloseDetails}
+                    onSubmit={onSubmit}
+                    setCurrentFormState={setShowAddModalDetails}
+                    setCurrentItem={setCurrentItem}
+                    setBackupItem={setBackupItem}
+                    defaultItem={defaultItem}
+                />
+            </Modal>
+            {/*  ============== EQUIPMENT ADD DETAILS MODAL: END ============== */}
+
+        </div>
     );
 }
 export default Events;

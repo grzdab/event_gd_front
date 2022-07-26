@@ -1,5 +1,6 @@
 import React from 'react';
 import ButtonEdit from './ButtonEdit';
+import ButtonDelete from './ButtonDelete';
 
 const TableBody = ({tableData, columns}) => {
 
@@ -10,6 +11,9 @@ const TableBody = ({tableData, columns}) => {
                 <tr key={data.id}>
                     <td>
                         <ButtonEdit e={data} />
+                    </td>
+                    <td>
+                        <ButtonDelete e={data}/>
                     </td>
                     {columns.map(({accessor}) => {
                         const tData = data[accessor] ? data[accessor] : "——";
