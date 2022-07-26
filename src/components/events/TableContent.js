@@ -7,16 +7,6 @@ const TableContent = ({ caption, data, columns }) => {
 console.log("RENDER");
     const [tableData, handleSorting] = useSortableTable(data, columns);
 
-//     useEffect(() =>{
-//       const tableData = data;
-//     // console.log("tableData - not sortable");
-//     // console.log(tableData);
-//
-// },[tableData, handleSorting, data, columns]);
-
-    // console.log("tableData");
-    // console.log(tableData);
-
     return (
         <>
             <table className="table">

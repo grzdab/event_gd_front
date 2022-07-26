@@ -257,13 +257,14 @@ const Events = () => {
                             Language - Admin section
                         </div>
                         <div className="card-body">
-                            <div>
+                            {itemsList.length ?
+                                (<div className="table_container">
                                 <TableContent
                                     // caption="LoremIpsum"
                                     data={itemsList}
                                     columns={columns}
                                 />
-                            </div>
+                            </div>) : (<h5>Loading data</h5> )}
 
                              {/*<Table  data={itemsList}/>*/}
                             {/*//                     <table id="datatablesSimple">*/}
