@@ -21,6 +21,9 @@ import './css/App.css';
 import './css/Form.css';
 import './css/datatables.css';
 import TableTest from "./components/app/tables_test/TableTest";
+import EquipmentStatus from "./components/app/admin/EquipmentStatus";
+import EquipmentOwnership from "./components/app/admin/EquipmentOwnership";
+import EquipmentBookingStatus from "./components/app/admin/EquipmentBookingStatus";
 
 
 const ROLES = {
@@ -50,6 +53,9 @@ function Site() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="test" element={<TableTest />} />
             <Route path="equipment" element={<Equipment />} />
+            <Route path="equipment-status" element={<EquipmentStatus />} />
+            <Route path="equipment-ownership" element={<EquipmentOwnership />} />
+            <Route path="equipment-booking-status" element={<EquipmentBookingStatus />} />
             <Route path="linkpage" element={<LinkPage />} />
             <Route path="equipment-category" element={<EquipmentCategory />} />
           </Route>

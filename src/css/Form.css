@@ -149,3 +149,11 @@
 .warning-icon.div-visible {
     display: block;
 }
+
+.status1 {
+    background-color: limegreen !important;
+}
+
+.status2 {
+    background-color: red !important;
+}

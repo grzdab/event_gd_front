@@ -34,10 +34,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const Equipment = ({appSettings, setAppSettings}) => {
 
+// style={{backgroundColor: `rgb(${color[0]},${color[1]},${color[2]})`}}
+
+
   const imagesFolder = "/images/";
   const equipmentImagePlaceholder = "/images/placeholder.jpg"
   const equipmentUrl ="/equipment";
   const equipmentCategoryUrl="/equipment-category";
+  const equipmentStatusUrl="/equipment-status";
+  const equipmentOwnershipUrl="/equipment-ownership";
+  const equipmentBookingStatusUrl="/equipment-booking-status";
+
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,11 +62,20 @@ const Equipment = ({appSettings, setAppSettings}) => {
     staffNeeded: 0,
     minimumAge: 0,
     maxParticipants: 0,
-    category: {
+    equipmentCategory: {
       id: 0
     },
     inUse: false,
-    photoURI:""
+    photoURI:"",
+    equipmentStatus: {
+      id: 0
+    },
+    bookingStatus: {
+      id: 0
+    },
+    equipmentOwnership: {
+      id: 0
+    }
   }
 
   const defaultFormState = {
@@ -82,6 +98,11 @@ const Equipment = ({appSettings, setAppSettings}) => {
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
   const [categoriesList, setCategories] = useState([]);
+  const [statusesList, setStatuses] = useState([]);
+  const [ownershipTypesList, setOwnershipTypes] = useState([]);
+  const [bookingStatusesList, setBookingStatuses] = useState([]);
+  const [bookingStatusColor, setBookingStatusColor] = useState([]);
+
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
   const fileInput = useRef(null);
@@ -127,17 +148,32 @@ const Equipment = ({appSettings, setAppSettings}) => {
 
   const onSaveItem = async (e) => {
     e.preventDefault()
-    if (!currentItem.name || currentItem.equipmentCategoryId === 0) {
+    if (!currentItem.name ||
+      currentItem.equipmentCategory.id === 0 ||
+      currentItem.equipmentStatus.id === 0 ||
+      currentItem.equipmentOwnership.id === 0) {
+
       if(!currentItem.name) {
         let nameInput = document.getElementById("name");
         nameInput.classList.add("form-input-invalid");
         nameInput.placeholder = "Equipment name cannot be empty"
       }
 
-      if(currentItem.equipmentCategoryId === 0) {
+      if(currentItem.equipmentCategory.id === 0) {
         let categoryOption = document.getElementById("equipmentCategoryId");
         categoryOption.classList.add("form-input-invalid");
       }
+
+      if(currentItem.equipmentStatus.id === 0) {
+        let statusOption = document.getElementById("equipmentStatusId");
+        statusOption.classList.add("form-input-invalid");
+      }
+
+      if(currentItem.equipmentOwnership.id === 0) {
+        let ownershipOption = document.getElementById("equipmentOwnershipId");
+        ownershipOption.classList.add("form-input-invalid");
+      }
+
       return;
     }
 
@@ -154,11 +190,14 @@ const Equipment = ({appSettings, setAppSettings}) => {
       staffNeeded: currentItem.staffNeeded,
       minimumAge: currentItem.minimumAge,
       maxParticipants: currentItem.maxParticipants,
-      category: {
-        id: currentItem.category.id
+      equipmentCategory: {
+        id: currentItem.equipmentCategory.id
       },
-      status: {
-        id: 0
+      equipmentStatus: {
+        id: currentItem.equipmentStatus.id
+      },
+      equipmentOwnership: {
+        id: currentItem.equipmentOwnership.id
       },
       bookingStatus: {
         id: 0
@@ -220,7 +259,10 @@ const Equipment = ({appSettings, setAppSettings}) => {
   // }, [allowDelete])
 
   useEffect(() => {
-    compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
+    compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
+    if (currentItem.id !== 0) {
+      setBookingStatusColor(bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color);
+    }
   }, [currentItem])
 
 
@@ -250,6 +292,58 @@ const Equipment = ({appSettings, setAppSettings}) => {
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
+    const getStatuses = async () => {
+      try {
+        const response = await axiosPrivate.get(equipmentStatusUrl, {
+          signal: controller.signal
+        });
+        if (response.status === 404) {
+          alert('Equipment statuses data not found');
+        }
+        isMounted && setStatuses(response.data);
+        setLoading(false);
+      } catch (err) {
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    }
+    getStatuses();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+  }, [])
+
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const getOwnershipTypes = async () => {
+      try {
+        const response = await axiosPrivate.get(equipmentOwnershipUrl, {
+          signal: controller.signal
+        });
+        if (response.status === 404) {
+          alert('Equipment ownership types data not found');
+        }
+        isMounted && setOwnershipTypes(response.data);
+        setLoading(false);
+      } catch (err) {
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    }
+
+    getOwnershipTypes();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+  }, [])
+
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
     const getCategories = async () => {
       try {
         const response = await axiosPrivate.get(equipmentCategoryUrl, {
@@ -266,13 +360,39 @@ const Equipment = ({appSettings, setAppSettings}) => {
     }
 
     getCategories();
-
     return () => {
       isMounted = false;
       controller.abort();
     }
-
   }, [])
+
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getCBookingStatuses = async () => {
+      try {
+        const response = await axiosPrivate.get(equipmentBookingStatusUrl, {
+          signal: controller.signal
+        });
+        if (response.status === 404) {
+          alert('Booking statuses data not found');
+        }
+        isMounted && setBookingStatuses(response.data);
+        setLoading(false);
+      } catch (err) {
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    }
+
+    getCBookingStatuses();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+  }, [])
+
 
 
   return (
@@ -320,6 +440,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                           <td>{e.name}</td>
                           <td>{e.notes}</td>
                           <td><button className='btn btn-outline-info' onClick={() => {
+                            console.log(bookingStatusesList);
                             setCurrentItem(e);
                             setBackupItem(e);
                             onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment data");
@@ -408,12 +529,12 @@ const Equipment = ({appSettings, setAppSettings}) => {
                                     id="equipmentCategoryId"
                                     name="equipmentCategoryId"
                                     defaultValue = {
-                                      currentItem.category.id > 0
-                                        ? currentItem.category.id
+                                      currentItem.equipmentCategory.id > 0
+                                        ? currentItem.equipmentCategory.id
                                         : ""
                                     }
                                     onChange={(e) => {
-                                      setCurrentItem({...currentItem, category: {...currentItem.category, id: parseInt(e.target.value)} })
+                                      setCurrentItem({...currentItem, equipmentCategory: {...currentItem.equipmentCategory, id: parseInt(e.target.value)} })
                                       setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
                                     }}
                                     onClick={() => {
@@ -486,7 +607,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                     </div>
                   </div>
                   <div className="row margin-top">
-                    <div className="col-md-7">
+                    <div className="col-md-5">
                       <div className="md-form mb-0">
                         <div className="card">
                           <div className="card-header">
@@ -592,7 +713,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                         </div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                       <div className="card">
                         <div className="card-header">
                           Conditions
@@ -668,24 +789,72 @@ const Equipment = ({appSettings, setAppSettings}) => {
                               />
                             </div>
                             <label htmlFor="ownership" className="">Ownership</label>
-                            <input
-                              type="text"
-                              id="ownership"
-                              name="ownership"
-                              value="TODO"
-                              className="form-control"
-                              readOnly
-                            />
+                            <select className="form-select"
+                                    aria-label="Ownership type"
+                                    id="equipmentOwnershipId"
+                                    name="equipmentOwnershipId"
+                                    defaultValue = {
+                                      currentItem.equipmentOwnership.id > 0
+                                        ? currentItem.equipmentOwnership.id
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      setCurrentItem({...currentItem, equipmentOwnership: {...currentItem.equipmentOwnership, id: parseInt(e.target.value)} })
+                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                    }}
+                                    onClick={() => {
+                                      resetInvalidInputField("equipmentOwnershipId");
+                                    }}
+                            >
+                              <option disabled value=""> -- Select Ownership -- </option>
+                              {ownershipTypesList.map((e) => (
+                                <option key={e.id} value={e.id}>{e.name}</option>))
+                              }
+                            </select>
                             <label htmlFor="status" className="">Status</label>
-                            <input
-                              type="text"
-                              id="status"
-                              name="status"
-                              value="TODO"
-                              className="form-control"
-                              readOnly
-                            />
+                            <select className="form-select"
+                                    aria-label="Equipment status"
+                                    id="equipmentStatusId"
+                                    name="equipmentStatusId"
+                                    defaultValue = {
+                                      currentItem.equipmentStatus.id > 0
+                                        ? currentItem.equipmentStatus.id
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      setCurrentItem({...currentItem, equipmentStatus: {...currentItem.equipmentStatus, id: parseInt(e.target.value)} })
+                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                    }}
+                                    onClick={() => {
+                                      resetInvalidInputField("equipmentStatusId");
+                                    }}
+                            >
+                              <option disabled value=""> -- Select Status -- </option>
+                              {statusesList.map((e) => (
+                                <option key={e.id} value={e.id}>{e.name}</option>))
+                              }
+                            </select>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="card">
+                        <div className="card-header">
+                          Booking status
+                        </div>
+                        <div className="card-body">
+                          <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
+                          <input
+                            disabled
+                            type="text"
+                            id="equipmentBookingStatusId"
+                            name="equipmentBookingStatusId"
+                            value={currentItem.bookingStatus.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
+                            className="form-control"
+                            readOnly
+                            style={{backgroundColor: `rgb(${bookingStatusColor[0]},${bookingStatusColor[1]},${bookingStatusColor[2]})`}}
+                          />
                         </div>
                       </div>
                     </div>

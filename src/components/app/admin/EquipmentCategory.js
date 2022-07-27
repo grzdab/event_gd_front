@@ -213,7 +213,7 @@ const EquipmentCategory = () => {
                         <Button className="RAM_button" id="addData"
                                 onClick={()=>{
                                     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment category.', 'Add new equipment category');
+                                    onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment categories.', 'Add new equipment category');
                                 }}>
                             Add new equipment category</Button>
                     </div>

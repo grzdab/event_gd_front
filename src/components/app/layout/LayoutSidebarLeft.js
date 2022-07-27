@@ -60,6 +60,24 @@ const LayoutSidebarLeft = () => {
                   Equipment categories
                 </a> : ""
               }
+              {auth?.roles?.includes("ROLE_ADMIN") ?
+                <a className="nav-link" href="/app/equipment-status">
+                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                  Equipment statuses
+                </a> : ""
+              }
+              {auth?.roles?.includes("ROLE_ADMIN") ?
+                <a className="nav-link" href="/app/equipment-ownership">
+                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                  Equipment ownership types
+                </a> : ""
+              }
+              {auth?.roles?.includes("ROLE_ADMIN") ?
+                <a className="nav-link" href="/app/equipment-booking-status">
+                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                  Equipment booking statuses
+                </a> : ""
+              }
               <a className="nav-link" href="/app/client-type">
                 <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                 Client types
