@@ -1,0 +1,15 @@
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+.errmsg {
+    /*background-color: lightpink;*/
+    color: red !important;
+    font-weight: bold !important;
+    padding: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}

@@ -1,15 +1,26 @@
-import Login from './components/Login';
-import App from './components/App';
-import Layout from './components/Layout';
+import Register from './auth/Register';
+import Login from './auth/Login';
+import App from './components/app/App';
+import Layout from './components/app/layout/Layout';
+import Editor from './components/Editor';
+import Admin from './components/Admin';
 import Missing from './components/Missing';
 import Unauthorized from './components/Unauthorized';
-import RequireAuth from './components/RequireAuth';
+import Lounge from './components/Lounge';
+import LinkPage from './components/LinkPage';
+import RequireAuth from './auth/RequireAuth';
 import { Routes, Route } from 'react-router-dom';
-import React from 'react';
-import PersistLogin from "./components/PersistLogin";
-import Homepage from "./components/Homepage";
-import Dashboard from "./components/dashboard/Dashboard";
+import PersistLogin from "./auth/PersistLogin";
+import Homepage from "./components/homepage/Homepage";
+import Dashboard from "./components/app/dashboard/Dashboard";
 import Test from "./components/Test";
+import EquipmentCategory from "./components/app/admin/EquipmentCategory";
+import Equipment from "./components/app/equipment/Equipment";
+
+import './css/App.css';
+import './css/Form.css';
+import './css/datatables.css';
+import TableTest from "./components/app/tables_test/TableTest";
 
 
 const ROLES = {
@@ -25,6 +36,8 @@ function Site() {
       <Route path="/" element={<Layout />}>
       {/* public routes */}
       <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="linkpage" element={<LinkPage />} />
       {/*<Route path="homepage" element={<Homepage />} />*/}
       <Route path="unauthorized" element={<Unauthorized />} />
 
@@ -35,8 +48,28 @@ function Site() {
         <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}>
           <Route path="/app" element={<App />} >
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="test" element={<Test />} />
+            <Route path="test" element={<TableTest />} />
+            <Route path="equipment" element={<Equipment />} />
+            <Route path="linkpage" element={<LinkPage />} />
+            <Route path="equipment-category" element={<EquipmentCategory />} />
           </Route>
+        </Route>
+
+        {/*<Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}>*/}
+        {/*  <Route path="app/dashboard" element={<Dashboard />} />*/}
+        {/*</Route>*/}
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.Manager]} />}>
+          <Route path="app/editor" element={<Editor />} />
+        </Route>
+
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+          <Route path="app/admin" element={<Admin />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin]} />}>
+          <Route path="app/lounge" element={<Lounge />} />
         </Route>
       </Route>
         {/* catch all */}
