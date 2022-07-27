@@ -57,27 +57,30 @@ const ButtonDelete = ({e}) => {
             .then(() => {window.location.reload(false)});
     }
     const onCloseDeleteWarningDialog = () => {
-        // clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        // setShowDeleteModalDetails(
-        //     {
-        //         ...showDeleteModalDetails,
-        //         showDeleteWarning: false,
-        //         showForm: false
-        //     });
-        if (compareObjects(backupItem, currentItem)) {
-            setShowDeleteModalDetails(
-                {
-                    ...showDeleteModalDetails,
-                    showForm: false,
-                    formSaveButtonDisabled: true,
-                    formAddingDataMode: false
-                })
-        } else {
-            let closeWithoutSaving = document.getElementById("confirm-close");
-            let btnClose = document.getElementById("btn-close");
-            closeWithoutSaving.classList.add("div-visible");
-            btnClose.classList.add("btn-invisible");
-        }
+        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        setShowDeleteModalDetails(
+            {
+                ...showDeleteModalDetails,
+                showDeleteWarning: false,
+                showForm: false
+            });
+        window.location.reload(false);
+
+        // if (compareObjects(backupItem, currentItem)) {
+        //     setShowDeleteModalDetails(
+        //         {
+        //             ...showDeleteModalDetails,
+        //             showForm: false,
+        //             formSaveButtonDisabled: true,
+        //             formAddingDataMode: false
+        //         })
+        // } else {
+        //     let closeWithoutSaving = document.getElementById("confirm-close");
+        //     let btnClose = document.getElementById("btn-close");
+        //     closeWithoutSaving.classList.add("div-visible");
+        //     btnClose.classList.add("btn-invisible");
+        //     window.location.reload(false)
+        // }
     };
 
         return (

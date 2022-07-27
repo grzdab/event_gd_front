@@ -44,8 +44,8 @@ const ModalFooter = ({
                 <Button variant="secondary" id="btn-close" onClick={onCloseDetails}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={onSubmit} disabled={currentFormState.formSaveButtonDisabled} >
-                    <button onClick={() => window.location.reload(false)}>Save & Close</button>
+                <Button variant="primary" onClick={(e) => {onSubmit(e); window.location.reload(false)}} disabled={currentFormState.formSaveButtonDisabled} >
+                Save&Close
                 </Button>
             </Modal.Footer>
         );
