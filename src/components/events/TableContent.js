@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
 import {useSortableTable} from "../../js/useSortableTable";

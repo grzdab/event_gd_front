@@ -4,13 +4,21 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Modal} from "react-bootstrap";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
-import {clearCurrentItem, deleteItem} from "../helpers/ComponentHelper";
+import {
+    clearCurrentItem,
+    deleteItem,
+    onFormCancelCloseButtonClick,
+    onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick, onFormConfirmDeleteButtonClick
+} from "../helpers/ComponentHelper";
 import {Fab} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ModalFooter from "../layout/ModalFooter";
+import ModalDeleteWarning from "../layout/ModalDeleteWarning";
+import ModalDeleteFooter from "../layout/ModalDeleteFooter";
+import {compareObjects} from "../../js/CommonHelper";
 
 
 let clickedId = 0;
-
 
 function saveId(id) {
     console.log("id");
@@ -23,20 +31,21 @@ const ButtonDelete = ({e}) => {
         "id": "",
         "propertyName": ""
     }
-
-    const defaultAddModalDetails = {
+    const defaultDeleteModalDetails = {
         "showForm": false,
         "showDeleteWarning": true,
         "showItemChangedWarning": false,
-        "formDataChangedWarning": "Data has been changed",
+        "formDataChangedWarning": "Data has been deleted",
         "formAddingDataMode": false,
         "formSaveButtonDisabled": false
     }
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemsList, setItems] = useState([]);
    const [currentItem, setCurrentItem] = useState(defaultItem);
-      const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
+      const [showDeleteModalDetails, setShowDeleteModalDetails] = useState(defaultDeleteModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
+    const [modalDescription, setModalDescription] = useState('');
+    const [languageName, setLanguageName] = useState('');
 
 
     const onDelete = (e) => {
@@ -44,11 +53,31 @@ const ButtonDelete = ({e}) => {
         deleteItem(currentItem.id, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
             .then(() => {
                 onCloseDeleteWarningDialog();
-            });
+            })
+            .then(() => {window.location.reload(false)});
     }
     const onCloseDeleteWarningDialog = () => {
-        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        setShowAddModalDetails({...showAddModalDetails, showDeleteWarning: false, showForm: false});
+        // clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+        // setShowDeleteModalDetails(
+        //     {
+        //         ...showDeleteModalDetails,
+        //         showDeleteWarning: false,
+        //         showForm: false
+        //     });
+        if (compareObjects(backupItem, currentItem)) {
+            setShowDeleteModalDetails(
+                {
+                    ...showDeleteModalDetails,
+                    showForm: false,
+                    formSaveButtonDisabled: true,
+                    formAddingDataMode: false
+                })
+        } else {
+            let closeWithoutSaving = document.getElementById("confirm-close");
+            let btnClose = document.getElementById("btn-close");
+            closeWithoutSaving.classList.add("div-visible");
+            btnClose.classList.add("btn-invisible");
+        }
     };
 
         return (
@@ -67,45 +96,60 @@ const ButtonDelete = ({e}) => {
                     aria-label="delete">
                     <DeleteForeverIcon
                         onClick={() => {
+                            setModalDescription(`Are you sure to delete ${e.propertyName}?`)
                             saveId(e.id);
                             setShowDeleteModal(true);
+                            setLanguageName(e.propertyName);
                         }}
                     />
                 </Fab>
                 <div>
                     {/*  ============== WARNING MODAL: BEGIN ============== */}
-                    <Modal
+                   <Modal
                         show={showDeleteModal}
                         shouldCloseOnOverlayClick={false}
                         onHide={onCloseDeleteWarningDialog}
-                        currentFormState={showAddModalDetails}
+                        currentFormState={showDeleteModalDetails}
                         onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
                         // backdrop="static"
                         // keyboard={false}
                     >
-                        <Modal.Header className="form-header-warning" closeButton closeVariant="white">
+                        <Modal.Header className="form-header-warning">
                             <Modal.Title>Warning</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {showAddModalDetails.warningDescription}
+                            {showDeleteModalDetails.warningDescription}
+                            { modalDescription }
                         </Modal.Body>
-                        <Modal.Footer>
-                            <div className="row" style={{width: "100%"}}>
-                                <div className="col-md-6">
-                                    <div>
-                 <span className="warning-icon" id="warning-icon"><FontAwesomeIcon
-                     icon={faExclamationTriangle}/></span>
-                                    </div>
-                                </div>
-                                <div className="col-md-6" style={{textAlign: "right"}}>
-                                    <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>
-                                        Cancel
-                                    </Button>
-                                    <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>
+                        <ModalDeleteFooter
+                            onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
+                            onDelete={onDelete}
+                            currentFormState={showDeleteModalDetails}
+                            onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+                            onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+                            onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
+                            onCloseDetails={onCloseDeleteWarningDialog}
+                            setCurrentFormState = {setShowDeleteModalDetails}
+                            setCurrentItem = {setCurrentItem}
+                            setBackupItem = {setBackupItem}
+                            defaultItem = {defaultItem}
+                        >
+                 {/*           <div className="row" style={{width: "100%"}}>*/}
+                 {/*               <div className="col-md-6">*/}
+                 {/*                   <div>*/}
+                 {/*<span className="warning-icon" id="warning-icon"><FontAwesomeIcon*/}
+                 {/*    icon={faExclamationTriangle}/></span>*/}
+                 {/*                   </div>*/}
+                 {/*               </div>*/}
+                 {/*               <div className="col-md-6" style={{textAlign: "right"}}>*/}
+                 {/*                   <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>*/}
+                 {/*                       Cancel*/}
+                 {/*                   </Button>*/}
+                 {/*                   <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>*/}
 
-                                </div>
-                            </div>
-                        </Modal.Footer>
+                 {/*               </div>*/}
+                 {/*           </div>*/}
+                        </ModalDeleteFooter>
                     </Modal>
                     {/*  ============== WARNING MODAL: END ============== */}
                 </div>

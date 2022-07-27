@@ -62,7 +62,8 @@ const ButtonEdit =({e}) => {
 
     const onCloseEditDetails = () => {
         if (compareObjects(backupItem, currentItem)) {
-            setShowEditModalDetails({
+            setShowEditModalDetails(
+                {
                 ...showAddModalDetails,
                 showForm: false,
                 formSaveButtonDisabled: true,
@@ -104,16 +105,12 @@ const ButtonEdit =({e}) => {
                 id: currentItem.id,
                 propertyName: currentItem.propertyName,
             };
-            console.log("raz");
             updateItem(item, currentItem, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
                 .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
-            console.log("dwa");
             onSaveAndClose(setShowEditModalDetails, showEditModalDetails, setCurrentItem, setBackupItem, defaultItem);
-            console.log("trzy");
             getItems(`http://localhost:8081/admin/language`, setItems)
                 .then(() => setLoading(false))
                 .catch(console.error);
-            console.log("cztery");
         }
     }
 

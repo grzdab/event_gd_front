@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 
@@ -44,8 +44,8 @@ const ModalFooter = ({
                 <Button variant="secondary" id="btn-close" onClick={onCloseDetails}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={onSubmit} disabled={currentFormState.formSaveButtonDisabled}>
-                    Save & Close
+                <Button variant="primary" onClick={onSubmit} disabled={currentFormState.formSaveButtonDisabled} >
+                    <button onClick={() => window.location.reload(false)}>Save & Close</button>
                 </Button>
             </Modal.Footer>
         );
