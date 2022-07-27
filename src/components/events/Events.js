@@ -16,6 +16,8 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import TableContent from "../layout/TableContent";
+import PaginationEvent from "./PaginationEvent";
+import axios from "axios";
 
 let clickedId = 0;
 let currentSort = 'default';
@@ -56,6 +58,7 @@ const Events = () => {
     const [languageName, setLanguageName] = useState('');
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
+    const [countItems, setCountItems] = useState(0);
 
     const columns = [
         {label: "Id", accessor: "id", sortable: true, sortbyOrder: "asc"},
@@ -86,7 +89,7 @@ const Events = () => {
     //     getEvents().catch(console.error)
     // }, []);
     //
-    // const paginationSize = useMemo(() => {
+    // const getPaginationItems = useMemo(() => {
     //     return Math.ceil(itemsList.length / 10);
     // });
     //
@@ -206,15 +209,28 @@ const Events = () => {
     //         .catch(console.error);
     // }, [])
 
-    const paginationSize = useMemo(() => {
+    const getPaginationItems = useMemo(() => {
         useEffect(() => {
-            getItems(`http://localhost:8081/admin/language`, setItems)
+            console.log(`current page ${currentPage}`);
+            console.log(`set current page ${setCurrentPage}`);
+            getItems(`http://localhost:8081/admin/language/languagePage=${currentPage}`, setItems)
                 .then(() => setLoading(false))
                 .catch(console.error);
         }, []);
-        // console.log("itemList");
-        // console.log(itemsList);
-        return Math.ceil(itemsList.length / 10);
+        console.log("itemList");
+        console.log(itemsList);
+        // return Math.ceil(itemsList.length / 10);
+    });
+
+    const getCountItems = useMemo(() => {
+        useEffect(() => {
+            getItems(`http://localhost:8081/admin/language/count`, setCountItems)
+                .then(() => setLoading(false))
+                .catch(console.error);
+        }, []);
+        console.log("getCount");
+        console.log(countItems);
+        // return Math.ceil(countItems.length / 10);
     });
 
 
@@ -244,9 +260,7 @@ const Events = () => {
                                     onAddDataClick(showAddModalDetails,
                                         setShowAddModalDetails,
                                         'Here you can add new language.', 'Add new language');
-                                }
-                                }
-                        >
+                                }} >
                             Add new language</Button>
                     </div>
                     <div className="card mb-4">
@@ -264,17 +278,18 @@ const Events = () => {
                                 />
                             </div>) : (<h5>Loading data</h5> )}
                             <Pagination
-                                count={paginationSize}
+                                count={Math.ceil(countItems / 10)}
                                 variant="outlined"
                                 color="primary"
                                 size="small"
-                                // totalItems={itemsList.length}
-                                // itemPerPage={10}
-                                // onChangePage={(pageNum) => setCurrentPage(pageNum)}
+                                totalItems={itemsList.length}
+                                itemPerPage={10}
+                                onChangePage={(currentPage) => setCurrentPage(currentPage)}
                                 boundaryCount={1}
                                 showFirstButton
                                 showLastButton
                             />
+                            {/*<PaginationEvent />*/}
                         </div>
                     </div>
                 </div>
