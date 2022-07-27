@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useMemo} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import Pagination from "@mui/material/Pagination";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
@@ -263,78 +263,6 @@ const Events = () => {
                                     columns={columns}
                                 />
                             </div>) : (<h5>Loading data</h5> )}
-
-                             {/*<Table  data={itemsList}/>*/}
-                            {/*//                     <table id="datatablesSimple">*/}
-                            {/*//                         <thead>*/}
-                            {/*//                         <tr>*/}
-                            {/*//                             <th>id</th>*/}
-                            {/*//                             <th>*/}
-                            {/*//                                 Language*/}
-                            {/*//                                 <button onClick={onSortChange}>*/}
-                            {/*//                                     <i className={`fas fa-${sortTypes[currentSort].class}`}/>*/}
-                            {/*//                                 </button>*!/*/}
-                            {/*/  /                           </th>*/}
-                            {/*//                             <th>Details</th>*/}
-                            {/*//                         </tr>*/}
-                            {/*//                         </thead>*/}
-                            {/*//                         <tbody>*/}
-                            {/*//                         /!*{[...itemsList].sort(sortTypes[currentSort].fn).map(e => (*!/*/}
-                            {/*//                              {itemsList.map((e) => (*/}
-                            {/*//                                  <tr>*/}
-                            {/*//                              <tr key={e.id}>*/}
-                            {/*//                                 <td>{e.id}</td>*/}
-                            {/*//                                  <td>{e.propertyName}</td>*/}
-                            {/*//                                  <td>*/}
-                            {/*//                                     <Fab*/}
-                            {/*//                                         variant='extended'*/}
-                            {/*//                                         size="small"*/}
-                            {/*//                                         color="inherit"*/}
-                            {/*//                                         aria-label="edit">*/}
-                            {/*//                                         <EditIcon*/}
-                            {/*//                                             onClick={() => {*/}
-                            {/*//                                                 setModalDescription('Here you can edit language details.');*/}
-                            {/*//                                                 setModalHeader('Edit');*/}
-                            {/*//                                                 // setShowEditModalDetails(true);*/}
-                            {/*//                                                 clearCurrentItem(setCurrentItem,*/}
-                            {/*//                                                     setBackupItem, defaultItem);*/}
-                            {/*//                                                 onAddDataClick(showEditModalDetails,*/}
-                            {/*//                                                     setShowEditModalDetails,*/}
-                            {/*//                                                     'Here you can edit language.', 'Edit language');*/}
-                            {/*//                                                 saveId(e.id);*/}
-                            {/*//                                                 setLanguageName(e.propertyName);*/}
-                            {/*//                                             }}*/}
-                            {/*//                                         />*/}
-                            {/*//                                     </Fab>*/}
-                            {/*//                                 </td>*/}
-                            {/*//                                 <td>*/}
-                            {/*//                                     <Button variant="danger" id="delete-image"*/}
-                            {/*//                                             onClick={() => {*/}
-                            {/*//                                                 setShowDeleteModal(true);*/}
-                            {/*//                                                 saveId(e.id);*/}
-                            {/*//                                             }}>*/}
-                            {/*//                                         <FontAwesomeIcon icon={faTrashAlt}/>*/}
-                            {/*//                                     </Button>*/}
-                            {/*//                                 </td>*/}
-                            {/*//                                 <td>*/}
-                            {/*//                                     <Fab*/}
-                            {/*//                                         variant='extended'*/}
-                            {/*//                                         size='small'*/}
-                            {/*//                                         color='warning'*/}
-                            {/*//                                         aria-label="delete">*/}
-                            {/*//                                         <DeleteForeverOutlinedIcon*/}
-                            {/*//                                             onClick={() => {*/}
-                            {/*//                                                 saveId(e.id);*/}
-                            {/*//                                                 setShowDeleteModal(true);*/}
-                            {/*//                                             }}*/}
-                            {/*//                                         />*/}
-                            {/*//                                     </Fab>*/}
-                            {/*//                                 </td>*/}
-                            {/*//                              </tr>*/}
-                            {/*//                                  </tr>*/}
-                            {/*//                         ))}*/}
-                            {/*//                         </tbody>*/}
-                            {/*//                     </table>*/}
                             <Pagination
                                 count={paginationSize}
                                 variant="outlined"
