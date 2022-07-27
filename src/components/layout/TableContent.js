@@ -4,7 +4,6 @@ import TableHead from "./TableHead";
 import {useSortableTable} from "../../js/useSortableTable";
 
 const TableContent = ({ caption, data, columns }) => {
-console.log("RENDER");
     const [tableData, handleSorting] = useSortableTable(data, columns);
 
     return (

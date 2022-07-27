@@ -1,6 +1,6 @@
 import React from 'react';
-import ButtonEdit from './ButtonEdit';
-import ButtonDelete from './ButtonDelete';
+import ButtonEdit from '../events/ButtonEdit';
+import ButtonDelete from '../events/ButtonDelete';
 
 const TableBody = ({tableData, columns}) => {
 

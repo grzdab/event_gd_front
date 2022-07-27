@@ -15,9 +15,7 @@ import {
 } from "../helpers/ComponentHelper";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
-
-import TableContent from "./TableContent";
+import TableContent from "../layout/TableContent";
 
 let clickedId = 0;
 let currentSort = 'default';
