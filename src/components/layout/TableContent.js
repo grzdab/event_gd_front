@@ -2,17 +2,12 @@ import React, {useState} from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
 import {useSortableTable} from "../../js/useSortableTable";
-import Pagination from "../events/Pagination";
-
-let PageSize = 10;
+// import Pagination from "../events/Pagination";
 
 const TableContent = ({
                           caption,
                           data,
-                          columns,
-                          getCountItems,
-                          currentPage,
-                          setCurrentPage }) => {
+                          columns}) => {
 
     const [tableData, handleSorting] = useSortableTable(data, columns);
 
@@ -21,15 +16,15 @@ const TableContent = ({
             <table className="table">
                 <caption>{caption}</caption>
                 <TableHead {...{ columns, handleSorting }} />
-                <TableBody {...{columns, tableData, PageSize, currentPage}} />
+                <TableBody {...{columns, tableData}} />
             </table>
-            <Pagination
-                className="pagination-bar"
-                currentPage={currentPage}
-                totalCount={getCountItems}
-                pageSize={PageSize}
-                onPageChange={page => setCurrentPage(page)}
-            />
+            {/*<Pagination*/}
+            {/*    className="pagination-bar"*/}
+            {/*    currentPage={currentPage}*/}
+            {/*    totalCount={getCountItems}*/}
+            {/*    pageSize={PageSize}*/}
+            {/*    onPageChange={page => setCurrentPage(page)}*/}
+            {/*/>*/}
         </>
     );
 };

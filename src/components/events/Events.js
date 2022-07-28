@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-// import Pagination from "@mui/material/Pagination";
+import Pagination from "@mui/material/Pagination";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import ModalFooter from "../layout/ModalFooter";
@@ -276,25 +276,22 @@ const Events = () => {
                                         // caption="LoremIpsum"
                                         data={itemsList}
                                         columns={columns}
-                                        getCountItems={getCountItems}
-                                        currentPage={currentPage}
-                                        setCurrentPage={setCurrentPage}
                                     />
                                 </div>) : (<h5>Loading data</h5> )}
-                            {/*<Pagination*/}
-                            {/*    count={Math.ceil(countItems / 10)}*/}
-                            {/*    variant="outlined"*/}
-                            {/*    color="primary"*/}
-                            {/*    size="small"*/}
-                            {/*    totalItems={itemsList.length}*/}
-                            {/*    // itemPerPage={10}*/}
-                            {/*    // onChange={(currentPage) => setCurrentPage(currentPage)}*/}
-                            {/*    // onChange={getPaginationItems}*/}
-                            {/*    boundaryCount={1}*/}
-                            {/*    showFirstButton*/}
-                            {/*    showLastButton*/}
-                            {/*    defaultPage={1}*/}
-                            {/*/>*/}
+                            <Pagination
+                                count={Math.ceil(countItems / 10)}
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                totalItems={itemsList.length}
+                                // itemPerPage={10}
+                                // onChange={(currentPage) => setCurrentPage(currentPage)}
+                                // onChange={getPaginationItems}
+                                boundaryCount={1}
+                                showFirstButton
+                                showLastButton
+                                defaultPage={1}
+                            />
                             {/*<PaginationEvent />*/}
                         </div>
                     </div>
