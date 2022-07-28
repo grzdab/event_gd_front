@@ -71,8 +71,7 @@ const EquipmentBookingStatus = () => {
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
   const [equipmentList, setEquipmentList] = useState([]);
-  const [equipmentBookingStatusColor, setEquipmentBookingStatusColor] = useState("#333333")
-
+  const [equipmentBookingStatusColor, setEquipmentBookingStatusColor] = useState("#ffffff")
 
   const onSaveItem = async (e) => {
     e.preventDefault();
@@ -189,15 +188,12 @@ const EquipmentBookingStatus = () => {
   }, [])
 
 
-  useEffect(() => {
-    if (currentItem.id > 0) {
-      setItemChanged(!itemChanged);
-      setCurrentItem({...currentItem,
-        color: equipmentBookingStatusColor});
-      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-    }
-  }, [equipmentBookingStatusColor])
-
+  const changeColor = (equipmentBookingStatusColor) => {
+    setEquipmentBookingStatusColor(equipmentBookingStatusColor)
+    setCurrentItem({...currentItem,
+      color: equipmentBookingStatusColor});
+    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+  }
 
   return (
     <div id="layoutSidenav_content">
@@ -301,30 +297,33 @@ const EquipmentBookingStatus = () => {
               <div className="col-md-12 mb-md-0 mb-5">
                 <form id="add-equipment-booking-status-form" name="add-equipment-booking-status-form">
                   <div className="row">
-                    <div className="col-md-7">
-                      <div className="md-form mb-0">
-                        <label htmlFor="name"
-                               className="">Name</label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          defaultValue={currentItem.name}
-                          className="form-control"
-                          required
-                          onChange={(e) => {
-                            setItemChanged(!itemChanged);
-                            setCurrentItem({...currentItem,
-                              name: e.target.value});
-                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                          }}
-                          onClick={() => {
-                            resetInvalidInputField("name");
-                          }}
-                        ></input>
-                      </div>
-                    </div>
-                    <div className="col-md-7">
+                    <div className="col-md-9">
+                      <div className="row">
+                        <div className="col-md-12">
+                          <div className="md-form mb-0">
+                            <label htmlFor="name"
+                                   className="">Name</label>
+                            <input
+                              type="text"
+                              id="name"
+                              name="name"
+                              defaultValue={currentItem.name}
+                              className="form-control"
+                              required
+                              style={{backgroundColor: currentItem.color}}
+                              onChange={(e) => {
+                                setItemChanged(!itemChanged);
+                                setCurrentItem({...currentItem,
+                                  name: e.target.value});
+                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                              }}
+                              onClick={() => {
+                                resetInvalidInputField("name");
+                              }}
+                            ></input>
+                          </div>
+                        </div>
+                        <div className="col-md-12">
                       <div className="md-form mb-0">
                         <label htmlFor="description"
                                className="">Description</label>
@@ -343,11 +342,16 @@ const EquipmentBookingStatus = () => {
                         ></textarea>
                       </div>
                     </div>
-                    <div className="col-md-5">
-                      <div>Booking Status Color <span style={{color: "red"}}>(DO NOT DRAG)</span>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="row">
+                        <div>Booking Status Color
                       <HexColorPicker
+                        style={{width: "100%"}}
                         color={currentItem?.id > 0 ? currentItem.color : equipmentBookingStatusColor}
-                        onChange={setEquipmentBookingStatusColor}/>
+                        onChange={changeColor}/>
+                      </div>
                       </div>
                     </div>
                   </div>
