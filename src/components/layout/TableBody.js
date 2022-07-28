@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import ButtonEdit from '../events/ButtonEdit';
 import ButtonDelete from '../events/ButtonDelete';
 
-const TableBody = ({tableData, columns}) => {
+
+const TableBody = ({tableData, columns, PageSize, currentPage}) => {
+
+    const currentTableData = useMemo(() => {
+        const firstPageIndex = (currentPage - 1) * PageSize;
+        const lastPageIndex = firstPageIndex + PageSize;
+        return tableData.slice(firstPageIndex, lastPageIndex);
+    }, [currentPage]);
 
     return (
         <tbody>
-        {tableData.map((data) => {
+        {currentTableData.map(data => {
+        {/*{tableData.map((data) => {*/}
             return (
                 <tr key={data.id}>
                     {columns.map(({accessor}) => {
@@ -19,7 +27,6 @@ const TableBody = ({tableData, columns}) => {
                     <td>
                         <ButtonDelete e={data}/>
                     </td>
-
                 </tr>
             );
         })}

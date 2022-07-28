@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import Pagination from "@mui/material/Pagination";
+// import Pagination from "@mui/material/Pagination";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import ModalFooter from "../layout/ModalFooter";
@@ -18,10 +18,9 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamati
 import TableContent from "../layout/TableContent";
 import PaginationEvent from "./PaginationEvent";
 import axios from "axios";
+import Pagination from './Pagination';
 
 let clickedId = 0;
-let currentSort = 'default';
-let pageNum;
 
 const Events = () => {
 
@@ -59,6 +58,8 @@ const Events = () => {
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [countItems, setCountItems] = useState(0);
+
+
 
     const columns = [
         {label: "Id", accessor: "id", sortable: true, sortbyOrder: "asc"},
@@ -275,20 +276,25 @@ const Events = () => {
                                     // caption="LoremIpsum"
                                     data={itemsList}
                                     columns={columns}
+                                    getCountItems={getCountItems}
+                                    currentPage={currentPage}
+                                    setCurrentPage={setCurrentPage}
                                 />
                             </div>) : (<h5>Loading data</h5> )}
-                            <Pagination
-                                count={Math.ceil(countItems / 10)}
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                totalItems={itemsList.length}
-                                itemPerPage={10}
-                                onChangePage={(currentPage) => setCurrentPage(currentPage)}
-                                boundaryCount={1}
-                                showFirstButton
-                                showLastButton
-                            />
+                            {/*<Pagination*/}
+                            {/*    count={Math.ceil(countItems / 10)}*/}
+                            {/*    variant="outlined"*/}
+                            {/*    color="primary"*/}
+                            {/*    size="small"*/}
+                            {/*    totalItems={itemsList.length}*/}
+                            {/*    // itemPerPage={10}*/}
+                            {/*    // onChange={(currentPage) => setCurrentPage(currentPage)}*/}
+                            {/*    // onChange={getPaginationItems}*/}
+                            {/*    boundaryCount={1}*/}
+                            {/*    showFirstButton*/}
+                            {/*    showLastButton*/}
+                            {/*    defaultPage={1}*/}
+                            {/*/>*/}
                             {/*<PaginationEvent />*/}
                         </div>
                     </div>
