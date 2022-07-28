@@ -28,17 +28,16 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAxiosPrivateFileUpload from "../../../hooks/useAxiosPrivateFileUpload";
 import { useNavigate, useLocation } from "react-router-dom";
+
 
 // TODO: react-dropzone can be used for selecting images
 
 const Equipment = ({appSettings, setAppSettings}) => {
 
-// style={{backgroundColor: `rgb(${color[0]},${color[1]},${color[2]})`}}
-
-
-  const imagesFolder = "/images/";
-  const equipmentImagePlaceholder = "/images/placeholder.jpg"
+  const imagesFolder = "/images/equipment_photos/";
+  const equipmentImagePlaceholder = "/images/equipment_photos/placeholder.jpg";
   const equipmentUrl ="/equipment";
   const equipmentCategoryUrl="/equipment-category";
   const equipmentStatusUrl="/equipment-status";
@@ -46,6 +45,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
   const equipmentBookingStatusUrl="/equipment-booking-status";
 
   const axiosPrivate = useAxiosPrivate();
+  const axiosPrivateFileUpload = useAxiosPrivateFileUpload();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,7 +66,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
       id: 0
     },
     inUse: false,
-    photoURI:"",
+    photos:[],
     equipmentStatus: {
       id: 0
     },
@@ -115,8 +115,8 @@ const Equipment = ({appSettings, setAppSettings}) => {
     setImageFile(e.target.files[0]);
     setImageName(e.target.files[0].name);
     const formData = new FormData();
-    formData.append("file", e.target.files[0])
-    axios.post('http://localhost:8080/ram/equipment-category/images/upload', formData, {
+    formData.append("imageFile", e.target.files[0])
+    axiosPrivate.post('http://localhost:8080/equipment/upload-image', formData, {
       headers: {
         "Content-Type": "multipart/form-data"
       }
@@ -124,24 +124,29 @@ const Equipment = ({appSettings, setAppSettings}) => {
       .then(() => console.log("sent"))
       .catch(error => console.log(error))
 
-    setCurrentItem({...currentItem, photoURI: imagesFolder + e.target.files[0].name})
+    setCurrentItem({...currentItem, photos: [e.target.files[0].name]})
   }
 
+
   const fileUploadHandler = async () => {
-
     // TODO separate button for uploading images
+    const response = await axiosPrivateFileUpload.post(
+      'http://localhost:8080/equipment/upload-image',
+      imageFile);
 
-    fetch('/images/equipment-category', {
-      headers: {
-        "Content-type": "multipart/form-data"
-      },
-      method: 'POST',
-      body: imageFile
-    }).then(
-      () => console.log("file uploaded")
-    ).catch(
-      error => console.log(error)
-    );
+    // const data = await response.data;
+
+    // fetch('http://localhost:8080/equipment/upload-image', {
+    //   headers: {
+    //     "Content-type": "multipart/form-data"
+    //   },
+    //   method: 'POST',
+    //   body: imageFile
+    // }).then(
+    //   () => console.log("file uploaded")
+    // ).catch(
+    //   error => console.log(error)
+    // );
   }
 
   const x = 1;
@@ -203,7 +208,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
         id: currentItem.bookingStatus.id
       },
       inUse: currentItem.inUse,
-      photoURI: currentItem.photoURI
+      photos: currentItem.photos
     };
 
     if (currentFormState.formAddingDataMode) {
@@ -440,7 +445,6 @@ const Equipment = ({appSettings, setAppSettings}) => {
                           <td>{e.name}</td>
                           <td>{e.notes}</td>
                           <td><button className='btn btn-outline-info' onClick={() => {
-                            console.log(bookingStatusesList);
                             setCurrentItem(e);
                             setBackupItem(e);
                             onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment data");
@@ -594,7 +598,13 @@ const Equipment = ({appSettings, setAppSettings}) => {
                     <div className="col-md-4">
                       <div className="md-form">
                         <label htmlFor="photos">Equipment photo</label>
-                        <img id="photos" onClick={() => fileInput.current.click()} src={currentItem.photoURI !== "" ? currentItem.photoURI : equipmentImagePlaceholder} className="img-fluid" alt="Image"/>
+                        <img
+                          id="photos"
+                          onClick={() => fileInput.current.click()}
+                          src={
+                            currentItem.photos !== [] ?
+                              imagesFolder + currentItem.photos[0] :
+                              equipmentImagePlaceholder} className="img-fluid" alt="Image"/>
                       </div>
                       <div>
                         <div className="mb-1 mt-1">

@@ -1,15 +1,15 @@
-import { axiosPrivate } from "../api/axios";
+import { axiosPrivateFileUpload } from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
 
-const useAxiosPrivate = () => {
+const useAxiosPrivateFileUpload = () => {
   const refresh = useRefreshToken();
   const { auth } = useAuth();
 
   useEffect(() => {
 
-    const requestIntercept = axiosPrivate.interceptors.request.use(
+    const requestIntercept = axiosPrivateFileUpload.interceptors.request.use(
       config => {
         if (!config.headers['Authorization']) {
           config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
@@ -18,7 +18,7 @@ const useAxiosPrivate = () => {
       }, (error) => Promise.reject(error)
     );
 
-    const responseIntercept = axiosPrivate.interceptors.response.use(
+    const responseIntercept = axiosPrivateFileUpload.interceptors.response.use(
       response => response,
       async (error) => {
         // this is when access token expires
@@ -27,7 +27,7 @@ const useAxiosPrivate = () => {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-          return axiosPrivate(prevRequest);
+          return axiosPrivateFileUpload(prevRequest);
         }
         return Promise.reject(error);
       }
@@ -35,13 +35,13 @@ const useAxiosPrivate = () => {
 
     // clean-up hook
     return () => {
-      axiosPrivate.interceptors.request.eject(requestIntercept);
-      axiosPrivate.interceptors.response.eject(responseIntercept);
+      axiosPrivateFileUpload.interceptors.request.eject(requestIntercept);
+      axiosPrivateFileUpload.interceptors.response.eject(responseIntercept);
     }
 
   },[auth, refresh])
 
-  return axiosPrivate;
+  return axiosPrivateFileUpload;
 }
 
-export default useAxiosPrivate;
+export default useAxiosPrivateFileUpload;
