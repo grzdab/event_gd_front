@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
 import {useSortableTable} from "../../js/useSortableTable";
-// import Pagination from "../events/Pagination";
 
 const TableContent = ({
                           caption,
@@ -18,13 +17,6 @@ const TableContent = ({
                 <TableHead {...{ columns, handleSorting }} />
                 <TableBody {...{columns, tableData}} />
             </table>
-            {/*<Pagination*/}
-            {/*    className="pagination-bar"*/}
-            {/*    currentPage={currentPage}*/}
-            {/*    totalCount={getCountItems}*/}
-            {/*    pageSize={PageSize}*/}
-            {/*    onPageChange={page => setCurrentPage(page)}*/}
-            {/*/>*/}
         </>
     );
 };

@@ -292,7 +292,6 @@ const Events = () => {
                                 showLastButton
                                 defaultPage={1}
                             />
-                            {/*<PaginationEvent />*/}
                         </div>
                     </div>
                 </div>

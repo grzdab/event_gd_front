@@ -5,15 +5,8 @@ import ButtonDelete from '../events/ButtonDelete';
 
 const TableBody = ({tableData, columns}) => {
 
-    // const currentTableData = useMemo(() => {
-    //     const firstPageIndex = (currentPage - 1) * PageSize;
-    //     const lastPageIndex = firstPageIndex + PageSize;
-    //     return tableData.slice(firstPageIndex, lastPageIndex);
-    // }, [currentPage]);
-
     return (
         <tbody>
-        {/*{currentTableData.map(data => {*/}
             {tableData.map((data) => {
             return (
                 <tr key={data.id}>
