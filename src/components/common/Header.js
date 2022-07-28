@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
 
-const Header = () => {
+const Header = ({ valid }) => {
 
   const logout = useLogout();
   const navigate = useNavigate();
@@ -25,7 +25,9 @@ const Header = () => {
               <div style={{display: "flex"}}>
               <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i className="fas fa-bars"></i></button>
                 <div style={{ color: "white" }}>
-                { auth?.user ? (
+                { valid ?
+                  (
+                  auth?.user ? (
                   <>
                     <span className="">Logged in as { auth.user }</span>
                     <Button className="mx-3" onClick={signOut}>Sign Out</Button>
@@ -36,7 +38,11 @@ const Header = () => {
                     <span className="mx-4">You are not logged in</span>
                     {/*<Button onClick={signIn}>Sign In</Button>*/}
                     </>
-                  )
+                  ))
+                  :
+                  <></>
+
+
                 }
                  </div>
 

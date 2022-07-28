@@ -32,7 +32,7 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faListAlt}></FontAwesomeIcon></div>
                 Events
               </a>
-              <a className="nav-link" href="/app/test">
+              <a className="nav-link" href="/app/clients">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faBuilding}></FontAwesomeIcon></div>
                 Clients
               </a>
@@ -53,39 +53,35 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faFileContract}></FontAwesomeIcon></div>
                 Contracts
               </a>
-              <div className="sb-sidenav-menu-heading">Settings</div>
               {auth?.roles?.includes("ROLE_ADMIN") ?
+                <>
+                  <div className="sb-sidenav-menu-heading">Settings</div>
+                  <a className="nav-link" href="/app/users">
+                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                  Application users
+                </a>
                 <a className="nav-link" href="/app/equipment-category">
                   <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                   Equipment categories
-                </a> : ""
-              }
-              {auth?.roles?.includes("ROLE_ADMIN") ?
+                </a>
                 <a className="nav-link" href="/app/equipment-status">
                   <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                   Equipment statuses
-                </a> : ""
-              }
-              {auth?.roles?.includes("ROLE_ADMIN") ?
+                </a>
                 <a className="nav-link" href="/app/equipment-ownership">
                   <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                   Equipment ownership types
-                </a> : ""
-              }
-              {auth?.roles?.includes("ROLE_ADMIN") ?
+                </a>
                 <a className="nav-link" href="/app/equipment-booking-status">
                   <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                   Equipment booking statuses
-                </a> : ""
+                </a>
+                  <a className="nav-link" href="/app/client-type">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    Client types
+                  </a>
+                </> : ""
               }
-              <a className="nav-link" href="/app/client-type">
-                <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                Client types
-              </a>
-              <a className="nav-link" href="tables.html">
-                <div className="sb-nav-link-icon"><i className="fas fa-table"></i></div>
-                Tables
-              </a>
               <img src={logo} className="App-logo" alt="logo" />
             </div>
           </div>

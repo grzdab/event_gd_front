@@ -21,7 +21,7 @@ const App = () => {
 
   return (
     <>
-      <Header />
+      <Header valid={ true }/>
         <div id="layoutSidenav">
           <LayoutSidebarLeft />
             <Routes>
