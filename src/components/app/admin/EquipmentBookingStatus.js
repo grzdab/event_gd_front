@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import { HexColorPicker} from "react-colorful";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -39,7 +40,8 @@ const EquipmentBookingStatus = () => {
 
   const defaultItem = {
     "id": "",
-    "name": ""
+    "name": "",
+    "color": ""
   }
 
   const defaultFormState = {
@@ -69,6 +71,7 @@ const EquipmentBookingStatus = () => {
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
   const [equipmentList, setEquipmentList] = useState([]);
+  const [equipmentBookingStatusColor, setEquipmentBookingStatusColor] = useState("#333333")
 
 
   const onSaveItem = async (e) => {
@@ -81,12 +84,12 @@ const EquipmentBookingStatus = () => {
     }
 
     if (currentFormState.formAddingDataMode) {
-      const item = {name: currentItem.name};
+      const item = {name: currentItem.name, color: currentItem.color};
       const response = await axiosPrivate.post(equipmentBookingStatusUrl, item);
       setItems([...itemsList, response.data]);
       onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
     } else {
-      const item = {id: currentItem.id, name: currentItem.name};
+      const item = {id: currentItem.id, name: currentItem.name, color: currentItem.color};
       const response = await axiosPrivate.put(`${equipmentBookingStatusUrl}/${item.id}`, item);
       const data = await response.data;
       setItems(
@@ -184,6 +187,16 @@ const EquipmentBookingStatus = () => {
       controller.abort();
     }
   }, [])
+
+
+  useEffect(() => {
+    if (currentItem.id > 0) {
+      setItemChanged(!itemChanged);
+      setCurrentItem({...currentItem,
+        color: equipmentBookingStatusColor});
+      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+    }
+  }, [equipmentBookingStatusColor])
 
 
   return (
@@ -288,7 +301,7 @@ const EquipmentBookingStatus = () => {
               <div className="col-md-12 mb-md-0 mb-5">
                 <form id="add-equipment-booking-status-form" name="add-equipment-booking-status-form">
                   <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-7">
                       <div className="md-form mb-0">
                         <label htmlFor="name"
                                className="">Name</label>
@@ -311,7 +324,7 @@ const EquipmentBookingStatus = () => {
                         ></input>
                       </div>
                     </div>
-                    <div className="col-md-12">
+                    <div className="col-md-7">
                       <div className="md-form mb-0">
                         <label htmlFor="description"
                                className="">Description</label>
@@ -328,6 +341,13 @@ const EquipmentBookingStatus = () => {
                             setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
                           }}
                         ></textarea>
+                      </div>
+                    </div>
+                    <div className="col-md-5">
+                      <div>Booking Status Color <span style={{color: "red"}}>(DO NOT DRAG)</span>
+                      <HexColorPicker
+                        color={currentItem?.id > 0 ? currentItem.color : equipmentBookingStatusColor}
+                        onChange={setEquipmentBookingStatusColor}/>
                       </div>
                     </div>
                   </div>

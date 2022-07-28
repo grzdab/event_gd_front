@@ -101,7 +101,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
   const [statusesList, setStatuses] = useState([]);
   const [ownershipTypesList, setOwnershipTypes] = useState([]);
   const [bookingStatusesList, setBookingStatuses] = useState([]);
-  const [bookingStatusColor, setBookingStatusColor] = useState([]);
+  const [bookingStatusColor, setBookingStatusColor] = useState("#ffffff");
 
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
@@ -200,7 +200,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
         id: currentItem.equipmentOwnership.id
       },
       bookingStatus: {
-        id: 0
+        id: currentItem.bookingStatus.id
       },
       inUse: currentItem.inUse,
       photoURI: currentItem.photoURI
@@ -853,7 +853,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                             value={currentItem.bookingStatus.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
                             className="form-control"
                             readOnly
-                            style={{backgroundColor: `rgb(${bookingStatusColor[0]},${bookingStatusColor[1]},${bookingStatusColor[2]})`}}
+                            style={{backgroundColor: `${bookingStatusColor}`}}
                           />
                         </div>
                       </div>
