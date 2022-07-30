@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import Pagination from "@mui/material/Pagination";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import ModalFooter from "../layout/ModalFooter";
@@ -18,6 +17,7 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamati
 import TableContent from "../layout/TableContent";
 // import PaginationEvent from "./PaginationEvent";
 import axios from "axios";
+import {Table} from "./Table";
 // import Pagination from './Pagination';
 
 let clickedId = 0;
@@ -44,17 +44,13 @@ const Events = () => {
         "formAddingDataMode": false,
         "formSaveButtonDisabled": false
     }
-    const [eventsList, setLanguages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [itemsList, setItems] = useState([]);
-    const [error, setError] = useState('');
     const [showEditModalDetails, setShowEditModalDetails] = useState(defaultEditModalDetails);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [modalHeader, setModalHeader] = useState('Edit equipment');
     const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
-    const [languageName, setLanguageName] = useState('');
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
     const [countItems, setCountItems] = useState(0);
@@ -214,7 +210,7 @@ const Events = () => {
         useEffect(() => {
             console.log(`current page ${currentPage}`);
             console.log(`set current page ${setCurrentPage}`);
-            getItems(`http://localhost:8081/admin/language/languagePage=${currentPage}`, setItems)
+            getItems(`http://localhost:8081/admin/language`, setItems)
                 .then(() => setLoading(false))
                 .catch(console.error);
         }, []);
@@ -233,13 +229,6 @@ const Events = () => {
         console.log(countItems);
         // return Math.ceil(countItems.length / 10);
     });
-
-
-    function saveId(id) {
-        console.log("id");
-        console.log(id);
-        clickedId = id;
-    }
 
     return (
         <div id="layoutSidenav_content">
@@ -272,26 +261,19 @@ const Events = () => {
                         <div className="card-body">
                             {itemsList.length ?
                                 (<div className="table_container">
-                                    <TableContent
-                                        // caption="LoremIpsum"
-                                        data={itemsList}
-                                        columns={columns}
-                                    />
+                                    {/*<TableContent*/}
+                                    {/*    // caption="LoremIpsum"*/}
+                                    {/*    data={itemsList}*/}
+                                    {/*    columns={columns}*/}
+                                    {/*    countItems={countItems}*/}
+                                    {/*    currentPage={currentPage}*/}
+                                    {/*    setCurrentPage={setCurrentPage}*/}
+                                    {/*    setItems={setItems}*/}
+                                    {/*    setLoading={setLoading}*/}
+                                    {/*/>*/}
+
+                                    <Table rows={itemsList} columns={columns} />
                                 </div>) : (<h5>Loading data</h5> )}
-                            <Pagination
-                                count={Math.ceil(countItems / 10)}
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                totalItems={itemsList.length}
-                                // itemPerPage={10}
-                                // onChange={(currentPage) => setCurrentPage(currentPage)}
-                                // onChange={getPaginationItems}
-                                boundaryCount={1}
-                                showFirstButton
-                                showLastButton
-                                defaultPage={1}
-                            />
                         </div>
                     </div>
                 </div>

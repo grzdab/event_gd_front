@@ -182,6 +182,10 @@ export const getItems = async (url, setItems) => {
         // TODO Other errors
     }
     if (response.ok) {
+
+        console.log("data w helperze");
+        console.log(data);
+
         setItems(data);
     }
 }
