@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import Header from "../common/Header";
+import PageHeader from "../common/PageHeader";
 import LayoutSidebarLeft from "./layout/LayoutSidebarLeft";
 import Home from "../Home";
 import React from "react";
@@ -21,7 +21,7 @@ const App = () => {
 
   return (
     <>
-      <Header valid={ true }/>
+      <PageHeader valid={ true }/>
         <div id="layoutSidenav">
           <LayoutSidebarLeft />
             <Routes>

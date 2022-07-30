@@ -24,6 +24,9 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
+import AppComponentCardHeader from "../common/AppComponentCardHeader";
+import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import AppComponentPageHeader from "../common/AppComponentPageHeader";
 
 
 const User = () => {
@@ -100,9 +103,30 @@ const User = () => {
     }
   }
 
+  // const AppComponentPageHeaderProps = {
+  //   title: "USERS",
+  //   addDataButtonProps: {
+  //     buttonTitle: "Add new USER!",
+  //     clearItemProps: {
+  //       setCurrentItem: setCurrentItem,
+  //       setBackupItem: setBackupItem,
+  //       defaultItem: defaultItem
+  //     },
+  //     onAddDataClickProps: {
+  //       currentFormState: currentFormState,
+  //       setCurrentFormState: setCurrentItem,
+  //       formDescription: 'Here you can add new users.',
+  //       formHeader: 'Add new user'
+  //     }
+  //   }
+  // }
+
+
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
+        {/*<AppComponentPageHeader props ={ AppComponentPageHeaderProps } />*/}
+
         <h1 className="mt-4">USERS</h1>
         <div className="container-fluid">
           <div className="RAM_container">
@@ -114,15 +138,13 @@ const User = () => {
               Add new user</Button>
           </div>
         </div>
+
         <div className="card mb-4">
-          <div className="card-header">
-            <i className="fas fa-table me-1"></i>
-            Users list
-          </div>
+          <AppComponentCardHeader title = "Users list" />
           {(() => {
             if (loading) {
               return (
-                <h6>LOADING DATA, PLEASE WAIT...</h6>
+                <AppComponentLoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {

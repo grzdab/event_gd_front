@@ -5,7 +5,6 @@ import {Modal, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 import ModalFooter from "../layout/ModalFooter";
-import axios from "axios";
 import {
   addItem,
   clearCurrentItem,
@@ -30,7 +29,9 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamati
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAxiosPrivateFileUpload from "../../../hooks/useAxiosPrivateFileUpload";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import AppComponentCardHeader from "../common/AppComponentCardHeader";
+import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import AppComponentPageHeader from "../common/AppComponentPageHeader";
 
 // TODO: react-dropzone can be used for selecting images
 
@@ -149,8 +150,6 @@ const Equipment = ({appSettings, setAppSettings}) => {
     // );
   }
 
-  const x = 1;
-
   const onSaveItem = async (e) => {
     e.preventDefault()
     if (!currentItem.name ||
@@ -214,6 +213,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
     if (currentFormState.formAddingDataMode) {
       const response = await axiosPrivate.post(equipmentUrl, item);
       setItems([...itemsList, response.data]);
+
       onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
     } else {
       const response = await axiosPrivate.put(`${equipmentUrl}/${item.id}`, item);
@@ -376,7 +376,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
     let isMounted = true;
     const controller = new AbortController();
 
-    const getCBookingStatuses = async () => {
+    const getBookingStatuses = async () => {
       try {
         const response = await axiosPrivate.get(equipmentBookingStatusUrl, {
           signal: controller.signal
@@ -391,14 +391,12 @@ const Equipment = ({appSettings, setAppSettings}) => {
       }
     }
 
-    getCBookingStatuses();
+    getBookingStatuses();
     return () => {
       isMounted = false;
       controller.abort();
     }
   }, [])
-
-
 
   return (
     <div id="layoutSidenav_content">
@@ -415,14 +413,11 @@ const Equipment = ({appSettings, setAppSettings}) => {
           </div>
         </div>
         <div className="card mb-4">
-          <div className="card-header">
-            <i className="fas fa-table me-1"></i>
-            Equipment list
-          </div>
+          <AppComponentCardHeader title = "Equipment list" />
           {(() => {
             if (loading) {
               return (
-                <h6>LOADING DATA, PLEASE WAIT...</h6>
+                <AppComponentLoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {
@@ -533,7 +528,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                                     id="equipmentCategoryId"
                                     name="equipmentCategoryId"
                                     defaultValue = {
-                                      currentItem.equipmentCategory.id > 0
+                                      currentItem.equipmentCategory?.id > 0
                                         ? currentItem.equipmentCategory.id
                                         : ""
                                     }
@@ -601,10 +596,10 @@ const Equipment = ({appSettings, setAppSettings}) => {
                         <img
                           id="photos"
                           onClick={() => fileInput.current.click()}
-                          src={
-                            currentItem.photos !== [] ?
+                          src={ currentItem?.id > 0 ?
+                            (currentItem.photos !== [] ?
                               imagesFolder + currentItem.photos[0] :
-                              equipmentImagePlaceholder} className="img-fluid" alt="Image"/>
+                              equipmentImagePlaceholder) : ""} className="img-fluid" alt="Image"/>
                       </div>
                       <div>
                         <div className="mb-1 mt-1">
@@ -804,7 +799,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                                     id="equipmentOwnershipId"
                                     name="equipmentOwnershipId"
                                     defaultValue = {
-                                      currentItem.equipmentOwnership.id > 0
+                                      currentItem.equipmentOwnership?.id > 0
                                         ? currentItem.equipmentOwnership.id
                                         : ""
                                     }
@@ -827,7 +822,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                                     id="equipmentStatusId"
                                     name="equipmentStatusId"
                                     defaultValue = {
-                                      currentItem.equipmentStatus.id > 0
+                                      currentItem.equipmentStatus?.id > 0
                                         ? currentItem.equipmentStatus.id
                                         : ""
                                     }
@@ -860,7 +855,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
                             type="text"
                             id="equipmentBookingStatusId"
                             name="equipmentBookingStatusId"
-                            value={currentItem.bookingStatus.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
+                            value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
                             className="form-control"
                             readOnly
                             style={{backgroundColor: `${bookingStatusColor}`}}

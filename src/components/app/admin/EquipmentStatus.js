@@ -31,6 +31,7 @@ import {
   onFormCloseWithoutSavingButtonClick,
   restoreFormData,
   onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
+import AppComponentCardHeader from "../common/AppComponentCardHeader";
 
 const EquipmentStatus = () => {
 
@@ -201,10 +202,7 @@ const EquipmentStatus = () => {
           </div>
         </div>
         <div className="card mb-4">
-          <div className="card-header">
-            <i className="fas fa-table me-1"></i>
-            Equipment statuses list
-          </div>
+          <AppComponentCardHeader title = "Equipment statuses list" />
           {(() => {
             if (loading) {
               return (

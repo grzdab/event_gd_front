@@ -4,7 +4,7 @@ import loginImg from '../assets/ram-login.jpg';
 import axios from '../api/axios';
 import useAuth from "../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Header from "../components/common/Header";
+import PageHeader from "../components/common/PageHeader";
 
 const LOGIN_URL = '/api/login';
 
@@ -82,7 +82,7 @@ const Login = () => {
 
   return (
     <>
-      <Header />
+      <PageHeader />
       <section className="vh-100">
         <div className="container py-5 h-100">
           <div className="row d-flex align-items-center justify-content-center h-100">

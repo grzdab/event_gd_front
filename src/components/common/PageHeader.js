@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
 
-const Header = ({ valid }) => {
+const PageHeader = ({ valid }) => {
 
   const logout = useLogout();
   const navigate = useNavigate();
@@ -63,4 +63,4 @@ const Header = ({ valid }) => {
 
 }
 
-export default Header;
+export default PageHeader;

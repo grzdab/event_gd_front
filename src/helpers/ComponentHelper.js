@@ -48,12 +48,12 @@ export const clearCurrentItem = (setCurrentItem, setBackupItem, defaultItem) => 
 }
 
 export const onAddDataClick = (currentFormState, setCurrentFormState, formDescription, formHeader) => {
-    setCurrentFormState({...currentFormState,
-        formDescription: formDescription,
-        formHeader: formHeader,
-        formAddingDataMode: true,
-        formSaveButtonDisabled: false,
-        showForm: true})
+  setCurrentFormState({...currentFormState,
+    formDescription: formDescription,
+    formHeader: formHeader,
+    formAddingDataMode: true,
+    formSaveButtonDisabled: false,
+    showForm: true})
 }
 
 export const onFormCancelCloseButtonClick = () => {

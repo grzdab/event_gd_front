@@ -31,6 +31,8 @@ import {
   onFormCloseWithoutSavingButtonClick,
   restoreFormData,
   onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
+import AppComponentCardHeader from "../common/AppComponentCardHeader";
+import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
 
 const EquipmentOwnership = () => {
 
@@ -201,16 +203,11 @@ const EquipmentOwnership = () => {
           </div>
         </div>
         <div className="card mb-4">
-          <div className="card-header">
-            <i className="fas fa-table me-1"></i>
-            Equipment ownership types list
-          </div>
+          <AppComponentCardHeader title = "Equipment ownership types list" />
           {(() => {
             if (loading) {
               return (
-                <div className="spinner-border text-secondary" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
+                <AppComponentLoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {

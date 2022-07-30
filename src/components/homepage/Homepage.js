@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {Collection, Building, Toggles2, Envelope, ChatRightQuoteFill } from "react-bootstrap-icons";
 import useAuth from '../../hooks/useAuth';
-import Header from "../common/Header";
+import PageHeader from "../common/PageHeader";
 import '../../css/Homepage.css';
 
 const Homepage = () => {
@@ -15,7 +15,7 @@ const Homepage = () => {
 
   return (
     <div>
-      <Header />
+      <PageHeader />
       <header className="py-5 bg-image p-5 text-center shadow-1-strong rounded mb-5 text-white"
               style={{backgroundImage: "url(" + "/images/background1.jpg" + ")" }}>
         <div className="container px-5">
