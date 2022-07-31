@@ -1,7 +1,7 @@
 import React,  {useMemo} from 'react';
-import ButtonEdit from '../events/ButtonEdit';
-import ButtonDelete from '../events/ButtonDelete';
-import {paginateRows, sortRows} from "../../js/helpers";
+import ButtonEdit from '../../events/ButtonEdit';
+import ButtonDelete from '../../events/ButtonDelete';
+import {paginateRows, sortRows} from "../../../js/helpers";
 
 const TableBody = ({
                     columns,

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { filterRows} from '../../js/helpers'
+import { filterRows} from '../../../js/helpers'
 import { Pagination } from './Pagination'
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
