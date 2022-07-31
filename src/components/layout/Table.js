@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from 'react'
-import { sortRows, filterRows, paginateRows } from '../../js/helpers'
+import { filterRows} from '../../js/helpers'
 import { Pagination } from './Pagination'
-import ButtonEdit from "../events/ButtonEdit";
-import ButtonDelete from "../events/ButtonDelete";
 import TableHead from "./TableHead";
+import TableBody from "./TableBody";
 
 export const Table = ({ columns, rows }) => {
     const [activePage, setActivePage] = useState(1)
@@ -12,9 +11,6 @@ export const Table = ({ columns, rows }) => {
     const rowsPerPage = 10
 
     const filteredRows = useMemo(() => filterRows(rows, filters), [rows, filters])
-    const sortedRows = useMemo(() => sortRows(filteredRows, sort), [filteredRows, sort])
-    const calculatedRows = paginateRows(sortedRows, activePage, rowsPerPage)
-
     const count = filteredRows.length
     const totalPages = Math.ceil(count / rowsPerPage)
 
@@ -35,26 +31,13 @@ export const Table = ({ columns, rows }) => {
                     sort={sort}
                     setSort={setSort}
                 />
-                <tbody>
-                {calculatedRows.map((row) => {
-                    return (
-                        <tr key={row.id}>
-                            {columns.map((column) => {
-                                if (column.format) {
-                                    return <td key={column.accessor}>{column.format(row[column.accessor])}</td>
-                                }
-                                return <td key={column.accessor}>{row[column.accessor]}</td>
-                            })}
-                            <td>
-                                <ButtonEdit e={row} />
-                            </td>
-                            <td>
-                                <ButtonDelete e={row}/>
-                            </td>
-                        </tr>
-                    )
-                })}
-                </tbody>
+                <TableBody
+                    columns={columns}
+                    sort={sort}
+                    activePage={activePage}
+                    filteredRows={filteredRows}
+                    rowsPerPage={rowsPerPage}
+                    />
             </table>
 
             {count > 0 ? (
