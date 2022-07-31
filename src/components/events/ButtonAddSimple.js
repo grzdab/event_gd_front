@@ -175,7 +175,6 @@ const ButtonAddSimple = ({
                 </Modal.Body>
                 <ModalFooter
                     onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
-                    // onDelete={onDelete}
                     currentFormState={showAddModalDetails}
                     onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
                     onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}

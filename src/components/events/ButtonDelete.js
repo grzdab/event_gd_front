@@ -1,9 +1,5 @@
 import React, {useState} from 'react';
-import Button from "react-bootstrap/Button";
-import {faTrashAlt} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Modal} from "react-bootstrap";
-import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
 import {
     clearCurrentItem,
     deleteItem,
@@ -12,10 +8,7 @@ import {
 } from "../helpers/ComponentHelper";
 import {Fab} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ModalFooter from "../layout/ModalFooter";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import ModalDeleteFooter from "../layout/ModalDeleteFooter";
-import {compareObjects} from "../../js/CommonHelper";
 
 
 let clickedId = 0;
@@ -107,8 +100,6 @@ const ButtonDelete = ({e}) => {
                         onHide={onCloseDeleteWarningDialog}
                         currentFormState={showDeleteModalDetails}
                         onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
-                        // backdrop="static"
-                        // keyboard={false}
                     >
                         <Modal.Header className="form-header-warning">
                             <Modal.Title>Warning</Modal.Title>

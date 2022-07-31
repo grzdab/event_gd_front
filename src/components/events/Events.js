@@ -1,25 +1,8 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import Button from "react-bootstrap/Button";
-import {Modal} from "react-bootstrap";
-import ModalFooter from "../layout/ModalFooter";
-import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
-import {
-    clearCurrentItem, compareData,
-    deleteItem, getItems, onAddDataClick,
-    onFormCancelCloseButtonClick,
-    onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
-    onFormConfirmDeleteButtonClick,
-    onSaveAndClose, restoreFormData,
-    updateItem
-} from "../helpers/ComponentHelper";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import TableContent from "../layout/TableContent";
-// import PaginationEvent from "./PaginationEvent";
-import axios from "axios";
+import { getItems } from "../helpers/ComponentHelper";
 import {Table} from "./Table";
 import ButtonAddSimple from "./ButtonAddSimple";
-// import Pagination from './Pagination';
+import Footer from "../layout/Footer";
 
 let clickedId = 0;
 
@@ -29,99 +12,17 @@ const Events = () => {
         "id": "",
         "propertyName": ""
     }
-    const defaultAddModalDetails = {
-        "showForm": false,
-        "showDeleteWarning": false,
-        "showItemChangedWarning": false,
-        "formDataChangedWarning": "Data has been changed",
-        "formAddingDataMode": false,
-        "formSaveButtonDisabled": false
-    }
-    const defaultEditModalDetails = {
-        "showForm": false,
-        "showDeleteWarning": false,
-        "showItemChangedWarning": false,
-        "formDataChangedWarning": "Data has been changed",
-        "formAddingDataMode": false,
-        "formSaveButtonDisabled": false
-    }
+
     const [loading, setLoading] = useState(true);
     const [itemsList, setItems] = useState([]);
-    const [showEditModalDetails, setShowEditModalDetails] = useState(defaultEditModalDetails);
-    // const [modalHeader, setModalHeader] = useState('Edit equipment');
-    // const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
-    const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
     const [backupItem, setBackupItem] = useState(defaultItem);
-    const [countItems, setCountItems] = useState(0);
-
-
 
     const columns = [
-        {label: "Id", accessor: "id", sortable: true, sortbyOrder: "asc"},
+        {label: "Id", accessor: "id", sortable: true},
         {label: "Language", accessor: "propertyName", sortable: true},
     ];
-
-    const addItem = async (item, url, setItems, itemsList) => {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(item)
-        });
-        const data = await response.json();
-        setItems([...itemsList, data]);
-    }
-
-
-    const onDelete = (e) => {
-        e.preventDefault()
-        deleteItem(currentItem.id, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
-            .then(() => {
-                onCloseDeleteWarningDialog();
-            });
-    }
-    const onCloseDeleteWarningDialog = () => {
-        clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-        setShowAddModalDetails({...showAddModalDetails, showDeleteWarning: false, showForm: false});
-    };
-
-    const onCloseDetails = () => {
-        if (compareObjects(backupItem, currentItem)) {
-            setShowAddModalDetails({
-                ...showAddModalDetails,
-                showForm: false,
-                formSaveButtonDisabled: true,
-                formAddingDataMode: false
-            })
-            // } else {
-            //     let closeWithoutSaving = document.getElementById("confirm-close");
-            //     let btnClose = document.getElementById("btn-close");
-            //     closeWithoutSaving.classList.add("div-visible");
-            //     btnClose.classList.add("btn-invisible");
-            // }
-        }
-    };
-
-    // const onCloseEditDetails = () => {
-    //     if (compareObjects(backupItem, currentItem)) {
-    //         setShowEditModalDetails({
-    //             ...showAddModalDetails,
-    //             showForm: false,
-    //             formSaveButtonDisabled: true,
-    //             formAddingDataMode: false
-    //         })
-    //     } else {
-    //         let closeWithoutSaving = document.getElementById("confirm-close");
-    //         let btnClose = document.getElementById("btn-close");
-    //         closeWithoutSaving.classList.add("div-visible");
-    //         btnClose.classList.add("btn-invisible");
-    //     }
-    // };
-
-    useEffect(() => {
-        compareData(showAddModalDetails, setShowAddModalDetails, currentItem, backupItem)
-    }, [currentItem])
 
     //DO NOT DELETE!
     const getAllData = useMemo(() => {
@@ -173,18 +74,7 @@ const Events = () => {
                     </div>
                 </div>
             </main>
-            <footer className="py-4 bg-light mt-auto">
-                <div className="container-fluid px-4">
-                    <div className="d-flex align-items-center justify-content-between small">
-                        <div className="text-muted">Copyright &copy; R.A.M. 2022</div>
-                        <div>
-                            <a href="src/components/events/Events#">Privacy Policy</a>
-                            &middot;
-                            <a href="src/components/events/Events#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
