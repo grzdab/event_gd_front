@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import { getItems } from "../helpers/ComponentHelper";
 import {Table} from "./Table";
-import ButtonAddSimple from "./ButtonAddSimple";
+import ButtonAddSimple from "../layout/ButtonAddSimple";
 import Footer from "../layout/Footer";
 
 let clickedId = 0;
@@ -33,8 +33,6 @@ const Events = () => {
                 .then(() => setLoading(false))
                 .catch(console.error);
         }, []);
-        console.log("itemList");
-        console.log(itemsList);
     });
 
     return (
