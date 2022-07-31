@@ -85,13 +85,6 @@ const ButtonDelete = ({e}) => {
 
         return (
             <div>
-            {/*<Button variant="danger" id="delete-image"*/}
-            {/*        onClick={() => {*/}
-            {/*            setShowDeleteModal(true);*/}
-            {/*            saveId(e.id);*/}
-            {/*        }}>*/}
-            {/*    <FontAwesomeIcon icon={faTrashAlt}/>*/}
-            {/*</Button>*/}
                 <Fab
                     variant='extended'
                     size='small'

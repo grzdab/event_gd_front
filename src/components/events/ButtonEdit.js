@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import Button from "react-bootstrap/Button";
 import {
-    deleteItem, getItems,
+     getItems,
     onFormCancelCloseButtonClick,
     onFormCancelDeleteButtonClick, onFormCloseWithoutSavingButtonClick,
     onFormConfirmDeleteButtonClick, onSaveAndClose,

@@ -18,6 +18,7 @@ import TableContent from "../layout/TableContent";
 // import PaginationEvent from "./PaginationEvent";
 import axios from "axios";
 import {Table} from "./Table";
+import ButtonAddSimple from "./ButtonAddSimple";
 // import Pagination from './Pagination';
 
 let clickedId = 0;
@@ -47,8 +48,8 @@ const Events = () => {
     const [loading, setLoading] = useState(true);
     const [itemsList, setItems] = useState([]);
     const [showEditModalDetails, setShowEditModalDetails] = useState(defaultEditModalDetails);
-    const [modalHeader, setModalHeader] = useState('Edit equipment');
-    const [modalDescription, setModalDescription] = useState('');
+    // const [modalHeader, setModalHeader] = useState('Edit equipment');
+    // const [modalDescription, setModalDescription] = useState('');
     const [currentItem, setCurrentItem] = useState(defaultItem);
     const [currentPage, setCurrentPage] = useState(1);
     const [showAddModalDetails, setShowAddModalDetails] = useState(defaultAddModalDetails);
@@ -62,40 +63,6 @@ const Events = () => {
         {label: "Language", accessor: "propertyName", sortable: true},
     ];
 
-    // //
-    // const handleCloseDetails = () => {
-    //     setShowDetails(false);
-    //     setCurrentItem(defaultItem);
-    // };
-    // const handleShowDetails = () => setShowDetails(true);
-
-    // useEffect(() => {
-    //     const getEvents = async(pageNum =1) => {
-    //         const response = await fetch(`http://localhost:8080/admin/language/languagePage/${pageNum}`);
-    //         const data = await response.json();
-    //         if (response.status === 404) {
-    //             setError('Equipment data not found');
-    //         }
-    //         setItems(data);
-    //         itemsList = data;
-    //         console.log(itemsList);
-    //         // console.log(itemsList);
-    //         setLoading(false);
-    //         // console.log(response);
-    //     }
-    //     getEvents().catch(console.error)
-    // }, []);
-    //
-    // const getPaginationItems = useMemo(() => {
-    //     return Math.ceil(itemsList.length / 10);
-    // });
-    //
-    // const fetchById = async (id) => {
-    //     const response = await fetch(`http://localhost:8080/admin/language/${id}`);
-    //     const data = await response.json();
-    //     return data;
-    // }
-/////
     const addItem = async (item, url, setItems, itemsList) => {
         const response = await fetch(url, {
             method: 'POST',
@@ -106,46 +73,6 @@ const Events = () => {
         setItems([...itemsList, data]);
     }
 
-    const onSubmit = (e) => {
-        e.preventDefault()
-
-
-        const checkItem = {
-            id: currentItem.id,
-            propertyName: currentItem.propertyName
-        };
-
-        if (!currentItem.propertyName || currentItem.id === 0) {
-            if (!currentItem.propertyName) {
-                let nameInput = document.getElementById("name");
-                nameInput.classList.add("form-input-invalid");
-                nameInput.placeholder = "Language name cannot be empty"
-            }
-
-            if (currentItem.id === 0) {
-                let categoryOption = document.getElementById("equipmentCategoryId");
-                categoryOption.classList.add("form-input-invalid");
-            }
-            return;
-        }
-
-        if (showAddModalDetails.formAddingDataMode) {
-            const item = {
-
-                propertyName: currentItem.propertyName
-            };
-            addItem(item, `http://localhost:8081/admin/language`, setItems, itemsList)
-                .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
-        } else {
-            const item = {
-                id: currentItem.id,
-                propertyName: currentItem.propertyName
-            };
-            updateItem(item, currentItem, `http://localhost:8081/admin/language/${clickedId}`, setItems, itemsList)
-                .then(() => onSaveAndClose(setShowAddModalDetails, showAddModalDetails, setCurrentItem, setBackupItem, defaultItem));
-            ;
-        }
-    }
 
     const onDelete = (e) => {
         e.preventDefault()
@@ -176,37 +103,28 @@ const Events = () => {
         }
     };
 
-    const onCloseEditDetails = () => {
-        if (compareObjects(backupItem, currentItem)) {
-            setShowEditModalDetails({
-                ...showAddModalDetails,
-                showForm: false,
-                formSaveButtonDisabled: true,
-                formAddingDataMode: false
-            })
-        } else {
-            let closeWithoutSaving = document.getElementById("confirm-close");
-            let btnClose = document.getElementById("btn-close");
-            closeWithoutSaving.classList.add("div-visible");
-            btnClose.classList.add("btn-invisible");
-        }
-    };
+    // const onCloseEditDetails = () => {
+    //     if (compareObjects(backupItem, currentItem)) {
+    //         setShowEditModalDetails({
+    //             ...showAddModalDetails,
+    //             showForm: false,
+    //             formSaveButtonDisabled: true,
+    //             formAddingDataMode: false
+    //         })
+    //     } else {
+    //         let closeWithoutSaving = document.getElementById("confirm-close");
+    //         let btnClose = document.getElementById("btn-close");
+    //         closeWithoutSaving.classList.add("div-visible");
+    //         btnClose.classList.add("btn-invisible");
+    //     }
+    // };
 
     useEffect(() => {
         compareData(showAddModalDetails, setShowAddModalDetails, currentItem, backupItem)
     }, [currentItem])
 
-    //przyhardkodowane pierwsze 10 rekiordów
-
-    //get na  noey endpoint ilość rekordów
-
-    // useEffect(() => {
-    //     getItems(`http://localhost:8080/admin/language/languagePage/1`, setItems)
-    //         .then(() => setLoading(false))
-    //         .catch(console.error);
-    // }, [])
-
-    const getPaginationItems = useMemo(() => {
+    //DO NOT DELETE!
+    const getAllData = useMemo(() => {
         useEffect(() => {
             console.log(`current page ${currentPage}`);
             console.log(`set current page ${setCurrentPage}`);
@@ -216,18 +134,6 @@ const Events = () => {
         }, []);
         console.log("itemList");
         console.log(itemsList);
-        // return Math.ceil(itemsList.length / 10);
-    });
-
-    const getCountItems = useMemo(() => {
-        useEffect(() => {
-            getItems(`http://localhost:8081/admin/language/count`, setCountItems)
-                .then(() => setLoading(false))
-                .catch(console.error);
-        }, []);
-        console.log("getCount");
-        console.log(countItems);
-        // return Math.ceil(countItems.length / 10);
     });
 
     return (
@@ -240,18 +146,18 @@ const Events = () => {
                         <li className="breadcrumb-item active">Events list</li>
                     </ol>
                     <div className="RAM_container">
-                        <Button className="RAM_button" id="addData"
-                                onClick={() => {
-                                    setModalDescription('Here you can add new language details.');
-                                    setModalHeader('Add');
-                                    // setShowAddModalDetails(true);
-                                    clearCurrentItem(setCurrentItem,
-                                        setBackupItem, defaultItem);
-                                    onAddDataClick(showAddModalDetails,
-                                        setShowAddModalDetails,
-                                        'Here you can add new language.', 'Add new language');
-                                }} >
-                            Add new language</Button>
+                        <ButtonAddSimple
+                            useStateModalDescription={'Here you can add new language details.'}
+                            useStateModalHeader={'Add'}
+                            backupItem={backupItem}
+                            currentItem={currentItem}
+                            url={`http://localhost:8081/admin/language`}
+                            clickedId={clickedId}
+                            itemsList={itemsList}
+                            defaultItem={defaultItem}
+                            setCurrentItem={setCurrentItem}
+                            setBackupItem={setBackupItem}
+                        />
                     </div>
                     <div className="card mb-4">
                         <div className="card-header">
@@ -279,88 +185,6 @@ const Events = () => {
                     </div>
                 </div>
             </footer>
-
-            {/*  ============== EQUIPMENT ADD DETAILS MODAL: BEGIN ============== */}
-            <Modal show={showAddModalDetails.showForm}
-                   shouldCloseOnOverlayClick={false}
-                   size="xl"
-                   backdrop="static"
-                   keyboard={false}
-                   onHide={onCloseDetails}>
-                <Modal.Header className="form-header" closeButton closeVariant="white">
-                    <Modal.Title>Language details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <section className="mb-4">
-                        <h2 className="h1-responsive font-weight-bold text-center my-2">{modalHeader}</h2>
-                        <p className="text-center w-responsive mx-auto mb-5 form_test">{modalDescription}</p>
-                        <div>
-                            <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed">
-                                <FontAwesomeIcon
-                                    icon={faExclamationCircle}/>&nbsp;{showAddModalDetails.formDataChangedWarning}
-                            </p>
-                            <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
-                                restoreFormData(backupItem, setCurrentItem, showAddModalDetails, setShowAddModalDetails)
-                            }}>
-                                Restore
-                            </Button>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-12 mb-md-0 mb-5">
-                                <form id="add-equipment-form" name="add-equipment-form" action="" method="POST">
-                                    <div className="row">
-                                        <div className="col-md-8">
-                                            <div className="row">
-                                                <div className="md-form mb-0">
-                                                    <label htmlFor="name" className="">Language <span
-                                                        className="required">*</span></label>
-                                                    <input
-                                                        type="text"
-                                                        id="name"
-                                                        name="name"
-                                                        defaultValue={currentItem.propertyName}
-                                                        className="form-control"
-                                                        required
-                                                        onChange={(e) => {
-                                                            setCurrentItem({
-                                                                ...currentItem,
-                                                                propertyName: e.target.value
-                                                            });
-                                                            setShowAddModalDetails({
-                                                                ...showAddModalDetails,
-                                                                formSaveButtonDisable: false
-                                                            });
-                                                        }}
-                                                        onClick={() => {
-                                                            resetInvalidInputField("name");
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </section>
-                </Modal.Body>
-                <ModalFooter
-                    onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
-                    onDelete={onDelete}
-                    currentFormState={showAddModalDetails}
-                    onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
-                    onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
-                    onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
-                    onCloseDetails={onCloseDetails}
-                    onSubmit={onSubmit}
-                    setCurrentFormState={setShowAddModalDetails}
-                    setCurrentItem={setCurrentItem}
-                    setBackupItem={setBackupItem}
-                    defaultItem={defaultItem}
-                />
-            </Modal>
-            {/*  ============== EQUIPMENT ADD DETAILS MODAL: END ============== */}
-
         </div>
     );
 }
