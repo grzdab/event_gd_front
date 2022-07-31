@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react'
 import { sortRows, filterRows, paginateRows } from './helpers'
 import { Pagination } from './Pagination'
+import ButtonEdit from "./ButtonEdit";
+import ButtonDelete from "./ButtonDelete";
 
 export const Table = ({ columns, rows }) => {
     const [activePage, setActivePage] = useState(1)
@@ -97,6 +99,12 @@ export const Table = ({ columns, rows }) => {
                                 }
                                 return <td key={column.accessor}>{row[column.accessor]}</td>
                             })}
+                            <td>
+                                <ButtonEdit e={row} />
+                            </td>
+                            <td>
+                                <ButtonDelete e={row}/>
+                            </td>
                         </tr>
                     )
                 })}

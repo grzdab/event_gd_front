@@ -261,17 +261,6 @@ const Events = () => {
                         <div className="card-body">
                             {itemsList.length ?
                                 (<div className="table_container">
-                                    {/*<TableContent*/}
-                                    {/*    // caption="LoremIpsum"*/}
-                                    {/*    data={itemsList}*/}
-                                    {/*    columns={columns}*/}
-                                    {/*    countItems={countItems}*/}
-                                    {/*    currentPage={currentPage}*/}
-                                    {/*    setCurrentPage={setCurrentPage}*/}
-                                    {/*    setItems={setItems}*/}
-                                    {/*    setLoading={setLoading}*/}
-                                    {/*/>*/}
-
                                     <Table rows={itemsList} columns={columns} />
                                 </div>) : (<h5>Loading data</h5> )}
                         </div>

@@ -1,4 +1,7 @@
 import React from 'react'
+import KeyboardDoubleArrowLeftSharpIcon from '@mui/icons-material/KeyboardDoubleArrowLeftSharp';
+import KeyboardDoubleArrowRightSharpIcon from '@mui/icons-material/KeyboardDoubleArrowRightSharp';
+
 
 export const Pagination = ({ activePage, count, rowsPerPage, totalPages, setActivePage }) => {
     const beginning = activePage === 1 ? 1 : rowsPerPage * (activePage - 1) + 1
@@ -7,18 +10,10 @@ export const Pagination = ({ activePage, count, rowsPerPage, totalPages, setActi
     return (
         <>
             <div className="pagination">
-                <button disabled={activePage === 1} onClick={() => setActivePage(1)}>
-                    ⏮️ First
-                </button>
-                <button disabled={activePage === 1} onClick={() => setActivePage(activePage - 1)}>
-                    ⬅️ Previous
-                </button>
-                <button disabled={activePage === totalPages} onClick={() => setActivePage(activePage + 1)}>
-                    Next ➡️
-                </button>
-                <button disabled={activePage === totalPages} onClick={() => setActivePage(totalPages)}>
-                    Last ⏭️
-                </button>
+                <KeyboardDoubleArrowLeftSharpIcon disabled={activePage === 1} onClick={() => setActivePage(1)}> </KeyboardDoubleArrowLeftSharpIcon>
+                <button disabled={activePage === 1} onClick={() => setActivePage(activePage - 1)}> ⬅ </button>
+                <button disabled={activePage === totalPages} onClick={() => setActivePage(activePage + 1)}> ➡ </button>
+                <KeyboardDoubleArrowRightSharpIcon disabled={activePage === totalPages} onClick={() => setActivePage(totalPages)}> ⏭ </KeyboardDoubleArrowRightSharpIcon>
             </div>
             <p>
                 Page {activePage} of {totalPages}
