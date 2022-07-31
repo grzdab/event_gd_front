@@ -1,41 +1,78 @@
-// import React, {useState} from 'react';
+import React, {useState} from 'react';
 //
-// const TableHead = ({ columns, handleSorting }) => {
-//     const [sortField, setSortField] = useState("propertyName");
-//     const [order, setOrder] = useState("asc");
-//
-//     const handleSortingChange = (accessor) => {
-//         const sortOrder =
-//             accessor === sortField && order === "asc" ? "desc" : "asc";
-//         setSortField(accessor);
-//         setOrder(sortOrder);
-//         handleSorting(accessor, sortOrder);
-//     };
-//
-//     return (
-//         <thead>
-//         <tr>
-//             {columns.map(({ label, accessor, sortable }) => {
-//                 const cl = sortable
-//                     ? sortField === accessor && order === "asc"
-//                         ? "up"
-//                         : sortField === accessor && order === "desc"
-//                             ? "down"
-//                             : "default"
-//                     : "";
-//                 return (
-//                     <th
-//                         key={accessor}
-//                         onClick={sortable ? () => handleSortingChange(accessor) : null}
-//                         className={cl}
-//                     >
-//                         {label}
-//                     </th>
-//                 );
-//             })}
-//         </tr>
-//         </thead>
-//     );
-// };
-//
-// export default TableHead;
+const TableHead = ({
+                        columns,
+                        setActivePage,
+                        filters,
+                        setFilters,
+                        sort,
+                        setSort
+                    }) => {
+
+    const handleSort = (accessor) => {
+        setActivePage(1)
+        setSort((prevSort) => ({
+            order: prevSort.order === 'asc' && prevSort.orderBy === accessor ? 'desc' : 'asc',
+            orderBy: accessor,
+        }))
+    }
+    const handleSearch = (value, accessor) => {
+        setActivePage(1)
+
+        if (value) {
+            setFilters((prevFilters) => ({
+                ...prevFilters,
+                [accessor]: value,
+            }))
+        } else {
+            setFilters((prevFilters) => {
+                const updatedFilters = { ...prevFilters }
+                delete updatedFilters[accessor]
+
+                return updatedFilters
+            })
+        }
+    }
+
+    return (
+        <thead>
+        <tr>
+            {columns.map((column) => {
+                const sortIcon = () => {
+                    if (column.accessor === sort.orderBy) {
+                        if (sort.order === 'asc') {
+                            return '⬆️'
+                        }
+                        return '⬇️'
+                    } else {
+                        return '️↕️'
+                    }
+                }
+                return (
+                    <th key={column.accessor}>
+                        <span>{column.label}</span>
+                        <button onClick={() => handleSort(column.accessor)}>{sortIcon()}</button>
+                    </th>
+                )
+            })}
+        </tr>
+        <tr>
+            {columns.map((column) => {
+                return (
+                    <th>
+                        <input
+                            key={`${column.accessor}-search`}
+                            type="search"
+                            placeholder={`Search ${column.label}`}
+                            value={filters[column.accessor]}
+                            onChange={(event) => handleSearch(event.target.value, column.accessor)}
+                        />
+                    </th>
+                )
+            })}
+        </tr>
+        </thead>
+    );
+};
+
+export default TableHead;

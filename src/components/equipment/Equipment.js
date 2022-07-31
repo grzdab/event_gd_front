@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import {Modal, Table} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
-import ModalFooter from "../layout/ModalFooter";
+import ModalFooter from "../layout/modal/ModalFooter";
 import axios from "axios";
 import {
     addItem,
@@ -25,7 +25,7 @@ import {
 import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
+import ModalDeleteWarning from "../layout/modal/ModalDeleteWarning";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 
 // TODO: react-dropzone can be used for selecting images

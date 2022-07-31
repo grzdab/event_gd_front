@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import { getItems } from "../helpers/ComponentHelper";
-import {Table} from "./Table";
+import {Table} from "../layout/Table";
 import ButtonAddSimple from "../layout/ButtonAddSimple";
 import Footer from "../layout/Footer";
 

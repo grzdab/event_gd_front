@@ -8,7 +8,7 @@ import {
 } from "../helpers/ComponentHelper";
 import {Fab} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import ModalDeleteFooter from "../layout/ModalDeleteFooter";
+import ModalDeleteFooter from "../layout/modal/ModalDeleteFooter";
 
 
 let clickedId = 0;

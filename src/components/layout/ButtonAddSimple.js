@@ -12,7 +12,7 @@ import {
     restoreFormData, updateItem
 } from "../helpers/ComponentHelper";
 import {compareObjects, resetInvalidInputField} from "../../js/CommonHelper";
-import ModalFooter from "./ModalFooter";
+import ModalFooter from "./modal/ModalFooter";
 
 
 const ButtonAddSimple = ({
