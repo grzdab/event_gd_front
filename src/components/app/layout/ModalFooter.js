@@ -2,13 +2,16 @@ import React, {Component} from 'react';
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 
+import {
+  onFormCancelCloseButtonClick,
+  onFormCancelDeleteButtonClick,
+  onFormConfirmDeleteButtonClick,
+  onFormCloseWithoutSavingButtonClick,
+  } from "../../../helpers/ComponentHelper";
+
 const ModalFooter = ({
-                         onFormCancelDeleteButtonClick,
                          onDelete,
                          currentFormState,
-                         onFormConfirmDeleteButtonClick,
-                         onFormCancelCloseButtonClick,
-                         onFormCloseWithoutSavingButtonClick,
                          onCloseDetails,
                          onSubmit,
                          setCurrentFormState,

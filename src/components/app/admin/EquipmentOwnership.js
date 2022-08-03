@@ -9,13 +9,6 @@ import {compareObjects, resetInvalidInputField} from "../../../js/CommonHelper";
 import {Table} from "react-bootstrap";
 import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import ModalFooter from "../layout/ModalFooter";
-import {
-  addItem,
-  updateItem,
-  deleteItem,
-  getItems,
-  getRelatedItemsByParentId
-} from "../../../helpers/ComponentHelper";
 import {clearCurrentItem} from "../../../helpers/ComponentHelper";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -23,16 +16,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   onAddDataClick,
   onSaveAndClose,
-  onFormCancelCloseButtonClick,
-  onFormCancelDeleteButtonClick,
-  onFormConfirmDeleteButtonClick,
   onItemsListInfoButtonClick,
   compareData,
-  onFormCloseWithoutSavingButtonClick,
   restoreFormData,
   onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
+
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
 import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import AppAddDataButton from "../common/AppButtonAddData";
 
 const EquipmentOwnership = () => {
 
@@ -128,7 +119,6 @@ const EquipmentOwnership = () => {
 
   const checkRelatedEquipment = async (id) => {
     const data = await getRelatedEquipmentByOwnershipId(id);
-    console.log(data);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
 
@@ -188,20 +178,23 @@ const EquipmentOwnership = () => {
   }, [])
 
 
+  const addDataButtonProps = {
+    setCurrentItem,
+    setBackupItem,
+    defaultItem,
+    currentFormState,
+    setCurrentFormState,
+    formDescription: 'Here you can add new equipment ownership types.',
+    formHeader: 'Add new equipment ownership type',
+    buttonTitle: 'Add new equipment ownership type'
+  }
+
+
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
         <h1 className="mt-4">EQUIPMENT OWNERSHIP TYPES</h1>
-        <div className="container-fluid">
-          <div className="RAM_container">
-            <Button className="RAM_button" id="addData"
-                    onClick={()=>{
-                      clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-                      onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment ownership types.', 'Add new equipment ownership type');
-                    }}>
-              Add new equipment ownership type</Button>
-          </div>
-        </div>
+        <AppAddDataButton props ={ addDataButtonProps }/>
         <div className="card mb-4">
           <AppComponentCardHeader title = "Equipment ownership types list" />
           {(() => {
@@ -361,12 +354,8 @@ const EquipmentOwnership = () => {
           </section>
         </Modal.Body>
         <ModalFooter
-          onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
           onDelete={deleteItem}
           currentFormState={currentFormState}
-          onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
-          onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
-          onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
           onCloseDetails={onCloseDetails}
           onSubmit={onSaveItem}
           setCurrentFormState = {setCurrentFormState}

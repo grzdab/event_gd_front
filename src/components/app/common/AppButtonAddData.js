@@ -1,31 +1,27 @@
 import React from 'react';
 import Button from "react-bootstrap/Button";
 import {clearCurrentItem, onAddDataClick} from "../../../helpers/ComponentHelper";
-import {useEffect} from "react";
 
-const AppButtonAddData = ( {props} ) => {
-
-  useEffect(() => {
-    console.log(props);
-  }, [])
+const AppButtonAddData = ( props ) => {
 
   return (
-    <>
+    <div className="container-fluid">
+      <div className="RAM_container">
       <Button className="RAM_button" id="addData"
               onClick={()=>{
                 clearCurrentItem(
-                  props.clearItemProps.currentItem,
-                  props.clearItemProps.setCurrentItem,
-                  props.clearItemProps.setBackupItem,
-                  props.clearItemProps.defaultItem);
+                  props.props.setCurrentItem,
+                  props.props.setBackupItem,
+                  props.props.defaultItem);
                 onAddDataClick(
-                  props.onAddDataClickProps.currentFormState,
-                  props.onAddDataClickProps.setCurrentFormState,
-                  props.onAddDataClickProps.formDescription,
-                  props.onAddDataClickProps.formHeader);
+                  props.props.currentFormState,
+                  props.props.setCurrentFormState,
+                  props.props.formDescription,
+                  props.props.formHeader);
               }}>
-        { props.buttonTitle } </Button>
-    </>
+        { props.props.buttonTitle } </Button>
+      </div>
+    </div>
   );
 };
 

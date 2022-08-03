@@ -26,6 +26,8 @@ import EquipmentOwnership from "./components/app/admin/EquipmentOwnership";
 import EquipmentBookingStatus from "./components/app/admin/EquipmentBookingStatus";
 import Client from "./components/app/client/Client";
 import User from "./components/app/user/User";
+import ComponentTest from "./components/app/component_test/ComponentTest";
+import PostsList from "./components/app/component_test/posts/PostsList";
 
 
 const ROLES = {
@@ -56,7 +58,7 @@ function Site() {
             <Route path="test" element={<TableTest />} />
             <Route path="equipment" element={<Equipment />} />
             <Route path="equipment-status" element={<EquipmentStatus />} />
-            <Route path="equipment-ownership" element={<EquipmentOwnership />} />
+            {/*<Route path="equipment-ownership" element={<ComponentTest />} />*/}
             <Route path="equipment-booking-status" element={<EquipmentBookingStatus />} />
             <Route path="clients" element={<Client />} />
             <Route path="users" element={<User />} />

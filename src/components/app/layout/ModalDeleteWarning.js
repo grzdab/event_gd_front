@@ -7,6 +7,9 @@ import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclama
 const ModalDeleteWarning = ({currentFormState, onCloseDeleteWarningDialog, onDelete, deleteItemName}) => {
 
 
+
+
+
     useEffect(()=> {
 
         if (currentFormState.warningDeleteButtonDisabled & currentFormState.warningWarningIconVisible) {
