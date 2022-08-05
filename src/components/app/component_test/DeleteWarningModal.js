@@ -3,28 +3,32 @@ import Button from "react-bootstrap/Button";
 import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import {onCloseDeleteWarningDialog} from "../../../helpers/ComponentHelper";
 
-const DeleteWarningModal = ({currentFormState, onCloseDeleteWarningDialog, onDelete, deleteItemName}) => {
+const DeleteWarningModal = ({onDelete, deleteItemName, state}) => {
+
+  const currentFormState = state.currentFormState;
+
+  const onClose = () => {
+    onCloseDeleteWarningDialog({state});
+  }
 
   useEffect(()=> {
-
-    if (currentFormState.warningDeleteButtonDisabled & currentFormState.warningWarningIconVisible) {
+    if (currentFormState.warningDeleteButtonDisabled && currentFormState.warningWarningIconVisible) {
       const btnDelete = document.getElementById("delete-button");
       const warningIcon = document.getElementById("warning-icon");
-
       if (btnDelete && warningIcon) {
         btnDelete.setAttribute('disabled', '');
         warningIcon.classList.add("div-visible");
       }
     }
-
   }, [currentFormState])
 
 
   return (
     <Modal
       show={currentFormState.showDeleteWarning}
-      onHide={onCloseDeleteWarningDialog}
+      onHide={onClose}
       backdrop="static"
       keyboard={false}
     >
@@ -42,10 +46,12 @@ const DeleteWarningModal = ({currentFormState, onCloseDeleteWarningDialog, onDel
             </div>
           </div>
           <div className="col-md-6" style={{textAlign: "right"}}>
-            <Button variant="secondary mrx1" onClick={onCloseDeleteWarningDialog}>
+            <Button variant="secondary mrx1" onClick={onClose}>
               Cancel
             </Button>
-            <Button variant="danger" id="delete-button" onClick={onDelete}>Delete</Button>
+            <Button variant="danger" id="delete-button" onClick={onDelete}>
+              Delete
+            </Button>
 
           </div>
         </div>

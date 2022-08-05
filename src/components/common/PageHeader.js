@@ -4,7 +4,6 @@ import useLogout from "../../hooks/useLogout";
 import {Link, useNavigate} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
-
 const PageHeader = ({ valid }) => {
 
   const logout = useLogout();
@@ -20,7 +19,7 @@ const PageHeader = ({ valid }) => {
     navigate('/login')
   }
         return (
-            <nav className="navbar justify-content-between navbar-dark bg-dark">
+            <nav className="navbar justify-content-between navbar-dark bg-dark sticky-top">
                 <Link className="navbar-brand ps-3" to="/">Welcome to R.A.M.</Link>
               <div style={{display: "flex"}}>
               <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i className="fas fa-bars"></i></button>

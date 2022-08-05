@@ -32,7 +32,7 @@ import {
     restoreFormData,
     onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import LoadingDataDiv from "../common/LoadingDataDiv";
 
 
 
@@ -225,7 +225,7 @@ const EquipmentCategory = () => {
                     {(() => {
                         if (loading) {
                             return (
-                              <AppComponentLoadingDataDiv />
+                              <LoadingDataDiv />
                             )
                         } else {
                             if (itemsList.length > 0) {

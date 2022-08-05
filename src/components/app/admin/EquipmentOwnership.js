@@ -22,7 +22,7 @@ import {
   onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import LoadingDataDiv from "../common/LoadingDataDiv";
 import AppAddDataButton from "../common/AppButtonAddData";
 
 const EquipmentOwnership = () => {
@@ -200,7 +200,7 @@ const EquipmentOwnership = () => {
           {(() => {
             if (loading) {
               return (
-                <AppComponentLoadingDataDiv />
+                <LoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {

@@ -687,6 +687,7 @@ progress {
     padding-left: var(--bs-gutter-x, 0.75rem);
     margin-right: auto;
     margin-left: auto;
+
 }
 
 @media (min-width: 576px) {
@@ -11848,4 +11849,8 @@ body {
 
 .card.ram-card {
     height: 15rem;
+}
+
+#layoutSidenav_content {
+    background-color: #e3e3e3;
 }

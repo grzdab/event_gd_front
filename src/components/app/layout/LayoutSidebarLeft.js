@@ -25,7 +25,11 @@ const LayoutSidebarLeft = () => {
               </a>
               <a className="nav-link" href="/app/scheduler">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
-                Scheduler
+                Scheduler (posts)
+              </a>
+              <a className="nav-link" href="/app/component_test">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
+                Component test
               </a>
               <div className="sb-sidenav-menu-heading">Resources</div>
               <a className="nav-link" href="/app/events">

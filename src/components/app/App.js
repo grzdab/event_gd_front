@@ -9,6 +9,7 @@ import Home from "../Home";
 import React from "react";
 import Dashboard from "./dashboard/Dashboard";
 
+
 const App = () => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();

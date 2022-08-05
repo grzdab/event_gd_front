@@ -30,7 +30,7 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAxiosPrivateFileUpload from "../../../hooks/useAxiosPrivateFileUpload";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import LoadingDataDiv from "../common/LoadingDataDiv";
 import AppComponentPageHeader from "../common/AppComponentPageHeader";
 
 // TODO: react-dropzone can be used for selecting images
@@ -417,7 +417,7 @@ const Equipment = ({appSettings, setAppSettings}) => {
           {(() => {
             if (loading) {
               return (
-                <AppComponentLoadingDataDiv />
+                <LoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {

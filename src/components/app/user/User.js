@@ -25,7 +25,7 @@ import ModalDeleteWarning from "../layout/ModalDeleteWarning";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import AppComponentLoadingDataDiv from "../common/AppComponentLoadingDataDiv";
+import LoadingDataDiv from "../common/LoadingDataDiv";
 import AppComponentPageHeader from "../common/AppComponentPageHeader";
 
 
@@ -144,7 +144,7 @@ const User = () => {
           {(() => {
             if (loading) {
               return (
-                <AppComponentLoadingDataDiv />
+                <LoadingDataDiv />
               )
             } else {
               if (itemsList.length > 0) {

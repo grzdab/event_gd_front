@@ -1,4 +1,4 @@
-import {compareObjects} from "../js/CommonHelper";
+import { compareObjects } from "../js/CommonHelper";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 
@@ -123,8 +123,14 @@ export const getRelatedItemsByParentId = async (url, setItemsList) => {
 
 }
 
-export const restoreFormData = (backupItem, setCurrentItem, currentFormState, setCurrentFormState) =>  {
-    setCurrentItem(backupItem);
+export const restoreFormData = ({ state }) =>  {
+
+  const backupItem = state.backupItem;
+  const setCurrentItem = state.setCurrentItem;
+  const currentFormState = state.currentFormState;
+  const setCurrentFormState = state.setCurrentFormState;
+
+  setCurrentItem(backupItem);
     for (let key in backupItem) {
         if (backupItem.hasOwnProperty(key)) {
             let element = document.getElementById(key);
@@ -190,8 +196,56 @@ export const getItems = async (url, setItems) => {
     }
 }
 
-export const numberFilter = () => {
+
+export const onCloseDeleteWarningDialog = ({ state }) => {
+  const setCurrentItem = state.setCurrentItem;
+  const setBackupItem = state.setBackupItem;
+  const defaultItem = state.defaultItem;
+  const setAllowDelete = state.setAllowDelete;
+  const currentFormState = state.currentFormState;
+  const setCurrentFormState = state.setCurrentFormState;
+
+  clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+  setAllowDelete(null);
+  setCurrentFormState({ ...currentFormState,
+    showDeleteWarning: false,
+    showForm: false,
+    warningDescription: "",
+    warningDeleteButtonDisabled: false,
+    warningWarningIconVisible: false });
+};
 
 
-
+export function resetInvalidInputField(fieldId) {
+  const inputField = document.getElementById(fieldId);
+  inputField.placeholder = "";
+  inputField.classList.remove("form-input-invalid");
 }
+
+
+export const onCloseDetails = ( {state} ) => {
+
+  const currentItem = state.currentItem;
+  const setCurrentItem = state.setCurrentItem;
+  const currentFormState = state.currentFormState;
+  const setCurrentFormState = state.setCurrentFormState;
+  const backupItem = state.backupItem;
+  const setBackupItem = state.setBackupItem;
+  const defaultItem = state.defaultItem;
+
+
+  if (compareObjects(backupItem, currentItem)) {
+    setCurrentFormState({
+      ...currentFormState,
+      showForm: false,
+      formSaveButtonDisabled: true,
+      formAddingDataMode: false
+    })
+    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+  } else {
+    let closeWithoutSaving = document.getElementById("confirm-close");
+    let btnClose = document.getElementById("btn-close");
+    closeWithoutSaving.classList.add("div-visible");
+    btnClose.classList.add("btn-invisible");
+  }
+};
