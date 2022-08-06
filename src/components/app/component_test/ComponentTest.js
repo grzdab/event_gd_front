@@ -32,10 +32,9 @@ const ComponentTest = () => {
   const equipmentOwnershipRelatedEquipmentUrl = "/equipment/ownership";
   const defaultItem = ownershipTypeDefault;
 
-  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
+  const { isLoading, createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
 
   const [loading, setLoading] = useState(true);
   const [allowDelete, setAllowDelete] = useState(null);
@@ -100,7 +99,6 @@ const ComponentTest = () => {
     }
   }, [allowDelete])
 
-
   useEffect(() => {
     const getData = async () => {
       const response = await getItems(equipmentOwnershipUrl);
@@ -117,28 +115,6 @@ const ComponentTest = () => {
   }, [])
 
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const controller = new AbortController();
-  //   const getItems = async () => {
-  //     try {
-  //       const response = await axiosPrivate.get(equipmentOwnershipUrl, {
-  //         signal: controller.signal
-  //       });
-  //       isMounted && setItems(response.data);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       navigate('/login', { state: { from: location }, replace: true });
-  //     }
-  //   }
-  //   getItems();
-  //
-  //   return () => {
-  //     isMounted = false;
-  //     controller.abort();
-  //   }
-  // }, [])
-
   const addDataButtonProps = { 
     setCurrentItem,
     setBackupItem,
@@ -152,7 +128,7 @@ const ComponentTest = () => {
 
 
   let dataSectionContent;
-  if (loading) { 
+  if (loading) {
     dataSectionContent = <LoadingDataDiv />
   } else if (itemsList.length > 0) { 
     dataSectionContent =

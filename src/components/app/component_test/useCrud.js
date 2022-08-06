@@ -54,45 +54,20 @@ const useCrud = (dataUrl) => {
   }
 
   const getItems = async (url) => {
+    let response;
     try {
-      const response = await axiosPrivate.get(url);
-      setIsLoading(false);
+      response = await axiosPrivate.get(url);
       setFetchError(null);
       return response;
     } catch (err) {
       setFetchError(err.message);
       return err.message;
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  // useEffect((dataUrl) => {
-  //     let isMounted = true;
-  //     const controller = new AbortController();
-  //     const getItems = async (url) => {
-  //       try {
-  //         const response = await axiosPrivate.get(url, {
-  //           signal: controller.signal
-  //         });
-  //         setIsLoading(false);
-  //         setFetchError(null);
-  //         isMounted && setData(response.data);
-  //       } catch (err) {
-  //         setFetchError(err.message);
-  //         setData([]);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //
-  //     getItems(dataUrl);
-  //
-  //     return () => {
-  //       isMounted = false;
-  //       controller.abort();
-  //     }
-  // }, [dataUrl]);
-
-  return { data, isLoading, fetchError, createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId };
+  return { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId };
 
 };
 
