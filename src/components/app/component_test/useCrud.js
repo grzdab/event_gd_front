@@ -9,7 +9,6 @@ const useCrud = (dataUrl) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(null);
 
-
   const createItem = async (url, item, state) => {
     const itemsList = state.itemsList;
     const setItems = state.setItems;
@@ -18,7 +17,6 @@ const useCrud = (dataUrl) => {
     setItems([...itemsList, response.data]);
     return response.status;
   }
-
 
   const updateItem = async (url, item, state) => {
     const itemsList = state.itemsList;
@@ -32,7 +30,6 @@ const useCrud = (dataUrl) => {
     return response;
   }
 
-
   const deleteItem = async (url, currentItemId, state) => {
     const itemsList = state.itemsList;
     const setItems = state.setItems;
@@ -42,7 +39,6 @@ const useCrud = (dataUrl) => {
       onCloseDeleteWarningDialog({state});
     }
     return response.status;
-
   }
 
   const getRelatedChildrenByParentId = async (url, id, setRelatedItems) => {
@@ -57,34 +53,46 @@ const useCrud = (dataUrl) => {
     }
   }
 
-  useEffect(() => {
-      let isMounted = true;
-      const controller = new AbortController();
-      const getItems = async (url) => {
-        try {
-          const response = await axiosPrivate.get(url, {
-            signal: controller.signal
-          });
-          isMounted && setData(response.data);
-          setIsLoading(false);
-          setFetchError(null);
-        } catch (err) {
-          setFetchError(err.message);
-          setData([]);
-        } finally {
-          setIsLoading(false);
-        }
-      }
+  const getItems = async (url) => {
+    try {
+      const response = await axiosPrivate.get(url);
+      setIsLoading(false);
+      setFetchError(null);
+      return response;
+    } catch (err) {
+      setFetchError(err.message);
+      return err.message;
+    }
+  }
 
-      getItems(dataUrl);
+  // useEffect((dataUrl) => {
+  //     let isMounted = true;
+  //     const controller = new AbortController();
+  //     const getItems = async (url) => {
+  //       try {
+  //         const response = await axiosPrivate.get(url, {
+  //           signal: controller.signal
+  //         });
+  //         setIsLoading(false);
+  //         setFetchError(null);
+  //         isMounted && setData(response.data);
+  //       } catch (err) {
+  //         setFetchError(err.message);
+  //         setData([]);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //
+  //     getItems(dataUrl);
+  //
+  //     return () => {
+  //       isMounted = false;
+  //       controller.abort();
+  //     }
+  // }, [dataUrl]);
 
-      return () => {
-        isMounted = false;
-        controller.abort();
-      }
-  }, [dataUrl]);
-
-  return { data, isLoading, fetchError, createItem, updateItem, deleteItem, getRelatedChildrenByParentId };
+  return { data, isLoading, fetchError, createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId };
 
 };
 

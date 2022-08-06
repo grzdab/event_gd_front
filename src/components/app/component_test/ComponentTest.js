@@ -35,7 +35,7 @@ const ComponentTest = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data, isLoading, fetchError, createItem, updateItem, deleteItem, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
+  const { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
 
   const [loading, setLoading] = useState(true);
   const [allowDelete, setAllowDelete] = useState(null);
@@ -100,27 +100,44 @@ const ComponentTest = () => {
     }
   }, [allowDelete])
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const getItems = async () => {
-      try {
-        const response = await axiosPrivate.get(equipmentOwnershipUrl, {
-          signal: controller.signal
-        });
-        isMounted && setItems(response.data);
-        setLoading(false);
-      } catch (err) {
-        navigate('/login', { state: { from: location }, replace: true });
-      }
-    }
-    getItems();
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    }
+  useEffect(() => {
+    const getData = async () => {
+      const response = await getItems(equipmentOwnershipUrl);
+      if (response.status === 200) {
+        setLoading(false);
+        setItems(response.data);
+      } else if (response.status === 401 || response.status === 403) {
+        navigate('/login', { state: { from: location }, replace: true})
+      } else {
+        alert("Could not get the requested data.");
+      }
+    };
+    getData();
   }, [])
+
+
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const controller = new AbortController();
+  //   const getItems = async () => {
+  //     try {
+  //       const response = await axiosPrivate.get(equipmentOwnershipUrl, {
+  //         signal: controller.signal
+  //       });
+  //       isMounted && setItems(response.data);
+  //       setLoading(false);
+  //     } catch (err) {
+  //       navigate('/login', { state: { from: location }, replace: true });
+  //     }
+  //   }
+  //   getItems();
+  //
+  //   return () => {
+  //     isMounted = false;
+  //     controller.abort();
+  //   }
+  // }, [])
 
   const addDataButtonProps = { 
     setCurrentItem,
