@@ -5,19 +5,19 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {compareObjects, resetInvalidInputField} from "../../../js/CommonHelper";
+import {compareObjects, resetInvalidInputField} from "../../../../js/CommonHelper";
 import {Table} from "react-bootstrap";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
-import ModalFooter from "../layout/ModalFooter";
+import ModalDeleteWarning from "../../layout/ModalDeleteWarning";
+import ModalFooter from "../../layout/ModalFooter";
 import {
     addItem,
     updateItem,
     deleteItem,
     getItems,
     getRelatedItemsByParentId
-} from "../../../helpers/ComponentHelper";
-import {clearCurrentItem} from "../../../helpers/ComponentHelper";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+} from "../../../../helpers/ComponentHelper";
+import {clearCurrentItem} from "../../../../helpers/ComponentHelper";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -30,9 +30,9 @@ import {
     compareData,
     onFormCloseWithoutSavingButtonClick,
     restoreFormData,
-    onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
-import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import LoadingDataDiv from "../common/LoadingDataDiv";
+    onItemsListDeleteButtonClick} from "../../../../helpers/ComponentHelper";
+import AppComponentCardHeader from "../../common/AppComponentCardHeader";
+import LoadingDataDiv from "../../common/LoadingDataDiv";
 
 
 

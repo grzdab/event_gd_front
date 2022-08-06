@@ -23,6 +23,10 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
               </a>
+              <a className="nav-link" href="/app/events_test">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
+                Events (test)
+              </a>
               <a className="nav-link" href="/app/scheduler">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
                 Scheduler (posts)

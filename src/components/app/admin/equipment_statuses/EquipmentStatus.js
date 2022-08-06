@@ -5,30 +5,38 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {compareObjects, resetInvalidInputField} from "../../../js/CommonHelper";
+import {compareObjects, resetInvalidInputField} from "../../../../js/CommonHelper";
 import {Table} from "react-bootstrap";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
-import ModalFooter from "../layout/ModalFooter";
-import {clearCurrentItem} from "../../../helpers/ComponentHelper";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import ModalDeleteWarning from "../../layout/ModalDeleteWarning";
+import ModalFooter from "../../layout/ModalFooter";
+import {
+  addItem,
+  updateItem,
+  deleteItem,
+  getItems,
+  getRelatedItemsByParentId
+} from "../../../../helpers/ComponentHelper";
+import {clearCurrentItem} from "../../../../helpers/ComponentHelper";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
   onAddDataClick,
   onSaveAndClose,
+  onFormCancelCloseButtonClick,
+  onFormCancelDeleteButtonClick,
+  onFormConfirmDeleteButtonClick,
   onItemsListInfoButtonClick,
   compareData,
+  onFormCloseWithoutSavingButtonClick,
   restoreFormData,
-  onItemsListDeleteButtonClick} from "../../../helpers/ComponentHelper";
+  onItemsListDeleteButtonClick} from "../../../../helpers/ComponentHelper";
+import AppComponentCardHeader from "../../common/AppComponentCardHeader";
 
-import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import LoadingDataDiv from "../common/LoadingDataDiv";
-import AppAddDataButton from "../common/AppButtonAddData";
+const EquipmentStatus = () => {
 
-const EquipmentOwnership = () => {
-
-  const equipmentOwnershipUrl ="/equipment-ownership";
-  const equipmentOwnershipRelatedEquipmentUrl = "/equipment/ownership";
+  const equipmentStatusUrl ="/equipment-status";
+  const equipmentStatusRelatedEquipmentUrl = "/equipment/status";
 
   const defaultItem = {
     "id": "",
@@ -39,7 +47,7 @@ const EquipmentOwnership = () => {
     "showForm": false,
     "showDeleteWarning": false,
     "showItemChangedWarning": false,
-    "formHeader": "Edit equipment ownership type",
+    "formHeader": "Edit equipment status",
     "formDescription": "",
     "formDataChangedWarning": "Data has been changed",
     "formAddingDataMode": false,
@@ -69,18 +77,18 @@ const EquipmentOwnership = () => {
     if(!currentItem.name) {
       let nameInput = document.getElementById("name");
       nameInput.classList.add("form-input-invalid");
-      nameInput.placeholder = "Ownership name cannot be empty"
+      nameInput.placeholder = "Status name cannot be empty"
       return;
     }
 
     if (currentFormState.formAddingDataMode) {
       const item = {name: currentItem.name};
-      const response = await axiosPrivate.post(equipmentOwnershipUrl, item);
+      const response = await axiosPrivate.post(equipmentStatusUrl, item);
       setItems([...itemsList, response.data]);
       onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
     } else {
       const item = {id: currentItem.id, name: currentItem.name};
-      const response = await axiosPrivate.put(`${equipmentOwnershipUrl}/${item.id}`, item);
+      const response = await axiosPrivate.put(`${equipmentStatusUrl}/${item.id}`, item);
       const data = await response.data;
       setItems(
         itemsList.map((i) =>
@@ -90,7 +98,7 @@ const EquipmentOwnership = () => {
   }
 
   const deleteItem = async (e) => {
-    const url = `${equipmentOwnershipUrl}/${currentItem.id}`;
+    const url = `${equipmentStatusUrl}/${currentItem.id}`;
     try {
       await axiosPrivate.delete(url);
       setItems(itemsList.filter((i) => i.id !== currentItem.id));
@@ -102,14 +110,14 @@ const EquipmentOwnership = () => {
 
   useEffect(() => {
     if (allowDelete !== null) {
-      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership", allowDelete);
+      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment status", allowDelete);
     }
   }, [allowDelete])
 
 
-  const getRelatedEquipmentByOwnershipId = async (id) => {
+  const getRelatedEquipmentByStatusId = async (id) => {
     try {
-      const response = await axiosPrivate.get(`${equipmentOwnershipRelatedEquipmentUrl}/${id}`);
+      const response = await axiosPrivate.get(`${equipmentStatusRelatedEquipmentUrl}/${id}`);
       setEquipmentList(response.data);
       return response.data;
     } catch (err) {
@@ -118,7 +126,8 @@ const EquipmentOwnership = () => {
   }
 
   const checkRelatedEquipment = async (id) => {
-    const data = await getRelatedEquipmentByOwnershipId(id);
+    const data = await getRelatedEquipmentByStatusId(id);
+    console.log(data);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
 
@@ -160,7 +169,7 @@ const EquipmentOwnership = () => {
     const controller = new AbortController();
     const getItems = async () => {
       try {
-        const response = await axiosPrivate.get(equipmentOwnershipUrl, {
+        const response = await axiosPrivate.get(equipmentStatusUrl, {
           signal: controller.signal
         });
         isMounted && setItems(response.data);
@@ -178,29 +187,28 @@ const EquipmentOwnership = () => {
   }, [])
 
 
-  const addDataButtonProps = {
-    setCurrentItem,
-    setBackupItem,
-    defaultItem,
-    currentFormState,
-    setCurrentFormState,
-    formDescription: 'Here you can add new equipment ownership types.',
-    formHeader: 'Add new equipment ownership type',
-    buttonTitle: 'Add new equipment ownership type'
-  }
-
-
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
-        <h1 className="mt-4">EQUIPMENT OWNERSHIP TYPES</h1>
-        <AppAddDataButton props ={ addDataButtonProps }/>
+        <h1 className="mt-4">EQUIPMENT STATUSES</h1>
+        <div className="container-fluid">
+          <div className="RAM_container">
+            <Button className="RAM_button" id="addData"
+                    onClick={()=>{
+                      clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
+                      onAddDataClick(currentFormState, setCurrentFormState, 'Here you can add new equipment statuses.', 'Add new equipment status');
+                    }}>
+              Add new equipment status</Button>
+          </div>
+        </div>
         <div className="card mb-4">
-          <AppComponentCardHeader title = "Equipment ownership types list" />
+          <AppComponentCardHeader title = "Equipment statuses list" />
           {(() => {
             if (loading) {
               return (
-                <LoadingDataDiv />
+                <div className="spinner-border text-secondary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
               )
             } else {
               if (itemsList.length > 0) {
@@ -221,15 +229,15 @@ const EquipmentOwnership = () => {
                           <td>{e.id}</td>
                           <td>{e.name}</td>
                           <td><button className='btn btn-outline-info' onClick={() => {
-                            getRelatedEquipmentByOwnershipId(e.id)
+                            getRelatedEquipmentByStatusId(e.id)
                             setCurrentItem(e);
                             setBackupItem(e);
-                            onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment ownership type");
+                            onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment status");
                           }}><FontAwesomeIcon icon={faEye}/></button></td>
                           <td><button className='btn btn-outline-danger' onClick={() => {
                             setCurrentItem(e);
                             checkRelatedEquipment(e.id);
-                            // onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership type");
+                            // onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment status");
                           }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
                         </tr>
                       ))}
@@ -238,7 +246,7 @@ const EquipmentOwnership = () => {
                   </div>
                 )
               } else {
-                return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT OWNERSHIP TYPE</h6>)
+                return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT STATUS</h6>)
               }
             }
           })()}
@@ -249,18 +257,18 @@ const EquipmentOwnership = () => {
         currentFormState={currentFormState}
         onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
         onDelete={deleteItem}
-        deleteItemName="ownership"
+        deleteItemName="status"
       />
       {/*  ============== WARNING MODAL: END ============== */}
 
-      {/*  ============== EQUIPMENT OWNERSHIP TYPE DETAILS MODAL: BEGIN ============== */}
+      {/*  ============== EQUIPMENT STATUS DETAILS MODAL: BEGIN ============== */}
       <Modal show={currentFormState.showForm}
              size="xl"
              backdrop="static"
              keyboard={false}
              onHide={onCloseDetails}>
         <Modal.Header className="form-header" closeButton closeVariant="white">
-          <Modal.Title>Equipment ownership type details</Modal.Title>
+          <Modal.Title>Equipment status details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <section className="mb-4">
@@ -276,7 +284,7 @@ const EquipmentOwnership = () => {
 
             <div className="row">
               <div className="col-md-12 mb-md-0 mb-5">
-                <form id="add-equipment-ownership-form" name="add-equipment-ownership-form">
+                <form id="add-equipment-status-form" name="add-equipment-status-form">
                   <div className="row">
                     <div className="col-md-12">
                       <div className="md-form mb-0">
@@ -328,8 +336,8 @@ const EquipmentOwnership = () => {
                           <div className="card">
                             <div className="card-header">
                               {equipmentList.length > 0 ?
-                                "Equipment with this ownership type" :
-                                "No equipment found with this ownership type"
+                                "Equipment with this status" :
+                                "No equipment found with this status"
                               }
                             </div>
                             <div className="card-body">
@@ -354,8 +362,12 @@ const EquipmentOwnership = () => {
           </section>
         </Modal.Body>
         <ModalFooter
+          onFormCancelDeleteButtonClick={onFormCancelDeleteButtonClick}
           onDelete={deleteItem}
           currentFormState={currentFormState}
+          onFormConfirmDeleteButtonClick={onFormConfirmDeleteButtonClick}
+          onFormCancelCloseButtonClick={onFormCancelCloseButtonClick}
+          onFormCloseWithoutSavingButtonClick={onFormCloseWithoutSavingButtonClick}
           onCloseDetails={onCloseDetails}
           onSubmit={onSaveItem}
           setCurrentFormState = {setCurrentFormState}
@@ -364,10 +376,10 @@ const EquipmentOwnership = () => {
           defaultItem = {defaultItem}
         />
       </Modal>
-      {/*  ============== EQUIPMENT OWNERSHIP DETAILS MODAL: END ============== */}
+      {/*  ============== EQUIPMENT STATUS DETAILS MODAL: END ============== */}
     </div>
   )
 
 }
 
-export default EquipmentOwnership;
+export default EquipmentStatus;

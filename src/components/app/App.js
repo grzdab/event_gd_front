@@ -5,7 +5,6 @@ import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
 import PageHeader from "../common/PageHeader";
 import LayoutSidebarLeft from "./layout/LayoutSidebarLeft";
-import Home from "../Home";
 import React from "react";
 import Dashboard from "./dashboard/Dashboard";
 
@@ -27,7 +26,6 @@ const App = () => {
           <LayoutSidebarLeft />
             <Routes>
               <Route path='/app/dashboard' element={<Dashboard />} />
-              <Route path='/home' element={<Home />} />
             </Routes>
           <Outlet />
         </div>
