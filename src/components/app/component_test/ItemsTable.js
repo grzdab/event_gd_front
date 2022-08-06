@@ -3,20 +3,19 @@ import {Table} from "react-bootstrap";
 import TableRows from "./TableRows";
 import TableHead from "./TableHead";
 
-const ItemsTable = ({ itemsList, setCurrentItem, setBackupItem, currentFormState, setCurrentFormState, checkRelatedEquipment, getRelatedEquipmentByOwnershipId }) => {
+const ItemsTable = ({ state, checkRelatedItems, getRelatedItemsByParentId, formHeader }) => {
+
   return (
     <>
       <div className="card-body">
         <Table id="datatablesSimple">
           <TableHead />
           <tbody>
-            <TableRows itemsList={itemsList}
-                       setCurrentItem={setCurrentItem}
-                       setBackupItem={setBackupItem}
-                       currentFormState={currentFormState}
-                       setCurrentFormState={setCurrentFormState}
-                       checkRelatedEquipment={checkRelatedEquipment}
-                       getRelatedEquipmentByOwnershipId={getRelatedEquipmentByOwnershipId} />
+            <TableRows
+              state = { state }
+              checkRelatedItems = { checkRelatedItems }
+              formHeader = { formHeader }
+            />
           </tbody>
         </Table>
       </div>

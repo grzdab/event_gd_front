@@ -16,7 +16,7 @@ const useCrud = (dataUrl) => {
 
     const response = await axiosPrivate.post(url, item);
     setItems([...itemsList, response.data]);
-    return response;
+    return response.status;
   }
 
 
@@ -36,16 +36,26 @@ const useCrud = (dataUrl) => {
   const deleteItem = async (url, currentItemId, state) => {
     const itemsList = state.itemsList;
     const setItems = state.setItems;
-
-    try {
-      await axiosPrivate.delete();
+    const response = await axiosPrivate.delete(url);
+    if (response.status === 200) {
       setItems(itemsList.filter((i) => i.id !== currentItemId));
-      onCloseDeleteWarningDialog({ state });
-    } catch (err) {
-      console.log(err.message);
+      onCloseDeleteWarningDialog({state});
     }
+    return response.status;
+
   }
 
+  const getRelatedChildrenByParentId = async (url, id, setRelatedItems) => {
+    const setItems = setRelatedItems;
+
+    try {
+      const response = await axiosPrivate.get(url);
+      setItems(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
       let isMounted = true;
@@ -74,7 +84,7 @@ const useCrud = (dataUrl) => {
       }
   }, [dataUrl]);
 
-  return { data, isLoading, fetchError, createItem, updateItem };
+  return { data, isLoading, fetchError, createItem, updateItem, deleteItem, getRelatedChildrenByParentId };
 
 };
 

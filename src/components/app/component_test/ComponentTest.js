@@ -2,19 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import { compareObjects } from "../../../js/CommonHelper";
 import ModalFooter from "./ModalFooter";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../defaults/Forms";
 import { ownershipTypeDefault } from "../../../defaults/Items";
 import { 
-  clearCurrentItem,
   onSaveAndClose,
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
-  onCloseDeleteWarningDialog,
   onCloseDetails
 } from "../../../helpers/ComponentHelper";
 
@@ -29,7 +26,6 @@ import TextArea from "./TextArea";
 import RelatedItemsList from "./RelatedItemsList";
 import useCrud from "./useCrud";
 
-
 const ComponentTest = () => { 
 
   const equipmentOwnershipUrl ="/equipment-ownership";
@@ -39,7 +35,7 @@ const ComponentTest = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data, isLoading, fetchError, createItem, updateItem } = useCrud(equipmentOwnershipUrl);
+  const { data, isLoading, fetchError, createItem, updateItem, deleteItem, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
 
   const [loading, setLoading] = useState(true);
   const [allowDelete, setAllowDelete] = useState(null);
@@ -55,20 +51,16 @@ const ComponentTest = () => {
     currentItem, setCurrentItem,
     currentFormState, setCurrentFormState,
     defaultItem, backupItem, setBackupItem, itemChanged, setItemChanged,
-    setAllowDelete
+    setAllowDelete,
+    setRelatedItems: setEquipmentList
   }
 
-
-  const deleteItem = async (e) => {
-    try { 
-      await axiosPrivate.delete(`${ equipmentOwnershipUrl }/${ currentItem.id }`);
-      setItems(itemsList.filter((i) => i.id !== currentItem.id));
-      onCloseDeleteWarningDialog({ state });
-    } catch (err) { 
-      console.log(err.message);
+  const onDelete = async () => {
+    const response = await deleteItem(`${ equipmentOwnershipUrl }/${ currentItem.id }`, currentItem.id, state);
+    if (response === 401 || response === 403) {
+      navigate('/login', { state: { from: location }, replace: true });
     }
   }
-
 
   const onSaveItemClick = async (e) => { 
     e.preventDefault();
@@ -79,51 +71,34 @@ const ComponentTest = () => {
       return;
     }
     let response;
+    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
     if (currentFormState.formAddingDataMode) { 
-      const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
       response = await createItem(equipmentOwnershipUrl, item, state);
     } else { 
-      const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
       response = await updateItem(`${ equipmentOwnershipUrl }/${ item.id }`, item, state);
     }
-    response && onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
+    if (response === 401 || response === 403) navigate('/login', { state: { from: location }, replace: true });
+    response && onSaveAndClose({state});
   }
 
-
-  const getRelatedEquipmentByOwnershipId = async (id) => {
-    try {
-      const response = await axiosPrivate.get(`${ equipmentOwnershipRelatedEquipmentUrl }/${ id }`);
-      setEquipmentList(response.data);
-      return response.data;
-    } catch (err) {
-      navigate('/login', { state: { from: location }, replace: true });
-    }
-  }
-
-
-  const checkRelatedEquipment = async (id) => { 
-    const data = await getRelatedEquipmentByOwnershipId(id);
-    // const data = await getRelatedEquipmentByOwnershipId(equipmentOwnershipRelatedEquipmentUrl, id, setEquipmentList);
+  const checkRelatedItems = async (id) => {
+    const data = await getRelatedChildrenByParentId(`${ equipmentOwnershipRelatedEquipmentUrl }/${ id }`, id, setEquipmentList);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
-
 
   const onClose = () => {
     onCloseDetails({ state })
   };
 
-
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
   }, [itemChanged])
-
 
   useEffect(() => { 
     if (allowDelete !== null) {
       onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership type", allowDelete);
     }
   }, [allowDelete])
-
 
   useEffect(() => {
     let isMounted = true;
@@ -147,7 +122,6 @@ const ComponentTest = () => {
     }
   }, [])
 
-
   const addDataButtonProps = { 
     setCurrentItem,
     setBackupItem,
@@ -166,19 +140,13 @@ const ComponentTest = () => {
   } else if (itemsList.length > 0) { 
     dataSectionContent =
       <ItemsTable
-        itemsList={ itemsList }
-        setCurrentItem={ setCurrentItem }
-        setBackupItem={ setBackupItem }
-        currentFormState={ currentFormState }
-        setCurrentFormState={ setCurrentFormState }
-        checkRelatedEquipment={ checkRelatedEquipment }
-        getRelatedEquipmentByOwnershipId={ getRelatedEquipmentByOwnershipId }/>
+        state = { state }
+        checkRelatedItems = { checkRelatedItems }
+        formHeader = "Edit equipment ownership type"
+      />
   } else {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT OWNERSHIP TYPE</h6>
   }
-
-
-
 
   return (
     <div id="layoutSidenav_content">
@@ -193,7 +161,7 @@ const ComponentTest = () => {
       
       <DeleteWarningModal
         state = { state }
-        onDelete = { deleteItem }
+        onDelete = { onDelete }
         deleteItemName = "ownership type"/>
 
       <Modal show={ currentFormState.showForm }
@@ -243,7 +211,7 @@ const ComponentTest = () => {
         </Modal.Body>
 
         <ModalFooter
-          onDelete = { deleteItem }
+          onDelete = { onDelete }
           onCloseDetails = { onClose }
           onSubmit = { onSaveItemClick }
           state = { state }

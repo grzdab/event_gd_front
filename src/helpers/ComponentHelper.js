@@ -33,8 +33,17 @@ export const deleteItem = async (id, url, setItems, itemsList) => {
     setItems(itemsList.filter((i) => i.id !== id));
 }
 
-export const onSaveAndClose = (setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem) => {
-    setCurrentFormState({...currentFormState,
+export const onSaveAndClose = ({ state }) => {
+
+  // const currentItem = state.currentItem;
+  const setCurrentItem = state.setCurrentItem;
+  const currentFormState = state.currentFormState;
+  const setCurrentFormState = state.setCurrentFormState;
+  // const backupItem = state.backupItem;
+  const setBackupItem = state.setBackupItem;
+  const defaultItem = state.defaultItem;
+
+  setCurrentFormState({...currentFormState,
         showForm: false,
         formSaveButtonDisabled: true,
         formAddingDataMode: false
@@ -120,11 +129,9 @@ export const getRelatedItemsByParentId = async (url, setItemsList) => {
     const data = await response.json();
     setItemsList(data);
     return data;
-
 }
 
 export const restoreFormData = ({ state }) =>  {
-
   const backupItem = state.backupItem;
   const setCurrentItem = state.setCurrentItem;
   const currentFormState = state.currentFormState;
@@ -156,7 +163,6 @@ export const restoreFormData = ({ state }) =>  {
 }
 
 export const onItemsListDeleteButtonClick = (currentFormState, setCurrentFormState, itemName, allowDelete) =>  {
-    console.log(allowDelete);
     if (allowDelete) {
         setCurrentFormState({...currentFormState,
             showDeleteWarning: true,
@@ -170,12 +176,10 @@ export const onItemsListDeleteButtonClick = (currentFormState, setCurrentFormSta
             warningDeleteButtonDisabled: true,
             warningWarningIconVisible: true
         })
-
     }
 }
 
 export const getItems = async (url, setItems) => {
-
     const response = await fetch(url);
     const data = await response.json();
     switch(response.status) {
@@ -195,7 +199,6 @@ export const getItems = async (url, setItems) => {
         setItems(data);
     }
 }
-
 
 export const onCloseDeleteWarningDialog = ({ state }) => {
   const setCurrentItem = state.setCurrentItem;
@@ -222,9 +225,7 @@ export function resetInvalidInputField(fieldId) {
   inputField.classList.remove("form-input-invalid");
 }
 
-
 export const onCloseDetails = ( {state} ) => {
-
   const currentItem = state.currentItem;
   const setCurrentItem = state.setCurrentItem;
   const currentFormState = state.currentFormState;
