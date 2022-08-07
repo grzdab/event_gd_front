@@ -40,7 +40,7 @@ const TableHead = ({
 
   return (
     <thead style={{backgroundColor: "#D9DFF0"}}>
-    <tr>
+    <tr className = "table-settings-header">
       {columns.map((column) => {
         const sortIcon = () => {
           if (column.accessor === sort.orderBy) {
@@ -61,7 +61,7 @@ const TableHead = ({
         )
       })}
     </tr>
-    <tr>
+    <tr className = "table-settings-header">
       {columns.map((column) => {
         return (
               <th>

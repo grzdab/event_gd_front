@@ -3,6 +3,7 @@ import { filterRows } from './tableHelpers';
 import { Pagination } from './Pagination';
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
+import Button from "react-bootstrap/Button";
 
 export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
   const [activePage, setActivePage] = useState(1);
@@ -41,7 +42,7 @@ export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
           formHeader = { formHeader }
         />
       </table>
-
+      <div style={{backgroundColor: "#D9DFF0", paddingTop: "10px", paddingLeft: "10px"}}>
       { count > 0 ? (
         <Pagination
           activePage = { activePage }
@@ -56,9 +57,11 @@ export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
 
       <div>
         <p>
-          <button onClick = { clearAll }>Reset all filters</button>
+          <Button className = "RAM_button" onClick = { clearAll }>Reset all filters</Button>
         </p>
       </div>
+      </div>
+
     </>
   )
 }

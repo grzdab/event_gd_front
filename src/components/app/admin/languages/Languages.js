@@ -155,7 +155,7 @@ const Languages = () => {
       <div className="container-fluid px-4">
         <h1 className="mt-4">TEST LANGUAGES</h1>
         <AppAddDataButton props ={ addDataButtonProps }/>
-        <div className="card mb-4">
+        <div className="card mb-4 shadow mb-5 bg-white rounded">
           <AppComponentCardHeader title = "Languages list" />
           { dataSectionContent }
         </div>
