@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import "../css/Login.css";
-import loginImg from '../assets/ram-login.jpg';
-import axios from '../api/axios';
-import useAuth from "../hooks/useAuth";
+import "../../css/Login.css";
+import loginImg from '../../assets/ram-login.jpg';
+import axios from '../../api/axios';
+import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import PageHeader from "../components/common/PageHeader";
+import PageHeader from "../layout/PageHeader";
 
 const LOGIN_URL = '/api/login';
 
@@ -135,7 +135,7 @@ const Login = () => {
                     />
                     <label className="form-check-label" htmlFor="persist"> Trust this device </label>
                   </div>
-                  <a href="#!">Forgot password?</a>
+                  <a href="src/components/homepage/Login#!">Forgot password?</a>
                 </div>
                 <div className="d-grid">
                   <button className="btn btn-primary btn-lg">Sign in</button>

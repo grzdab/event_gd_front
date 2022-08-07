@@ -1,13 +1,13 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBuilding, faCalendarAlt, faListAlt, faCubes, faUsers} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import '../../../css/App.css';
-import logo from '../../../assets/ram-logo.png';
+import '../../css/App.css';
+import logo from '../../assets/ram-logo.png';
 import {faFileInvoice} from "@fortawesome/free-solid-svg-icons/faFileInvoice";
 import {faFileContract} from "@fortawesome/free-solid-svg-icons/faFileContract";
 import {faFaceGrinWide} from "@fortawesome/free-solid-svg-icons/faFaceGrinWide";
 import { faGrip } from "@fortawesome/free-solid-svg-icons/faGrip";
-import useAuth from '../../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 
 const LayoutSidebarLeft = () => {
 
@@ -22,6 +22,10 @@ const LayoutSidebarLeft = () => {
               <a className="nav-link" href="/app/dashboard">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
+              </a>
+              <a className="nav-link" href="/app/languages_test">
+                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
+                Languages (test)
               </a>
               <a className="nav-link" href="/app/events_test">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>

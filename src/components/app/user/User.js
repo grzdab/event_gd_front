@@ -21,7 +21,7 @@ import {
 } from "../../../helpers/ComponentHelper";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import ModalDeleteWarning from "../layout/ModalDeleteWarning";
+import ModalDeleteWarning from "../../layout/ModalDeleteWarning";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppComponentCardHeader from "../common/AppComponentCardHeader";

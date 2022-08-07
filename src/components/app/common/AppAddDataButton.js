@@ -2,7 +2,7 @@ import React from 'react';
 import Button from "react-bootstrap/Button";
 import {clearCurrentItem, onAddDataClick} from "../../../helpers/ComponentHelper";
 
-const AppButtonAddData = ( props ) => {
+const AppAddDataButton = (props ) => {
 
   return (
     <div className="container-fluid">
@@ -25,4 +25,4 @@ const AppButtonAddData = ( props ) => {
   );
 };
 
-export default AppButtonAddData;
+export default AppAddDataButton;

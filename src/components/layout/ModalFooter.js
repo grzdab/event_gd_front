@@ -7,7 +7,7 @@ import {
   onFormCancelDeleteButtonClick,
   onFormConfirmDeleteButtonClick,
   onFormCloseWithoutSavingButtonClick,
-  } from "../../../helpers/ComponentHelper";
+  } from "../../helpers/ComponentHelper";
 
 const ModalFooter = ({
                          onDelete,

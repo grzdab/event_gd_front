@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
-import missingImg from '../assets/404.jpg';
-import PageHeader from "./common/PageHeader";
+import missingImg from '../../../assets/404.jpg';
+import PageHeader from "../../layout/PageHeader";
 import React from "react";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 const Missing = () => {
 

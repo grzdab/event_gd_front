@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import {Table} from "./table/Table";
+import { DJTable } from "../../table/DJTable";
 import ButtonAddSimple from "./ButtonAddSimple";
 import Footer from "./Footer";
-import useCrud from "../component_test/useCrud";
+import useCrud from "../../../hooks/useCrud";
 import { useNavigate, useLocation } from "react-router-dom";
 
 let clickedId = 0;
@@ -75,7 +75,7 @@ const Events = () => {
                         <div className="card-body">
                             {itemsList.length ?
                                 (<div className="table_container">
-                                    <Table rows={itemsList} columns={columns} />
+                                    <DJTable rows={itemsList} columns={columns} />
                                 </div>) : (<h5>Loading data</h5> )}
                         </div>
                     </div>

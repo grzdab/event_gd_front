@@ -1,4 +1,8 @@
 import React from 'react';
+import { faSort, faSortDown, faSortUp } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
+
 
 const TableHead = ({
                         columns,
@@ -41,17 +45,17 @@ const TableHead = ({
                 const sortIcon = () => {
                     if (column.accessor === sort.orderBy) {
                         if (sort.order === 'asc') {
-                            return '⬆️'
+                            return <FontAwesomeIcon icon={ faSortUp }/>
                         }
-                        return '⬇️'
+                        return <FontAwesomeIcon icon={ faSortDown }/>
                     } else {
-                        return '️↕️'
+                        return <FontAwesomeIcon icon={ faSort }/>
                     }
                 }
                 return (
                     <th key={column.accessor}>
                         <span>{column.label}</span>
-                        <button onClick={() => handleSort(column.accessor)}>{sortIcon()}</button>
+                        <button className = "sort-button" onClick={() => handleSort(column.accessor)}>{sortIcon()}</button>
                     </th>
                 )
             })}

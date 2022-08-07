@@ -1,9 +1,9 @@
-import Register from './auth/Register';
-import Login from './auth/Login';
+import Register from './components/homepage/Register';
+import Login from './components/homepage/Login';
 import App from './components/app/App';
-import Layout from './components/app/layout/Layout';
-import Missing from './components/Missing';
-import Unauthorized from './components/Unauthorized';
+import Layout from './components/layout/Layout';
+import Missing from './components/app/missing/Missing';
+import Unauthorized from './components/app/unathorized/Unauthorized';
 import RequireAuth from './auth/RequireAuth';
 import { Routes, Route } from 'react-router-dom';
 import PersistLogin from "./auth/PersistLogin";
@@ -15,7 +15,7 @@ import Equipment from "./components/app/equipment/Equipment";
 import './css/App.css';
 import './css/Form.css';
 import './css/datatables.css';
-import TableTest from "./components/app/tables_test/TableTest";
+
 import EquipmentStatus from "./components/app/admin/equipment_statuses/EquipmentStatus";
 import EquipmentOwnership from "./components/app/admin/equipment_ownership_types/EquipmentOwnership";
 import EquipmentBookingStatus from "./components/app/admin/equipment_booking_statuses/EquipmentBookingStatus";
@@ -23,6 +23,7 @@ import Client from "./components/app/client/Client";
 import User from "./components/app/user/User";
 import ComponentTest from "./components/app/component_test/ComponentTest";
 import Events from "./components/app/events_test/Events";
+import Languages from "./components/app/admin/languages/Languages";
 
 const ROLES = {
   'User': 'ROLE_USER',
@@ -49,9 +50,9 @@ function Site() {
           <Route path="/app" element={<App />} >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="events_test" element={<Events />} />
+            <Route path="languages_test" element={<Languages />} />
             <Route path="scheduler" element={<ComponentTest />} />
             <Route path="component_test" element={<ComponentTest />} />
-            <Route path="test" element={<TableTest />} />
             <Route path="equipment" element={<Equipment />} />
             <Route path="equipment-status" element={<EquipmentStatus />} />
             <Route path="equipment-ownership" element={<EquipmentOwnership />} />

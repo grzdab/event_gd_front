@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import AppButtonAddData from "./AppButtonAddData";
+import AppAddDataButton from "./AppAddDataButton";
 
 
 const AppComponentPageHeader = ( { props } ) => {
@@ -9,7 +9,7 @@ const AppComponentPageHeader = ( { props } ) => {
     <h1 className="mt-4">{ props.title }</h1>
     <div className="container-fluid">
       <div className="RAM_container">
-        <AppButtonAddData props ={ props.addDataButtonProps }  />
+        <AppAddDataButton props ={ props.addDataButtonProps }  />
       </div>
     </div>
     </>

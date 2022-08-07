@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react'
-import { filterRows } from './helpers'
-import { Pagination } from './Pagination'
-import TableHead from "./TableHead";
-import TableBody from "./TableBody";
+import { filterRows } from './DJtableHelpers'
+import { DJPagination } from './DJPagination'
+import DJTableHead from "./DJTableHead";
+import DJTableBody from "./DJTableBody";
 
-export const Table = ({ columns, rows }) => {
+export const DJTable = ({ columns, rows }) => {
     const [activePage, setActivePage] = useState(1)
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState({ order: 'asc', orderBy: 'id' })
@@ -23,7 +23,7 @@ export const Table = ({ columns, rows }) => {
     return (
         <>
             <table>
-                <TableHead
+                <DJTableHead
                     columns={columns}
                     setActivePage={setActivePage}
                     filters={filters}
@@ -31,7 +31,7 @@ export const Table = ({ columns, rows }) => {
                     sort={sort}
                     setSort={setSort}
                 />
-                <TableBody
+                <DJTableBody
                     columns={columns}
                     sort={sort}
                     activePage={activePage}
@@ -41,7 +41,7 @@ export const Table = ({ columns, rows }) => {
             </table>
 
             {count > 0 ? (
-                <Pagination
+                <DJPagination
                     activePage={activePage}
                     count={count}
                     rowsPerPage={rowsPerPage}

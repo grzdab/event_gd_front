@@ -3,3 +3,8 @@ export const ownershipTypeDefault = {
   "name": "",
   "description": ""
 }
+
+export const languageDefault = {
+  "id": "",
+  "propertyName": "",
+}

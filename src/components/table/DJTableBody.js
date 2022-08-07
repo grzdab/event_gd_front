@@ -1,9 +1,9 @@
 import React,  {useMemo} from 'react';
-import ButtonEdit from '../ButtonEdit';
-import ButtonDelete from '../ButtonDelete';
-import { paginateRows, sortRows } from "./helpers";
+import ButtonEdit from '../app/events_test/ButtonEdit';
+import ButtonDelete from '../app/events_test/ButtonDelete';
+import { paginateRows, sortRows } from "./DJtableHelpers";
 
-const TableBody = ({
+const DJTableBody = ({
                     columns,
                     sort,
                     activePage,
@@ -37,4 +37,4 @@ const TableBody = ({
         </tbody>
     );
 };
-export default TableBody;
+export default DJTableBody;

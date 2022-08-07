@@ -13,7 +13,6 @@ const RelatedItemsList = ({itemsList, titleWhenPopulated, titleWhenEmpty }) => {
 
   const listTitle = itemsList.length > 0 ? titleWhenPopulated : titleWhenEmpty
 
-
   return (
     <>
       <div className="row margin-top">

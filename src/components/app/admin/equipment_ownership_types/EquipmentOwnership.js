@@ -7,8 +7,8 @@ import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import {compareObjects, resetInvalidInputField} from "../../../../js/CommonHelper";
 import {Table} from "react-bootstrap";
-import ModalDeleteWarning from "../../layout/ModalDeleteWarning";
-import ModalFooter from "../../layout/ModalFooter";
+import ModalDeleteWarning from "../../../layout/ModalDeleteWarning";
+import ModalFooter from "../../../layout/ModalFooter";
 import {clearCurrentItem} from "../../../../helpers/ComponentHelper";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -23,7 +23,7 @@ import {
 
 import AppComponentCardHeader from "../../common/AppComponentCardHeader";
 import LoadingDataDiv from "../../common/LoadingDataDiv";
-import AppAddDataButton from "../../common/AppButtonAddData";
+import AppAddDataButton from "../../common/AppAddDataButton";
 
 const EquipmentOwnership = () => {
 

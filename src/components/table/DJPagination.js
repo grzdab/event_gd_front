@@ -3,7 +3,7 @@ import KeyboardDoubleArrowLeftSharpIcon from '@mui/icons-material/KeyboardDouble
 import KeyboardDoubleArrowRightSharpIcon from '@mui/icons-material/KeyboardDoubleArrowRightSharp';
 
 
-export const Pagination = ({ activePage, count, rowsPerPage, totalPages, setActivePage }) => {
+export const DJPagination = ({ activePage, count, rowsPerPage, totalPages, setActivePage }) => {
     const beginning = activePage === 1 ? 1 : rowsPerPage * (activePage - 1) + 1
     const end = activePage === totalPages ? count : beginning + rowsPerPage - 1
 

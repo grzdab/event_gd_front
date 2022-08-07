@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
 import useLogout from "../../hooks/useLogout";
-import PageHeader from "../common/PageHeader";
-import LayoutSidebarLeft from "./layout/LayoutSidebarLeft";
+import PageHeader from "../layout/PageHeader";
+import LayoutSidebarLeft from "../layout/LayoutSidebarLeft";
 import React from "react";
 import Dashboard from "./dashboard/Dashboard";
 

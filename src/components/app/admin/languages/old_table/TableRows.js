@@ -1,9 +1,9 @@
 import React from 'react';
-import {onItemsListInfoButtonClick} from "../../../helpers/ComponentHelper";
+import {onItemsListInfoButtonClick} from "../../../../../helpers/ComponentHelper";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import useCrud from "./useCrud";
+import useCrud from "../../../../../hooks/useCrud";
 
 const TableRows = ({ state, checkRelatedItems, formHeader }) => {
 
@@ -21,7 +21,7 @@ const TableRows = ({ state, checkRelatedItems, formHeader }) => {
       {itemsList.map((item) => (
         <tr key={item.id}>
           <td>{item.id}</td>
-          <td>{item.name}</td>
+          <td>{item.propertyName}</td>
           <td><button className='btn btn-outline-info' onClick={() => {
             getRelatedChildrenByParentId(`${ equipmentOwnershipRelatedEquipmentUrl }/${ item.id }`, item.id, relatedItems )
             setCurrentItem(item);

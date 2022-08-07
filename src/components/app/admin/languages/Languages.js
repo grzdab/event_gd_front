@@ -2,39 +2,39 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import ModalFooter from "../common/ModalFooter";
+import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
-import { defaultFormState } from "../../../defaults/Forms";
-import { ownershipTypeDefault } from "../../../defaults/Items";
-import { 
+import { defaultFormState } from "../../../../defaults/Forms";
+import { languageDefault } from "../../../../defaults/Items";
+import {
   onSaveAndClose,
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
   onCloseDetails
-} from "../../../helpers/ComponentHelper";
+} from "../../../../helpers/ComponentHelper";
 
-import AppComponentCardHeader from "../common/AppComponentCardHeader";
-import LoadingDataDiv from "../common/LoadingDataDiv";
-import AppAddDataButton from "../common/AppAddDataButton";
-import ItemsTable from "./table_old/ItemsTable";
-import DeleteWarningModal from "../common/DeleteWarningModal";
-import ItemDetailsModalHeader from "../common/ItemDetailsModalHeader";
-import TextInput from "../../elements/TextInput";
-import TextArea from "../../elements/TextArea";
-import RelatedItemsList from "../common/RelatedItemsList";
-import useCrud from "../../../hooks/useCrud";
+import AppComponentCardHeader from "../../common/AppComponentCardHeader";
+import LoadingDataDiv from "../../common/LoadingDataDiv";
+import AppAddDataButton from "../../common/AppAddDataButton";
+import ItemsTable from "./old_table/ItemsTable";
+import DeleteWarningModal from "../../common/DeleteWarningModal";
+import ItemDetailsModalHeader from "../../common/ItemDetailsModalHeader";
+import TextInput from "../../../elements/TextInput";
+import TextArea from "../../../elements/TextArea";
+import RelatedItemsList from "../../common/RelatedItemsList";
+import useCrud from "../../../../hooks/useCrud";
+import { Table } from "./table/Table";
 
+const Languages = () => {
 
-const ComponentTest = () => { 
-
-  const equipmentOwnershipUrl ="/equipment-ownership";
-  const equipmentOwnershipRelatedEquipmentUrl = "/equipment/ownership";
-  const defaultItem = ownershipTypeDefault;
+  const dataUrl ="/admin/language";
+  const relatedDataUrl = "/equipment/ownership";
+  const defaultItem = languageDefault;
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(equipmentOwnershipUrl);
+  const { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(dataUrl);
 
   const [loading, setLoading] = useState(true);
   const [allowDelete, setAllowDelete] = useState(null);
@@ -45,7 +45,10 @@ const ComponentTest = () => {
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
   const [equipmentList, setEquipmentList] = useState([]);
-
+  const columns = [
+    {label: "Id", accessor: "id", sortable: true},
+    {label: "Language", accessor: "propertyName", sortable: true},
+  ];
 
   const state = {
     itemsList, setItems,
@@ -57,33 +60,33 @@ const ComponentTest = () => {
   }
 
   const onDelete = async () => {
-    const response = await deleteItem(`${ equipmentOwnershipUrl }/${ currentItem.id }`, currentItem.id, state);
+    const response = await deleteItem(`${ dataUrl }/${ currentItem.id }`, currentItem.id, state);
     if (response === 401 || response === 403) {
       navigate('/login', { state: { from: location }, replace: true });
     }
   }
 
-  const onSaveItemClick = async (e) => { 
+  const onSaveItemClick = async (e) => {
     e.preventDefault();
-    if(!currentItem.name) { 
+    if(!currentItem.propertyName) {
       let nameInput = document.getElementById("name");
       nameInput.classList.add("form-input-invalid");
-      nameInput.placeholder = "Ownership type name cannot be empty";
+      nameInput.placeholder = "Language name cannot be empty";
       return;
     }
     let response;
-    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
-    if (currentFormState.formAddingDataMode) { 
-      response = await createItem(equipmentOwnershipUrl, item, state);
-    } else { 
-      response = await updateItem(`${ equipmentOwnershipUrl }/${ item.id }`, item, state);
+    const item = { id: currentItem.id, name: currentItem.propertyName };
+    if (currentFormState.formAddingDataMode) {
+      response = await createItem(dataUrl, item, state);
+    } else {
+      response = await updateItem(`${ dataUrl }/${ item.id }`, item, state);
     }
     if (response === 401 || response === 403) navigate('/login', { state: { from: location }, replace: true });
     response && onSaveAndClose({state});
   }
 
   const checkRelatedItems = async (id) => {
-    const data = await getRelatedChildrenByParentId(`${ equipmentOwnershipRelatedEquipmentUrl }/${ id }`, id, setEquipmentList);
+    const data = await getRelatedChildrenByParentId(`${ relatedDataUrl }/${ id }`, id, setEquipmentList);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
 
@@ -95,15 +98,15 @@ const ComponentTest = () => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
   }, [itemChanged])
 
-  useEffect(() => { 
+  useEffect(() => {
     if (allowDelete !== null) {
-      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership type", allowDelete);
+      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "language", allowDelete);
     }
   }, [allowDelete])
 
   useEffect(() => {
     const getData = async () => {
-      const response = await getItems(equipmentOwnershipUrl);
+      const response = await getItems(dataUrl);
       if (response.status === 200) {
         setLoading(false);
         setItems(response.data);
@@ -117,15 +120,15 @@ const ComponentTest = () => {
   }, [])
 
 
-  const addDataButtonProps = { 
+  const addDataButtonProps = {
     setCurrentItem,
     setBackupItem,
     defaultItem,
     currentFormState,
     setCurrentFormState,
-    formDescription: 'Here you can add new equipment ownership type.',
-    formHeader: 'Add new equipment ownership type',
-    buttonTitle: 'Add new equipment ownership type'
+    formDescription: 'Here you can add new language.',
+    formHeader: 'Add new language',
+    buttonTitle: 'Add new language'
   }
 
 
@@ -134,37 +137,39 @@ const ComponentTest = () => {
     dataSectionContent = <LoadingDataDiv />
   } else if (itemsList.length > 0) {
     dataSectionContent =
-      <ItemsTable
+      <Table
+        rows = { itemsList }
+        columns = { columns }
         state = { state }
         checkRelatedItems = { checkRelatedItems }
-        formHeader = "Edit equipment ownership type"
+        formHeader = "Edit language"
       />
   } else {
-    dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT OWNERSHIP TYPE</h6>
+    dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW LANGUAGE</h6>
   }
 
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
-        <h1 className="mt-4">TEST EQUIPMENT OWNERSHIP TYPES</h1>
+        <h1 className="mt-4">TEST LANGUAGES</h1>
         <AppAddDataButton props ={ addDataButtonProps }/>
         <div className="card mb-4">
-          <AppComponentCardHeader title = "Equipment ownership types list" />
+          <AppComponentCardHeader title = "Languages list" />
           { dataSectionContent }
         </div>
       </div>
-      
+
       <DeleteWarningModal
         state = { state }
         onDelete = { onDelete }
-        deleteItemName = "ownership type"/>
+        deleteItemName = "language"/>
 
       <Modal show={ currentFormState.showForm }
              size="xl"
              backdrop="static"
              keyboard={ false }
              onHide={ onClose }>
-        <ItemDetailsModalHeader title= "Equipment ownership type details" />
+        <ItemDetailsModalHeader title= "Language details" />
         <Modal.Body>
           <section className="mb-4">
             <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
@@ -178,12 +183,12 @@ const ComponentTest = () => {
             </div>
             <div className="row">
               <div className="col-md-12 mb-md-0 mb-5">
-                <form id="add-equipment-ownership-form" name="add-equipment-ownership-form">
+                <form id="add-language-form" name="add-language-form">
                   <div className="row">
                     <div className="col-md-12">
                       <div className="md-form mb-0">
                         <label htmlFor="name" className="">Name</label>
-                        <TextInput propertyName="name" required="true" state={ state }/>
+                        <TextInput propertyName="propertyName" required="true" state={ state }/>
                       </div>
                     </div>
                     <div className="col-md-12">
@@ -196,8 +201,8 @@ const ComponentTest = () => {
                   { !currentFormState.formAddingDataMode &&
                     <RelatedItemsList
                       itemsList = { equipmentList }
-                      titleWhenPopulated = "Equipment with this ownership type"
-                      titleWhenEmpty = "No equipment found with this ownership type"/>
+                      titleWhenPopulated = "Items using this language"
+                      titleWhenEmpty = "No usages found"/>
                   }
                 </form>
               </div>
@@ -216,6 +221,6 @@ const ComponentTest = () => {
     </div>
   )
 
- }
+}
 
-export default ComponentTest;
+export default Languages;

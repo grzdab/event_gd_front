@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import {onCloseDeleteWarningDialog} from "../../../helpers/ComponentHelper";
+import useAxiosPrivate from "./useAxiosPrivate";
+import {onCloseDeleteWarningDialog} from "../helpers/ComponentHelper";
 
 const useCrud = (dataUrl) => {
 

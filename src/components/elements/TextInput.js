@@ -1,5 +1,5 @@
 import React from 'react';
-import {resetInvalidInputField} from "../../../helpers/ComponentHelper";
+import {resetInvalidInputField} from "../../helpers/ComponentHelper";
 
 const TextInput = ({propertyName, state, required}) => {
 

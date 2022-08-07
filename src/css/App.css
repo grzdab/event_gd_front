@@ -11854,3 +11854,13 @@ body {
 #layoutSidenav_content {
     background-color: #e3e3e3;
 }
+
+.sort-button {
+    border: none;
+    background-color: var(--bs-bluegray);
+    color: white;
+    border-radius: 4px;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-left: 10px;
+}

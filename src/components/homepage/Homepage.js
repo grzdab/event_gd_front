@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {Collection, Building, Toggles2, Envelope, ChatRightQuoteFill } from "react-bootstrap-icons";
 import useAuth from '../../hooks/useAuth';
-import PageHeader from "../common/PageHeader";
+import PageHeader from "../layout/PageHeader";
 import '../../css/Homepage.css';
 
 const Homepage = () => {
