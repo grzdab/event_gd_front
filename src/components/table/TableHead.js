@@ -32,7 +32,6 @@ const TableHead = ({
       setFilters((prevFilters) => {
         const updatedFilters = { ...prevFilters }
         delete updatedFilters[accessor]
-
         return updatedFilters
       })
     }
@@ -64,16 +63,16 @@ const TableHead = ({
     <tr className = "table-settings-header">
       {columns.map((column) => {
         return (
-              <th>
-                {column.searchable &&
-                <input
-                  key={`${column.accessor}-search`}
-                  type="search"
-                  placeholder={`Search ${column.label}`}
-                  value={filters[column.accessor]}
-                  onChange={(event) => handleSearch(event.target.value, column.accessor)}
-                />}
-              </th>
+          <th>
+            {column.searchable &&
+              <input
+                key={`${column.accessor}-search`}
+                type="search"
+                placeholder={`Search ${column.label}`}
+                value={filters[column.accessor]}
+                onChange={(event) => handleSearch(event.target.value, column.accessor)}
+              />}
+          </th>
         )
       })}
     </tr>
