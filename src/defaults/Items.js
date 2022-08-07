@@ -1,15 +1,22 @@
-export const ownershipTypeDefault = {
+export const equipmentOwnershipTypeDefault = {
   "id": "",
   "name": "",
   "description": ""
 }
 
-export const languageDefault = {
+export const equipmentStatusDefault = {
   "id": "",
-  "propertyName": "",
+  "name": ""
 }
 
-export const equipmentStatusDefault = {
+export const equipmentBookingStatusDefault = {
+  "id": "",
+  "name": "",
+  "description": "",
+  "color": ""
+}
+
+export const equipmentCategoryDefault = {
   "id": "",
   "name": "",
   "description": ""

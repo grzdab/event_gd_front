@@ -1,13 +1,9 @@
 import React,  {useMemo} from 'react';
-import ButtonEdit from '../../../../app/events_test/ButtonEdit';
-import ButtonDelete from '../../../../app/events_test/ButtonDelete';
 import { paginateRows, sortRows } from "./tableHelpers";
-import {onItemsListInfoButtonClick} from "../../../../../helpers/ComponentHelper";
+import {onItemsListInfoButtonClick} from "../../helpers/ComponentHelper";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
-import useCrud from "../../../../../hooks/useCrud";
-import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-
+import {faEye, faTrashAlt, faSquare} from "@fortawesome/free-solid-svg-icons";
+import useCrud from "../../hooks/useCrud";
 
 
 const TableBody = ({
@@ -53,9 +49,10 @@ const TableBody = ({
                   checkRelatedItems(item.id);
                 }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
               )
-
             } else if (column.format) {
               return <td key={column.accessor}>{column.format(item[column.accessor])}</td>
+            } else if (column.type === "color") {
+              return <td><FontAwesomeIcon style={{color: item.color}} icon={faSquare}/></td>
             }
             return <td key={column.accessor}>{item[column.accessor]}</td>
           })}

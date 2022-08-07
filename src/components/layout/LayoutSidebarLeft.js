@@ -23,21 +23,9 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faGrip}/></div>
                 Dashboard
               </a>
-              <a className="nav-link" href="/app/languages_test">
-                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
-                Languages (test)
-              </a>
-              <a className="nav-link" href="/app/events_test">
-                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
-                Events (test)
-              </a>
               <a className="nav-link" href="/app/scheduler">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
-                Scheduler (posts)
-              </a>
-              <a className="nav-link" href="/app/component_test">
-                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCalendarAlt}></FontAwesomeIcon></div>
-                Component test
+                Scheduler
               </a>
               <div className="sb-sidenav-menu-heading">Resources</div>
               <a className="nav-link" href="/app/events">

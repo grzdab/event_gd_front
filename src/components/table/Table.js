@@ -5,7 +5,7 @@ import TableHead from "./TableHead";
 import TableBody from "./TableBody";
 import Button from "react-bootstrap/Button";
 
-export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
+export const Table = ({ columns, state, checkRelatedItems, formHeader, relatedItemsUrl }) => {
   const [activePage, setActivePage] = useState(1);
   const [filters, setFilters] = useState({ });
   const [sort, setSort] = useState({ order: 'asc', orderBy: 'id' });
@@ -41,6 +41,7 @@ export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
           state = { state }
           formHeader = { formHeader }
           checkRelatedItems = { checkRelatedItems }
+          relatedItemsUrl = { relatedItemsUrl }
         />
       </table>
       <div style={{backgroundColor: "#D9DFF0", paddingTop: "10px", paddingLeft: "10px"}}>

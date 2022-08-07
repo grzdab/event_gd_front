@@ -12,7 +12,7 @@ const TextInput = ({propertyName, state, required}) => {
 
   return (
     <>
-      <input
+      <input style = {{backgroundColor: currentItem.color}}
         type = "text"
         id = { propertyName }
         name = { propertyName }

@@ -21,9 +21,7 @@ import EquipmentOwnership from "./components/app/admin/equipment_ownership_types
 import EquipmentBookingStatus from "./components/app/admin/equipment_booking_statuses/EquipmentBookingStatus";
 import Client from "./components/app/client/Client";
 import User from "./components/app/user/User";
-import ComponentTest from "./components/app/component_test/ComponentTest";
-import Events from "./components/app/events_test/Events";
-import Languages from "./components/app/admin/languages/Languages";
+
 
 const ROLES = {
   'User': 'ROLE_USER',
@@ -49,10 +47,6 @@ function Site() {
         <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}>
           <Route path="/app" element={<App />} >
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="events_test" element={<Events />} />
-            <Route path="languages_test" element={<Languages />} />
-            <Route path="scheduler" element={<ComponentTest />} />
-            <Route path="component_test" element={<ComponentTest />} />
             <Route path="equipment" element={<Equipment />} />
             <Route path="equipment-status" element={<EquipmentStatus />} />
             <Route path="equipment-ownership" element={<EquipmentOwnership />} />

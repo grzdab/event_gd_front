@@ -1,57 +1,45 @@
-import React, {useEffect, useState} from "react";
-import Button from "react-bootstrap/Button";
-import {Modal} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
-import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
-import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import {compareObjects, resetInvalidInputField} from "../../../../js/CommonHelper";
-import {Table} from "react-bootstrap";
-import ModalDeleteWarning from "../../../layout/ModalDeleteWarning";
-import ModalFooter from "../../../layout/ModalFooter";
-import {clearCurrentItem} from "../../../../helpers/ComponentHelper";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import React, { useEffect, useState } from "react";
+import { Modal, Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import { defaultFormState } from "../../../../defaults/Forms";
 import {
-  onAddDataClick,
+  equipmentBookingStatusDefault,
+  equipmentOwnershipTypeDefault,
+  ownershipTypeDefault
+} from "../../../../defaults/Items";
+import {
   onSaveAndClose,
-  onItemsListInfoButtonClick,
   compareData,
   restoreFormData,
-  onItemsListDeleteButtonClick} from "../../../../helpers/ComponentHelper";
+  onItemsListDeleteButtonClick,
+  onCloseDetails
+} from "../../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../../common/AppComponentCardHeader";
 import LoadingDataDiv from "../../common/LoadingDataDiv";
 import AppAddDataButton from "../../common/AppAddDataButton";
+import DeleteWarningModal from "../../common/DeleteWarningModal";
+import ItemDetailsModalHeader from "../../common/ItemDetailsModalHeader";
+import TextInput from "../../../elements/TextInput";
+import TextArea from "../../../elements/TextArea";
+import RelatedItemsList from "../../common/RelatedItemsList";
+import useCrud from "../../../../hooks/useCrud";
+import { Table } from "../../../table/Table";
 
 const EquipmentOwnership = () => {
 
-  const equipmentOwnershipUrl ="/equipment-ownership";
-  const equipmentOwnershipRelatedEquipmentUrl = "/equipment/ownership";
+  const dataUrl ="/equipment-ownership";
+  const relatedItemsUrl = "/equipment/ownership"; // if no need to check it, initialize with null and remove RelatedItemsList from details modal
+  const defaultItem = equipmentOwnershipTypeDefault;
+  const itemName = "ownership type";
+  const itemNames = "ownership types";
 
-  const defaultItem = {
-    "id": "",
-    "name": ""
-  }
-
-  const defaultFormState = {
-    "showForm": false,
-    "showDeleteWarning": false,
-    "showItemChangedWarning": false,
-    "formHeader": "Edit equipment ownership type",
-    "formDescription": "",
-    "formDataChangedWarning": "Data has been changed",
-    "formAddingDataMode": false,
-    "formSaveButtonDisabled": false,
-    "warningDescription":"",
-    "warningDeleteButtonDisabled": false,
-    "warningWarningIconVisible":false
-  }
-
-  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
+  const { createItem, updateItem, deleteItem, getItems, getRelatedChildrenByParentId } = useCrud(dataUrl);
 
   const [loading, setLoading] = useState(true);
   const [allowDelete, setAllowDelete] = useState(null);
@@ -62,119 +50,81 @@ const EquipmentOwnership = () => {
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
   const [equipmentList, setEquipmentList] = useState([]);
+  const columns = [
+    {label: "Id", accessor: "id", sortable: true, searchable: false},
+    {label: "Name", accessor: "name", sortable: true, searchable: true},
+    {label: "Description", accessor: "description", sortable: true, searchable: true},
+    {label: "details", accessor: "editBtn", sortable: false, searchable: false},
+    {label: "delete", accessor: "deleteBtn", sortable: false, searchable: false},
+  ];
 
-
-  const onSaveItem = async (e) => {
-    e.preventDefault();
-    if(!currentItem.name) {
-      let nameInput = document.getElementById("name");
-      nameInput.classList.add("form-input-invalid");
-      nameInput.placeholder = "Ownership name cannot be empty"
-      return;
-    }
-
-    if (currentFormState.formAddingDataMode) {
-      const item = {name: currentItem.name};
-      const response = await axiosPrivate.post(equipmentOwnershipUrl, item);
-      setItems([...itemsList, response.data]);
-      onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
-    } else {
-      const item = {id: currentItem.id, name: currentItem.name};
-      const response = await axiosPrivate.put(`${equipmentOwnershipUrl}/${item.id}`, item);
-      const data = await response.data;
-      setItems(
-        itemsList.map((i) =>
-          i.id === item.id ? data : i));
-      onSaveAndClose(setCurrentFormState, currentFormState, setCurrentItem, setBackupItem, defaultItem);
-    }
+  const state = {
+    itemsList, setItems,
+    currentItem, setCurrentItem,
+    currentFormState, setCurrentFormState,
+    defaultItem, backupItem, setBackupItem, itemChanged, setItemChanged,
+    setAllowDelete,
+    setRelatedItems: setEquipmentList
   }
 
-  const deleteItem = async (e) => {
-    const url = `${equipmentOwnershipUrl}/${currentItem.id}`;
-    try {
-      await axiosPrivate.delete(url);
-      setItems(itemsList.filter((i) => i.id !== currentItem.id));
-      onCloseDeleteWarningDialog();
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  useEffect(() => {
-    if (allowDelete !== null) {
-      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership", allowDelete);
-    }
-  }, [allowDelete])
-
-
-  const getRelatedEquipmentByOwnershipId = async (id) => {
-    try {
-      const response = await axiosPrivate.get(`${equipmentOwnershipRelatedEquipmentUrl}/${id}`);
-      setEquipmentList(response.data);
-      return response.data;
-    } catch (err) {
+  const onDelete = async () => {
+    const response = await deleteItem(`${ dataUrl }/${ currentItem.id }`, currentItem.id, state);
+    if (response === 401 || response === 403) {
       navigate('/login', { state: { from: location }, replace: true });
     }
   }
 
-  const checkRelatedEquipment = async (id) => {
-    const data = await getRelatedEquipmentByOwnershipId(id);
+  const onSaveItemClick = async (e) => {
+    e.preventDefault();
+    if(!currentItem.name) {
+      let nameInput = document.getElementById("name");
+      nameInput.classList.add("form-input-invalid");
+      nameInput.placeholder = `${itemName} name cannot be empty`;
+      return;
+    }
+    let response;
+    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
+    if (currentFormState.formAddingDataMode) {
+      response = await createItem(dataUrl, item, state);
+    } else {
+      response = await updateItem(`${ dataUrl }/${ item.id }`, item, state);
+    }
+    if (response === 401 || response === 403) navigate('/login', { state: { from: location }, replace: true });
+    response && onSaveAndClose({state});
+  }
+
+  const checkRelatedItems = async (id) => {
+    const data = await getRelatedChildrenByParentId(`${ relatedItemsUrl }/${ id }`, id, setEquipmentList);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
 
-  const onCloseDeleteWarningDialog = () => {
-    clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-    setAllowDelete(null);
-    setCurrentFormState({...currentFormState,
-      showDeleteWarning: false,
-      showForm: false,
-      warningDescription: "",
-      warningDeleteButtonDisabled: false,
-      warningWarningIconVisible: false});
-  };
-
-  const onCloseDetails = () => {
-    if (compareObjects(backupItem, currentItem)) {
-      setCurrentFormState({
-        ...currentFormState,
-        showForm: false,
-        formSaveButtonDisabled: true,
-        formAddingDataMode: false
-      })
-      clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
-    } else {
-      let closeWithoutSaving = document.getElementById("confirm-close");
-      let btnClose = document.getElementById("btn-close");
-      closeWithoutSaving.classList.add("div-visible");
-      btnClose.classList.add("btn-invisible");
-    }
+  const onClose = () => {
+    onCloseDetails({ state })
   };
 
   useEffect(() => {
-    compareData(currentFormState, setCurrentFormState, currentItem, backupItem)
+    compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
   }, [itemChanged])
 
+  useEffect(() => {
+    if (allowDelete !== null) {
+      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, itemName, allowDelete);
+    }
+  }, [allowDelete])
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const getItems = async () => {
-      try {
-        const response = await axiosPrivate.get(equipmentOwnershipUrl, {
-          signal: controller.signal
-        });
-        isMounted && setItems(response.data);
+    const getData = async () => {
+      const response = await getItems(dataUrl);
+      if (response.status === 200) {
         setLoading(false);
-      } catch (err) {
-        navigate('/login', { state: { from: location }, replace: true });
+        setItems(response.data);
+      } else if (response.status === 401 || response.status === 403) {
+        navigate('/login', { state: { from: location }, replace: true})
+      } else {
+        alert("Could not get the requested data.");
       }
-    }
-    getItems();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    }
+    };
+    getData();
   }, [])
 
 
@@ -184,187 +134,99 @@ const EquipmentOwnership = () => {
     defaultItem,
     currentFormState,
     setCurrentFormState,
-    formDescription: 'Here you can add new equipment ownership types.',
-    formHeader: 'Add new equipment ownership type',
-    buttonTitle: 'Add new equipment ownership type'
+    formDescription: `Here you can add new ${ itemName }.`,
+    formHeader: `Add new ${ itemName }`,
+    buttonTitle: `Add new ${ itemName }`
   }
 
+
+  let dataSectionContent;
+  if (loading) {
+    dataSectionContent = <LoadingDataDiv />
+  } else if (itemsList.length > 0) {
+    dataSectionContent =
+      <Table
+        rows = { itemsList }
+        columns = { columns }
+        state = { state }
+        checkRelatedItems = { checkRelatedItems }
+        formHeader = {`Edit ${ itemName }`}
+        relatedItemsUrl = { relatedItemsUrl }
+      />
+  } else {
+    dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
+  }
 
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
-        <h1 className="mt-4">EQUIPMENT OWNERSHIP TYPES</h1>
+        <h1 className="mt-4">{itemNames.toUpperCase()}</h1>
         <AppAddDataButton props ={ addDataButtonProps }/>
-        <div className="card mb-4">
-          <AppComponentCardHeader title = "Equipment ownership types list" />
-          {(() => {
-            if (loading) {
-              return (
-                <LoadingDataDiv />
-              )
-            } else {
-              if (itemsList.length > 0) {
-                return (
-                  <div className="card-body">
-                    <Table id="datatablesSimple">
-                      <thead>
-                      <tr>
-                        <th>id</th>
-                        <th>name</th>
-                        <th>details</th>
-                        <th>delete</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {itemsList.map((e) => (
-                        <tr key={e.id}>
-                          <td>{e.id}</td>
-                          <td>{e.name}</td>
-                          <td><button className='btn btn-outline-info' onClick={() => {
-                            getRelatedEquipmentByOwnershipId(e.id)
-                            setCurrentItem(e);
-                            setBackupItem(e);
-                            onItemsListInfoButtonClick(currentFormState, setCurrentFormState, "Edit equipment ownership type");
-                          }}><FontAwesomeIcon icon={faEye}/></button></td>
-                          <td><button className='btn btn-outline-danger' onClick={() => {
-                            setCurrentItem(e);
-                            checkRelatedEquipment(e.id);
-                            // onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "equipment ownership type");
-                          }}><FontAwesomeIcon icon={faTrashAlt}/></button></td>
-                        </tr>
-                      ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                )
-              } else {
-                return (<h6>NO DATA FOUND, PLEASE ADD A NEW EQUIPMENT OWNERSHIP TYPE</h6>)
-              }
-            }
-          })()}
+        <div className="card mb-4 shadow mb-5 bg-white rounded">
+          <AppComponentCardHeader title ={`${itemNames} list`} />
+          { dataSectionContent }
         </div>
       </div>
-      {/*  ============== WARNING MODAL: BEGIN ============== */}
-      <ModalDeleteWarning
-        currentFormState={currentFormState}
-        onCloseDeleteWarningDialog={onCloseDeleteWarningDialog}
-        onDelete={deleteItem}
-        deleteItemName="ownership"
-      />
-      {/*  ============== WARNING MODAL: END ============== */}
 
-      {/*  ============== EQUIPMENT OWNERSHIP TYPE DETAILS MODAL: BEGIN ============== */}
-      <Modal show={currentFormState.showForm}
+      <DeleteWarningModal
+        state = { state }
+        onDelete = { onDelete }
+        deleteItemName ={ itemName } />
+
+      <Modal show={ currentFormState.showForm }
              size="xl"
              backdrop="static"
-             keyboard={false}
-             onHide={onCloseDetails}>
-        <Modal.Header className="form-header" closeButton closeVariant="white">
-          <Modal.Title>Equipment ownership type details</Modal.Title>
-        </Modal.Header>
+             keyboard={ false }
+             onHide={ onClose }>
+        <ItemDetailsModalHeader title ={`${itemName} details`} />
         <Modal.Body>
           <section className="mb-4">
             <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
             <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
             <div>
-              <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
-              <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={() => {
-                restoreFormData(backupItem, setCurrentItem, currentFormState, setCurrentFormState)}}>
+              <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={ faExclamationCircle }/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+              <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {
+                restoreFormData({ state })}}>
                 Restore
               </Button>
             </div>
-
             <div className="row">
               <div className="col-md-12 mb-md-0 mb-5">
-                <form id="add-equipment-ownership-form" name="add-equipment-ownership-form">
+                <form id="add-item-form" name="add-item-form">
                   <div className="row">
                     <div className="col-md-12">
                       <div className="md-form mb-0">
-                        <label htmlFor="name"
-                               className="">Name</label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          defaultValue={currentItem.name}
-                          className="form-control"
-                          required
-                          onChange={(e) => {
-                            setItemChanged(!itemChanged);
-                            setCurrentItem({...currentItem,
-                              name: e.target.value});
-                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                          }}
-                          onClick={() => {
-                            resetInvalidInputField("name");
-                          }}
-                        ></input>
+                        <label htmlFor="name" className="">Name</label>
+                        <TextInput propertyName="name" required="true" state={ state }/>
                       </div>
                     </div>
                     <div className="col-md-12">
                       <div className="md-form mb-0">
-                        <label htmlFor="description"
-                               className="">Description</label>
-                        <textarea
-                          id="description"
-                          name="description"
-                          rows="3"
-                          defaultValue={currentItem.description}
-                          className="form-control md-textarea"
-                          onChange={(e) => {
-                            setItemChanged(!itemChanged);
-                            setCurrentItem({...currentItem,
-                              description: e.target.value});
-                            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                          }}
-                        ></textarea>
+                        <label htmlFor="description" className="">Description</label>
+                        <TextArea propertyName="description" required="false" rows = "2" state = { state }/>
                       </div>
                     </div>
                   </div>
                   { !currentFormState.formAddingDataMode &&
-                    <div className="row margin-top">
-                      <div className="col-md-12">
-                        <div className="md-form mb-0">
-                          <div className="card">
-                            <div className="card-header">
-                              {equipmentList.length > 0 ?
-                                "Equipment with this ownership type" :
-                                "No equipment found with this ownership type"
-                              }
-                            </div>
-                            <div className="card-body">
-                              <div className="row">
-                                <div className="col-md-12">
-                                  {equipmentList.map((e) => (
-                                    <div key={e.id}>
-                                      {e.name}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <RelatedItemsList
+                      itemsList = { equipmentList }
+                      titleWhenPopulated ={`Items using this ${ itemName }`}
+                      titleWhenEmpty = "No usages found"/>
                   }
                 </form>
               </div>
             </div>
           </section>
         </Modal.Body>
+
         <ModalFooter
-          onDelete={deleteItem}
-          currentFormState={currentFormState}
-          onCloseDetails={onCloseDetails}
-          onSubmit={onSaveItem}
-          setCurrentFormState = {setCurrentFormState}
-          setCurrentItem = {setCurrentItem}
-          setBackupItem = {setBackupItem}
-          defaultItem = {defaultItem}
+          onDelete = { onDelete }
+          onCloseDetails = { onClose }
+          onSubmit = { onSaveItemClick }
+          state = { state }
         />
+
       </Modal>
-      {/*  ============== EQUIPMENT OWNERSHIP DETAILS MODAL: END ============== */}
     </div>
   )
 
