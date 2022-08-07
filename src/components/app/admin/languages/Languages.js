@@ -46,8 +46,10 @@ const Languages = () => {
   // elements related to the item
   const [equipmentList, setEquipmentList] = useState([]);
   const columns = [
-    {label: "Id", accessor: "id", sortable: true},
-    {label: "Language", accessor: "propertyName", sortable: true},
+    {label: "Id", accessor: "id", sortable: true, searchable: false},
+    {label: "Language", accessor: "propertyName", sortable: true, searchable: true},
+    {label: "details", accessor: "editBtn", sortable: false, searchable: false},
+    {label: "delete", accessor: "deleteBtn", sortable: false, searchable: false},
   ];
 
   const state = {
