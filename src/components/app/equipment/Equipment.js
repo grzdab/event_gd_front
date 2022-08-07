@@ -367,312 +367,261 @@ const Equipment = () => {
              size="xl"
              backdrop="static"
              keyboard={false}
-             onHide={ onClose }>
+             onHide={onCloseDetails}>
         <ItemDetailsModalHeader title ={`${itemName} details`} />
-
-        <Modal show={currentFormState.showForm}
-               size="xl"
-               backdrop="static"
-               keyboard={false}
-               onHide={onCloseDetails}>
-          <ItemDetailsModalHeader title ={`${itemName} details`} />
-          <Modal.Body>
-            <section className="mb-4">
-              <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
-              <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
-              <div>
-                <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
-                <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {
-                  restoreFormData({ state })}}>
-                  Restore
-                </Button>
-              </div>
-              <div className="row">
-                <div className="col-md-12 mb-md-0 mb-5">
-                  <form id="add-equipment-form" name="add-equipment-form">
-                    <div className="row">
-                      <div className="col-md-8">
-                        <div className="row">
+        <Modal.Body>
+          <section className="mb-4">
+            <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
+            <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
+            <div>
+              <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={faExclamationCircle}/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+              <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {
+                restoreFormData({ state })}}>
+                Restore
+              </Button>
+            </div>
+            <div className="row">
+              <div className="col-md-12 mb-md-0 mb-5">
+                <form id="add-equipment-form" name="add-equipment-form">
+                  <div className="row">
+                    <div className="col-md-8">
+                      <div className="row">
+                        <div className="md-form mb-0">
+                          <label htmlFor="name" className="">Equipment name <span
+                            className="required">*</span></label>
+                          <TextInput propertyName="name" required="true" state={ state }/>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-8">
                           <div className="md-form mb-0">
-                            <label htmlFor="name" className="">Equipment name <span
+                            <label htmlFor="category" className="">Category <span
                               className="required">*</span></label>
-                            <TextInput propertyName="name" required="true" state={ state }/>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-md-8">
-                            <div className="md-form mb-0">
-                              <label htmlFor="category" className="">Category <span
-                                className="required">*</span></label>
-                              <select className="form-select"
-                                      aria-label="Equipment category"
-                                      id="equipmentCategoryId"
-                                      name="equipmentCategoryId"
-                                      defaultValue = {
-                                        currentItem.equipmentCategory?.id > 0
-                                          ? currentItem.equipmentCategory.id
-                                          : ""
-                                      }
-                                      onChange={(e) => {
-                                        setCurrentItem({...currentItem, equipmentCategory: {...currentItem.equipmentCategory, id: parseInt(e.target.value)} })
-                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                      }}
-                                      onClick={() => {
-                                        resetInvalidInputField("equipmentCategoryId");
-                                      }}
-                              >
-                                <option disabled value=""> -- Select Category -- </option>
-                                {categoriesList.map((e) => (
-                                  <option key={e.id} value={e.id}>{e.name}</option>))
-                                }
-                              </select>
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="md-form mb-0">
-                              Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
-                              className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
-                              <NumberInput propertyName="powerRequired" state = { state } min = "0" max = "255" disabled = "false" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div className="md-form mb-0">
-                              <label htmlFor="description"
-                                     className="">Description</label>
-                              <TextArea propertyName="notes" required="false" rows = "2" state = { state }/>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-4">
-                        <div className="md-form">
-                          <label htmlFor="photos">Equipment photo</label>
-                          <img
-                            id="photos"
-                            onClick={() => fileInput.current.click()}
-                            src={ currentItem?.id > 0 ?
-                              (currentItem.photos !== [] ?
-                                imagesFolder + currentItem.photos[0] :
-                                equipmentImagePlaceholder) : ""} className="img-fluid" alt="Image"/>
-                        </div>
-                        <div>
-                          <div className="mb-1 mt-1">
-                            <input ref={fileInput} style={{display: 'none'}} className="form-control" type="file" accept ="image/png, image/jpg, image/jpeg" id="formFile" onChange={selectedFileHandler}/>
-                          </div>
-                          <Button variant="primary" className="mrx1" onClick={() => fileInput.current.click()}>Pick an image</Button>
-                          <Button variant="primary" className="mrx1" onClick={fileUploadHandler}>Upload new image</Button>
-                          <Button variant="danger" id="delete-image" onClick={deleteImageLink}><FontAwesomeIcon icon={faTrashAlt}/></Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row margin-top">
-                      <div className="col-md-5">
-                        <div className="md-form mb-0">
-                          <div className="card">
-                            <div className="card-header">
-                              Technical data
-                            </div>
-                            <div className="card-body">
-                              <div className="row">
-                                <div className="col-md-6">
-                                  <label htmlFor="length" className="">Length
-                                    (cm)</label>
-                                  <NumberInput propertyName="length" state = { state } min = "0" disabled = "false" />
-                                  <label htmlFor="width" className="">Width
-                                    (cm)</label>
-                                  <NumberInput propertyName="width" state = { state } min = "0" disabled = "false" />
-                                  <label htmlFor="height>" className="">Height
-                                    (cm)</label>
-                                  <NumberInput propertyName="height" state = { state } min = "0" disabled = "false" />
-                                </div>
-                                <div className="col-md-6">
-                                  <label htmlFor="area" className="">Area
-                                    (m<sup>2</sup>)</label>
-                                  <input
-                                    disabled
-                                    type="text"
-                                    id="area"
-                                    name="area"
-                                    value={
-                                      (currentItem?.length && currentItem?.width) ?
-                                        (currentItem.length * currentItem.width) : 0
+                            <select className="form-select"
+                                    aria-label="Equipment category"
+                                    id="equipmentCategoryId"
+                                    name="equipmentCategoryId"
+                                    defaultValue = {
+                                      currentItem.equipmentCategory?.id > 0
+                                        ? currentItem.equipmentCategory.id
+                                        : ""
                                     }
-                                    className="form-control"
-                                    readOnly
-                                  />
-                                  <label htmlFor="weight" className="">Weight
-                                    (kg)</label>
-                                  <NumberInput propertyName="weight" state = { state } min = "0" disabled = "false" />
-                                  <label htmlFor="power>" className="">Power
-                                    (kW)</label>
-                                  <NumberInput propertyName="powerRequired" state = { state } min = "0" disabled = "false" />
-                                </div>
-                              </div>
-                            </div>
+                                    onChange={(e) => {
+                                      setCurrentItem({...currentItem, equipmentCategory: {...currentItem.equipmentCategory, id: parseInt(e.target.value)} })
+                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                    }}
+                                    onClick={() => {
+                                      resetInvalidInputField("equipmentCategoryId");
+                                    }}
+                            >
+                              <option disabled value=""> -- Select Category -- </option>
+                              {categoriesList.map((e) => (
+                                <option key={e.id} value={e.id}>{e.name}</option>))
+                              }
+                            </select>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="md-form mb-0">
+                            Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
+                            className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
+                            <NumberInput propertyName="powerRequired" state = { state } min = "0" max = "255" disabled = "false" />
                           </div>
                         </div>
                       </div>
-                      <div className="col-md-2">
-                        <div className="card">
-                          <div className="card-header">
-                            Conditions
-                          </div>
-                          <div className="card-body">
-                            <label htmlFor="staff" className="">Required staff</label>
-                            <input
-                              type="number"
-                              min="0"
-                              id="staffNeeded"
-                              name="staffNeeded"
-                              defaultValue={currentItem?.staffNeeded ? currentItem.staffNeeded : 0}
-                              className="form-control"
-                              onChange={(e) => {
-                                setCurrentItem({...currentItem,
-                                  staffNeeded: parseInt(e.target.value)});
-                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                              }}
-                            />
-                            <label htmlFor="minimum_age" className="">Minimum age</label>
-                            <input
-                              type="number"
-                              min="0"
-                              id="minimumAge"
-                              name="minimumAge"
-                              defaultValue={currentItem?.minimumAge ? currentItem.minimumAge : 0}
-                              className="form-control"
-                              onChange={(e) => {
-                                setCurrentItem({...currentItem,
-                                  minimumAge: parseInt(e.target.value)});
-                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                              }}
-                            />
-                            <label htmlFor="max_participants>" className="">Max
-                              participants</label>
-                            <input
-                              type="number"
-                              min="0"
-                              id="maxParticipants"
-                              name="maxParticipants"
-                              defaultValue={currentItem?.maxParticipants ? currentItem.maxParticipants : 0}
-                              className="form-control"
-                              onChange={(e) => {
-                                setCurrentItem({...currentItem,
-                                  maxParticipants: parseInt(e.target.value)});
-                                setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-2">
-                        <div className="md-form mb-0">
-                          <div className="card">
-                            <div className="card-header">
-                              Status
-                            </div>
-                            <div className="card-body">
-                              <div className="form-check form-switch">
-                                <label htmlFor="in_use" className="form-check-label">In use</label>
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="inUse"
-                                  name="inUse"
-                                  checked={currentItem.inUse}
-                                  // defaultChecked={currentItem.inUse}
-                                  onChange={(e) => {
-                                    setCurrentItem({...currentItem,
-                                      inUse: e.currentTarget.checked});
-                                    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                  }}
-                                />
-                              </div>
-                              <label htmlFor="ownership" className="">Ownership</label>
-                              <select className="form-select"
-                                      aria-label="Ownership type"
-                                      id="equipmentOwnershipId"
-                                      name="equipmentOwnershipId"
-                                      defaultValue = {
-                                        currentItem.equipmentOwnership?.id > 0
-                                          ? currentItem.equipmentOwnership.id
-                                          : ""
-                                      }
-                                      onChange={(e) => {
-                                        setCurrentItem({...currentItem, equipmentOwnership: {...currentItem.equipmentOwnership, id: parseInt(e.target.value)} })
-                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                      }}
-                                      onClick={() => {
-                                        resetInvalidInputField("equipmentOwnershipId");
-                                      }}
-                              >
-                                <option disabled value=""> -- Select Ownership -- </option>
-                                {ownershipTypesList.map((e) => (
-                                  <option key={e.id} value={e.id}>{e.name}</option>))
-                                }
-                              </select>
-                              <label htmlFor="status" className="">Status</label>
-                              <select className="form-select"
-                                      aria-label="Equipment status"
-                                      id="equipmentStatusId"
-                                      name="equipmentStatusId"
-                                      defaultValue = {
-                                        currentItem.equipmentStatus?.id > 0
-                                          ? currentItem.equipmentStatus.id
-                                          : ""
-                                      }
-                                      onChange={(e) => {
-                                        setCurrentItem({...currentItem, equipmentStatus: {...currentItem.equipmentStatus, id: parseInt(e.target.value)} })
-                                        setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                      }}
-                                      onClick={() => {
-                                        resetInvalidInputField("equipmentStatusId");
-                                      }}
-                              >
-                                <option disabled value=""> -- Select Status -- </option>
-                                {statusesList.map((e) => (
-                                  <option key={e.id} value={e.id}>{e.name}</option>))
-                                }
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-3">
-                        <div className="card">
-                          <div className="card-header">
-                            Booking status
-                          </div>
-                          <div className="card-body">
-                            <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
-                            <input
-                              disabled
-                              type="text"
-                              id="equipmentBookingStatusId"
-                              name="equipmentBookingStatusId"
-                              value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
-                              className="form-control"
-                              readOnly
-                              style={{backgroundColor: `${bookingStatusColor}`}}
-                            />
+                      <div className="row">
+                        <div className="col-md-12">
+                          <div className="md-form mb-0">
+                            <label htmlFor="description"
+                                   className="">Description</label>
+                            <TextArea propertyName="notes" required="false" rows = "2" state = { state }/>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </form>
-                </div>
+                    <div className="col-md-4">
+                      <div className="md-form">
+                        <label htmlFor="photos">Equipment photo</label>
+                        <img
+                          id="photos"
+                          onClick={() => fileInput.current.click()}
+                          src={ currentItem?.id > 0 ?
+                            (currentItem.photos !== [] ?
+                              imagesFolder + currentItem.photos[0] :
+                              equipmentImagePlaceholder) : ""} className="img-fluid" alt="Image"/>
+                      </div>
+                      <div>
+                        <div className="mb-1 mt-1">
+                          <input ref={fileInput} style={{display: 'none'}} className="form-control" type="file" accept ="image/png, image/jpg, image/jpeg" id="formFile" onChange={selectedFileHandler}/>
+                        </div>
+                        <Button variant="primary" className="mrx1" onClick={() => fileInput.current.click()}>Pick an image</Button>
+                        <Button variant="primary" className="mrx1" onClick={fileUploadHandler}>Upload new image</Button>
+                        <Button variant="danger" id="delete-image" onClick={deleteImageLink}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row margin-top">
+                    <div className="col-md-5">
+                      <div className="md-form mb-0">
+                        <div className="card">
+                          <div className="card-header">
+                            Technical data
+                          </div>
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-md-6">
+                                <label htmlFor="length" className="">Length
+                                  (cm)</label>
+                                <NumberInput propertyName="length" state = { state } min = "0" disabled = "false" />
+                                <label htmlFor="width" className="">Width
+                                  (cm)</label>
+                                <NumberInput propertyName="width" state = { state } min = "0" disabled = "false" />
+                                <label htmlFor="height>" className="">Height
+                                  (cm)</label>
+                                <NumberInput propertyName="height" state = { state } min = "0" disabled = "false" />
+                              </div>
+                              <div className="col-md-6">
+                                <label htmlFor="area" className="">Area
+                                  (m<sup>2</sup>)</label>
+                                <input
+                                  disabled
+                                  type="text"
+                                  id="area"
+                                  name="area"
+                                  value={
+                                    (currentItem?.length && currentItem?.width) ?
+                                      (currentItem.length * currentItem.width) : 0
+                                  }
+                                  className="form-control"
+                                  readOnly
+                                />
+                                <label htmlFor="weight" className="">Weight
+                                  (kg)</label>
+                                <NumberInput propertyName="weight" state = { state } min = "0" disabled = "false" />
+                                <label htmlFor="power>" className="">Power
+                                  (kW)</label>
+                                <NumberInput propertyName="powerRequired" state = { state } min = "0" disabled = "false" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-2">
+                      <div className="card">
+                        <div className="card-header">
+                          Conditions
+                        </div>
+                        <div className="card-body">
+                          <label htmlFor="staff" className="">Required staff</label>
+                          <NumberInput propertyName="staffNeeded" state = { state } min = "0" disabled = "" />
+                          <label htmlFor="minimum_age" className="">Minimum age</label>
+                          <NumberInput propertyName="minimumAge" state = { state } min = "0" max = "99" disabled = "disabled" />
+                          <label htmlFor="max_participants>" className="">Max
+                            participants</label>
+                          <NumberInput propertyName="maxParticipants" state = { state } min = "0" disabled = "" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-2">
+                      <div className="md-form mb-0">
+                        <div className="card">
+                          <div className="card-header">
+                            Status
+                          </div>
+                          <div className="card-body">
+                            <div className="form-check form-switch">
+                              <label htmlFor="in_use" className="form-check-label">In use</label>
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="inUse"
+                                name="inUse"
+                                checked={currentItem.inUse}
+                                // defaultChecked={currentItem.inUse}
+                                onChange={(e) => {
+                                  setCurrentItem({...currentItem,
+                                    inUse: e.currentTarget.checked});
+                                  setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                }}
+                              />
+                            </div>
+                            <label htmlFor="ownership" className="">Ownership</label>
+                            <select className="form-select"
+                                    aria-label="Ownership type"
+                                    id="equipmentOwnershipId"
+                                    name="equipmentOwnershipId"
+                                    defaultValue = {
+                                      currentItem.equipmentOwnership?.id > 0
+                                        ? currentItem.equipmentOwnership.id
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      setCurrentItem({...currentItem, equipmentOwnership: {...currentItem.equipmentOwnership, id: parseInt(e.target.value)} })
+                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                    }}
+                                    onClick={() => {
+                                      resetInvalidInputField("equipmentOwnershipId");
+                                    }}
+                            >
+                              <option disabled value=""> -- Select Ownership -- </option>
+                              {ownershipTypesList.map((e) => (
+                                <option key={e.id} value={e.id}>{e.name}</option>))
+                              }
+                            </select>
+                            <label htmlFor="status" className="">Status</label>
+                            <select className="form-select"
+                                    aria-label="Equipment status"
+                                    id="equipmentStatusId"
+                                    name="equipmentStatusId"
+                                    defaultValue = {
+                                      currentItem.equipmentStatus?.id > 0
+                                        ? currentItem.equipmentStatus.id
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      setCurrentItem({...currentItem, equipmentStatus: {...currentItem.equipmentStatus, id: parseInt(e.target.value)} })
+                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                    }}
+                                    onClick={() => {
+                                      resetInvalidInputField("equipmentStatusId");
+                                    }}
+                            >
+                              <option disabled value=""> -- Select Status -- </option>
+                              {statusesList.map((e) => (
+                                <option key={e.id} value={e.id}>{e.name}</option>))
+                              }
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="card">
+                        <div className="card-header">
+                          Booking status
+                        </div>
+                        <div className="card-body">
+                          <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
+                          <input
+                            disabled
+                            type="text"
+                            id="equipmentBookingStatusId"
+                            name="equipmentBookingStatusId"
+                            value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
+                            className="form-control"
+                            readOnly
+                            style={{backgroundColor: `${bookingStatusColor}`}}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </section>
-          </Modal.Body>
-          <ModalFooter
-            onDelete = { onDelete }
-            onCloseDetails = { onClose }
-            onSubmit = { onSaveItemClick }
-            state = { state }
-          />
-        </Modal>
-
+            </div>
+          </section>
+        </Modal.Body>
         <ModalFooter
           onDelete = { onDelete }
           onCloseDetails = { onClose }
@@ -680,7 +629,6 @@ const Equipment = () => {
           state = { state }
         />
       </Modal>
-
     </div>
   )
 

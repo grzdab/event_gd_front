@@ -18,10 +18,10 @@ const NumberInput = ({propertyName, state, required, min, max, disabled}) => {
              name = { propertyName }
              min = { min }
              max = { max }
-             defaultValue = { currentItem?.propertyName ? currentItem?.propertyName : 0}
+             defaultValue = { currentItem[propertyName] ? currentItem[propertyName] : 0}
              className = "form-control"
              required = { required }
-             disabled = { disabled }
+             disabled
              onChange = { (item) => {
                setItemChanged(!itemChanged);
                setCurrentItem(currentItem => ({...currentItem,
