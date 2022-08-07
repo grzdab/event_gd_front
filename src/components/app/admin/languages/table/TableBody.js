@@ -18,7 +18,8 @@ const TableBody = ({
                      rowsPerPage,
                      state,
                      checkRelatedItems,
-                     formHeader
+                     formHeader,
+                     relatedItemsUrl
                    }) => {
 
   const sortedRows = useMemo(() => sortRows(filteredRows, sort), [filteredRows, sort])
@@ -29,7 +30,6 @@ const TableBody = ({
   const currentFormState = state.currentFormState;
   const setCurrentFormState = state.setCurrentFormState;
   const relatedItems = state.setRelatedItems;
-  const relatedItemsUrl = "";
 
   return (
     <tbody>
@@ -40,7 +40,7 @@ const TableBody = ({
             if (column.accessor === "editBtn") {
               return (
                 <td><button className='btn btn-outline-info' onClick={() => {
-                relatedItemsUrl && getRelatedChildrenByParentId(`${ relatedItemsUrl }/${ item.id }`, item.id, relatedItems )
+                relatedItemsUrl && getRelatedChildrenByParentId(`${ relatedItemsUrl }/${ item.id }`, item.id, relatedItems );
                 setCurrentItem(item);
                 setBackupItem(item);
                 onItemsListInfoButtonClick(currentFormState, setCurrentFormState, formHeader);

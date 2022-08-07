@@ -8,3 +8,9 @@ export const languageDefault = {
   "id": "",
   "propertyName": "",
 }
+
+export const equipmentStatusDefault = {
+  "id": "",
+  "name": "",
+  "description": ""
+}

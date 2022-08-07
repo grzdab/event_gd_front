@@ -5,7 +5,7 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclama
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
-import { languageDefault } from "../../../../defaults/Items";
+import { ownershipTypeDefault } from "../../../../defaults/Items";
 import {
   onSaveAndClose,
   compareData,
@@ -28,9 +28,11 @@ import { Table } from "./table/Table";
 
 const Languages = () => {
 
-  const dataUrl ="/admin/language";
+  const dataUrl ="/equipment-ownership";
   const relatedDataUrl = "/equipment/ownership";
-  const defaultItem = languageDefault;
+  const defaultItem = ownershipTypeDefault;
+  const itemName = "ownership type";
+  const itemNames = "ownership types";
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,7 +49,8 @@ const Languages = () => {
   const [equipmentList, setEquipmentList] = useState([]);
   const columns = [
     {label: "Id", accessor: "id", sortable: true, searchable: false},
-    {label: "Language", accessor: "propertyName", sortable: true, searchable: true},
+    {label: "Name", accessor: "name", sortable: true, searchable: true},
+    {label: "Description", accessor: "description", sortable: true, searchable: true},
     {label: "details", accessor: "editBtn", sortable: false, searchable: false},
     {label: "delete", accessor: "deleteBtn", sortable: false, searchable: false},
   ];
@@ -70,14 +73,14 @@ const Languages = () => {
 
   const onSaveItemClick = async (e) => {
     e.preventDefault();
-    if(!currentItem.propertyName) {
+    if(!currentItem.name) {
       let nameInput = document.getElementById("name");
       nameInput.classList.add("form-input-invalid");
       nameInput.placeholder = "Language name cannot be empty";
       return;
     }
     let response;
-    const item = { id: currentItem.id, name: currentItem.propertyName };
+    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description };
     if (currentFormState.formAddingDataMode) {
       response = await createItem(dataUrl, item, state);
     } else {
@@ -102,7 +105,7 @@ const Languages = () => {
 
   useEffect(() => {
     if (allowDelete !== null) {
-      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, "language", allowDelete);
+      onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, itemName, allowDelete);
     }
   }, [allowDelete])
 
@@ -128,9 +131,9 @@ const Languages = () => {
     defaultItem,
     currentFormState,
     setCurrentFormState,
-    formDescription: 'Here you can add new language.',
-    formHeader: 'Add new language',
-    buttonTitle: 'Add new language'
+    formDescription: `Here you can add new ${ itemName }.`,
+    formHeader: `Add new ${ itemName }`,
+    buttonTitle: `Add new ${ itemName }`
   }
 
 
@@ -144,7 +147,8 @@ const Languages = () => {
         columns = { columns }
         state = { state }
         checkRelatedItems = { checkRelatedItems }
-        formHeader = "Edit language"
+        formHeader = {`Edit ${ itemName }`}
+        relatedItemsUrl = { relatedDataUrl }
       />
   } else {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW LANGUAGE</h6>
@@ -156,7 +160,7 @@ const Languages = () => {
         <h1 className="mt-4">TEST LANGUAGES</h1>
         <AppAddDataButton props ={ addDataButtonProps }/>
         <div className="card mb-4 shadow mb-5 bg-white rounded">
-          <AppComponentCardHeader title = "Languages list" />
+          <AppComponentCardHeader title ={`${itemNames} list`} />
           { dataSectionContent }
         </div>
       </div>
@@ -190,7 +194,7 @@ const Languages = () => {
                     <div className="col-md-12">
                       <div className="md-form mb-0">
                         <label htmlFor="name" className="">Name</label>
-                        <TextInput propertyName="propertyName" required="true" state={ state }/>
+                        <TextInput propertyName="name" required="true" state={ state }/>
                       </div>
                     </div>
                     <div className="col-md-12">
@@ -203,7 +207,7 @@ const Languages = () => {
                   { !currentFormState.formAddingDataMode &&
                     <RelatedItemsList
                       itemsList = { equipmentList }
-                      titleWhenPopulated = "Items using this language"
+                      titleWhenPopulated ={`Items using this ${ itemName }`}
                       titleWhenEmpty = "No usages found"/>
                   }
                 </form>

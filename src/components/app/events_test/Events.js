@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo} from 'react';
-import { DJTable } from "../../table/DJTable";
+import { DJTable } from "../../djtable/DJTable";
 import ButtonAddSimple from "./ButtonAddSimple";
 import Footer from "./Footer";
 import useCrud from "../../../hooks/useCrud";

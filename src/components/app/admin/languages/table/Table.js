@@ -40,6 +40,7 @@ export const Table = ({ columns, state, checkRelatedItems, formHeader }) => {
           rowsPerPage = { rowsPerPage }
           state = { state }
           formHeader = { formHeader }
+          checkRelatedItems = { checkRelatedItems }
         />
       </table>
       <div style={{backgroundColor: "#D9DFF0", paddingTop: "10px", paddingLeft: "10px"}}>
