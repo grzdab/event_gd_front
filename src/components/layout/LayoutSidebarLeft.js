@@ -40,10 +40,6 @@ const LayoutSidebarLeft = () => {
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCubes}></FontAwesomeIcon></div>
                 Equipment
               </a>
-              <a className="nav-link" href="/app/equipment_select">
-                <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faCubes}></FontAwesomeIcon></div>
-                Equipment (TEST)
-              </a>
               <a className="nav-link" href="/app/human-resources">
                 <div className="sb-nav-link-icon"><FontAwesomeIcon icon={faUsers}></FontAwesomeIcon></div>
                 Human resources

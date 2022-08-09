@@ -21,8 +21,6 @@ import EquipmentOwnership from "./components/app/admin/equipment_ownership_types
 import EquipmentBookingStatus from "./components/app/admin/equipment_booking_statuses/EquipmentBookingStatus";
 import Client from "./components/app/client/Client";
 import User from "./components/app/user/User";
-import EquipmentBackup from "./components/app/equipment/EquipmentBackup";
-import EquipmentSelect from "./components/app/equipment/EquipmentSelect";
 
 
 const ROLES = {
@@ -50,8 +48,6 @@ function Site() {
           <Route path="/app" element={<App />} >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="equipment" element={<Equipment />} />
-            <Route path="equipment_backup" element={<EquipmentBackup />} />
-            <Route path="equipment_select" element={<EquipmentSelect />} />
             <Route path="equipment-status" element={<EquipmentStatus />} />
             <Route path="equipment-ownership" element={<EquipmentOwnership />} />
             <Route path="equipment-booking-status" element={<EquipmentBookingStatus />} />

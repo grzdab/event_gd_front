@@ -11,7 +11,8 @@ import {
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
-  onCloseDetails
+  onCloseDetails,
+  setForegroundColor
 } from "../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
@@ -21,6 +22,7 @@ import DeleteWarningModal from "../common/DeleteWarningModal";
 import ItemDetailsModalHeader from "../common/ItemDetailsModalHeader";
 import TextInput from "../../elements/TextInput";
 import TextArea from "../../elements/TextArea";
+import Select from "../../elements/Select";
 import RelatedItemsList from "../common/RelatedItemsList";
 import useCrud from "../../../hooks/useCrud";
 import { Table } from "../../table/Table";
@@ -31,6 +33,10 @@ import {resetInvalidInputField} from "../../../js/CommonHelper";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import NumberInput from "../../elements/NumberInput";
+import EquipmentTechnicalDataCard from "./EquipmentTechnicalDataCard";
+import EquipmentConditionsCard from "./EquipmentConditionsCard";
+import EquipmentStatusCard from "./EquipmentStatusCard";
+import EquipmentBookingStatusCard from "./EquipmentBookingStatusCard";
 
 const Equipment = () => {
 
@@ -50,7 +56,6 @@ const Equipment = () => {
 
   const axiosPrivate = useAxiosPrivate();
   const axiosPrivateFileUpload = useAxiosPrivateFileUpload();;
-
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -233,78 +238,37 @@ const Equipment = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await getItems(dataUrl);
-      if (response.status === 200) {
+      const [itemsData, equipmentStatusData, equipmentOwnershipData, equipmentCategoriesData, equipmentBookingStatusData] =
+        await Promise.all([
+          getItems(dataUrl),
+          getItems(equipmentStatusUrl),
+          getItems(equipmentOwnershipUrl),
+          getItems(equipmentCategoryUrl),
+          getItems(equipmentBookingStatusUrl),
+        ]);
+
+      const success =
+        itemsData.status === 200 &&
+        equipmentStatusData.status === 200 &&
+        equipmentOwnershipData.status === 200 &&
+        equipmentCategoriesData.status === 200 &&
+        equipmentBookingStatusData.status === 200;
+
+      if (success) {
         setLoading(false);
-        setItems(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
+        setItems(itemsData.data);
+        setStatuses(equipmentStatusData.data);
+        setOwnershipTypes(equipmentOwnershipData.data);
+        setCategories(equipmentCategoriesData.data);
+        setBookingStatuses(equipmentBookingStatusData.data);
       } else {
-        alert("Could not get the requested data.");
+        navigate('/login', { state: { from: location }, replace: true})
       }
+
     };
     getData();
   }, [])
 
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentStatusUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setStatuses(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment statuses data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentOwnershipUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setOwnershipTypes(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment ownership types data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentCategoryUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setCategories(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment category data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentBookingStatusUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setBookingStatuses(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment category data.");
-      }
-    };
-    getData();
-  }, [])
 
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
@@ -312,6 +276,7 @@ const Equipment = () => {
       setBookingStatusColor(bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color);
     }
   }, [currentItem])
+
 
 
   const addDataButtonProps = {
@@ -343,6 +308,7 @@ const Equipment = () => {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
   }
 
+
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
@@ -358,11 +324,12 @@ const Equipment = () => {
         state = { state }
         onDelete = { onDelete }
         deleteItemName ={ itemName } />
-      <Modal show={currentFormState.showForm}
-             size="xl"
-             backdrop="static"
-             keyboard={false}
-             onHide={onCloseDetails}>
+      <Modal
+        show={currentFormState.showForm}
+        size="xl"
+        backdrop="static"
+        keyboard={false}
+        onHide={onCloseDetails}>
         <ItemDetailsModalHeader title ={ currentFormState.formHeader } />
         <Modal.Body>
           <section className="mb-4">
@@ -382,42 +349,28 @@ const Equipment = () => {
                       <div className="row">
                         <div className="md-form mb-0">
                           <label htmlFor="name" className="">Equipment name <span className="required">*</span></label>
-                          <TextInput propertyName="name" required="true" state={ state }/>
+                          <TextInput propertyName="name" required={true} state={ state }/>
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-md-8">
                           <div className="md-form mb-0">
-                            <label htmlFor="category" className="">Category <span className="required">*</span></label>
-                            <select className="form-select"
-                                    aria-label="Equipment category"
-                                    id="equipmentCategoryId"
-                                    name="equipmentCategoryId"
-                                    defaultValue = {
-                                      currentItem.equipmentCategory?.id > 0
-                                        ? currentItem.equipmentCategory.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      setCurrentItem({...currentItem, equipmentCategory: {...currentItem.equipmentCategory, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentCategoryId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Category -- </option>
-                              {categoriesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
+                            <label htmlFor="equipmentCategory" className="">Category <span className="required">*</span></label>
+                            <Select
+                              label = "Equipment category"
+                              propertyName = "equipmentCategoryId"
+                              required = { false }
+                              state = { state }
+                              itemsList = { categoriesList }
+                              itemName = "equipmentCategory"
+                            />
                           </div>
                         </div>
                         <div className="col-md-4">
                           <div className="md-form mb-0">
                             Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
                             className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
-                            <NumberInput propertyName="powerRequired" state = { state } min = "0" max = "255" disabled ={ false } />
+                            <NumberInput propertyName="sortingId" state = { state } min = "0" max = "255" disabled ={ false } />
                           </div>
                         </div>
                       </div>
@@ -426,7 +379,7 @@ const Equipment = () => {
                           <div className="md-form mb-0">
                             <label htmlFor="description"
                                    className="">Description</label>
-                            <TextArea propertyName="notes" required="false" rows = "2" state = { state }/>
+                            <TextArea propertyName="notes" required={false} rows = "2" state = { state }/>
                           </div>
                         </div>
                       </div>
@@ -456,148 +409,25 @@ const Equipment = () => {
                     <div className="col-md-5">
                       <div className="md-form mb-0">
                         <div className="card">
-                          <div className="card-header">
-                            Technical data
-                          </div>
-                          <div className="card-body">
-                            <div className="row">
-                              <div className="col-md-6">
-                                <label htmlFor="length" className="">Length
-                                  (cm)</label>
-                                <NumberInput propertyName="length" state = { state } min = "0" disabled ={ false }/>
-                                <label htmlFor="width" className="">Width
-                                  (cm)</label>
-                                <NumberInput propertyName="width" state = { state } min = "0" disabled ={ false }/>
-                                <label htmlFor="height>" className="">Height
-                                  (cm)</label>
-                                <NumberInput propertyName="height" state = { state } min = "0" disabled ={ false }/>
-                              </div>
-                              <div className="col-md-6">
-                                <label htmlFor="area" className="">Area
-                                  (m<sup>2</sup>)</label>
-                                <TextInput propertyName="area" state = { state } disabled ={ true } value = {
-                                  (currentItem?.length && currentItem?.width) ?
-                                    (currentItem.length * currentItem.width) : 0
-                                }/>
-                                <label htmlFor="weight" className="">Weight
-                                  (kg)</label>
-                                <NumberInput propertyName="weight" state = { state } min = "0" disabled ={ false }/>
-                                <label htmlFor="power>" className="">Power
-                                  (kW)</label>
-                                <NumberInput propertyName="powerRequired" state = { state } min = "0" disabled ={ false }/>
-                              </div>
-                            </div>
-                          </div>
+                          <EquipmentTechnicalDataCard state = { state } />
                         </div>
                       </div>
                     </div>
                     <div className="col-md-2">
                       <div className="card">
-                        <div className="card-header">
-                          Conditions
-                        </div>
-                        <div className="card-body">
-                          <label htmlFor="staff" className="">Required staff</label>
-                          <NumberInput propertyName="staffNeeded" state = { state } min = "0" disabled ={ false } />
-                          <label htmlFor="minimum_age" className="">Minimum age</label>
-                          <NumberInput propertyName="minimumAge" state = { state } min = "0" max = "99" disabled ={ false } />
-                          <label htmlFor="max_participants>" className="">Max participants</label>
-                          <NumberInput propertyName="maxParticipants" state = { state } min = "0" disabled ={ false } />
-                        </div>
+                        <EquipmentConditionsCard state = { state } />
                       </div>
                     </div>
                     <div className="col-md-2">
                       <div className="md-form mb-0">
                         <div className="card">
-                          <div className="card-header">
-                            Status
-                          </div>
-                          <div className="card-body">
-                            <div className="form-check form-switch">
-                              <label htmlFor="in_use" className="form-check-label">In use</label>
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="inUse"
-                                name="inUse"
-                                checked={currentItem.inUse}
-                                // defaultChecked={currentItem.inUse}
-                                onChange={(e) => {
-                                  setCurrentItem({...currentItem,
-                                    inUse: e.currentTarget.checked});
-                                  setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                }}
-                              />
-                            </div>
-                            <label htmlFor="ownership" className="">Ownership</label>
-                            <select className="form-select"
-                                    aria-label="Ownership type"
-                                    id="equipmentOwnershipId"
-                                    name="equipmentOwnershipId"
-                                    defaultValue = {
-                                      currentItem.equipmentOwnership?.id > 0
-                                        ? currentItem.equipmentOwnership.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      console.log(currentItem.equipmentOwnership);
-                                      setCurrentItem({...currentItem, equipmentOwnership: {...currentItem.equipmentOwnership, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentOwnershipId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Ownership -- </option>
-                              {ownershipTypesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
-                            <label htmlFor="status" className="">Status</label>
-                            <select className="form-select"
-                                    aria-label="Equipment status"
-                                    id="equipmentStatusId"
-                                    name="equipmentStatusId"
-                                    defaultValue = {
-                                      currentItem.equipmentStatus?.id > 0
-                                        ? currentItem.equipmentStatus.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      setCurrentItem({...currentItem, equipmentStatus: {...currentItem.equipmentStatus, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentStatusId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Status -- </option>
-                              {statusesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
-                          </div>
+                          <EquipmentStatusCard state = { state } statusesList = { statusesList } ownershipTypesList={ ownershipTypesList }/>
                         </div>
                       </div>
                     </div>
                     <div className="col-md-3">
                       <div className="card">
-                        <div className="card-header">
-                          Booking status
-                        </div>
-                        <div className="card-body">
-                          <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
-                          <input
-                            disabled
-                            type="text"
-                            id="equipmentBookingStatusId"
-                            name="equipmentBookingStatusId"
-                            value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
-                            className="form-control"
-                            readOnly
-                            style={{backgroundColor: `${bookingStatusColor}`}}
-                          />
-                        </div>
+                        <EquipmentBookingStatusCard state = { state } bookingStatusesList={ bookingStatusesList }/>
                       </div>
                     </div>
                   </div>
