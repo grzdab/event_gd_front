@@ -71,6 +71,7 @@
 
 *.data_changed {
     visibility: hidden;
+    display: none;
     font-weight: 700;
     color: var(--bs-teal) !important;
 }

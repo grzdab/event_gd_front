@@ -37,6 +37,7 @@ const TableBody = ({
               return (
                 <td><button className='btn btn-outline-info' onClick={() => {
                 relatedItemsUrl && getRelatedChildrenByParentId(`${ relatedItemsUrl }/${ item.id }`, item.id, relatedItems );
+
                 setCurrentItem(item);
                 setBackupItem(item);
                 onItemsListInfoButtonClick(currentFormState, setCurrentFormState, formHeader);

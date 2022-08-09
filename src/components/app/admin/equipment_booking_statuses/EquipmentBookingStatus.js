@@ -102,6 +102,7 @@ const EquipmentBookingStatus = () => {
   };
 
   const changeColor = (equipmentBookingStatusColor) => {
+    setItemChanged(!itemChanged);
     setEquipmentBookingStatusColor(equipmentBookingStatusColor)
     setCurrentItem({...currentItem,
       color: equipmentBookingStatusColor});
@@ -184,16 +185,15 @@ const EquipmentBookingStatus = () => {
              backdrop="static"
              keyboard={false}
              onHide={ onClose }>
-        <ItemDetailsModalHeader title ={`${itemName} details`} />
+        <ItemDetailsModalHeader title ={ currentFormState.formHeader } />
         <Modal.Body>
           <section className="mb-4">
-            <h2 className="h1-responsive font-weight-bold text-center my-2">{ currentFormState.formHeader }</h2>
-            <p className="text-center w-responsive mx-auto mb-5 form_test">{ currentFormState.formDescription }</p>
+            <p className="text-center w-responsive mx-auto mb-1 form_test">{ currentFormState.formDescription }</p>
             <div>
-              <p className="text-center w-responsive mx-auto mb-5 data_changed" id="data-changed"><FontAwesomeIcon icon={ faExclamationCircle }/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
+              <p className="text-center w-responsive mx-auto mb-1 data_changed" id="data-changed"><FontAwesomeIcon icon={ faExclamationCircle }/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
               <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {
                 restoreFormData({ state })}}>
-                Restore
+                Cancel all changes
               </Button>
             </div>
 

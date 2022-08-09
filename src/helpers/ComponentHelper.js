@@ -99,11 +99,18 @@ export const compareData = (currentFormState, setCurrentFormState, currentItem, 
     let btnRestore = document.getElementById("btn-restore");
     if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
         if (!compareObjects(backupItem, currentItem)) {
+            // console.log("NOT THE SAME");
+            // console.log(backupItem);
+            // console.log(currentItem);
             dataChangedInfo.classList.add("visible");
             btnRestore.classList.add("visible");
             setCurrentFormState({...currentFormState, formSaveButtonDisabled: false})
         } else {
-            if (confirmCloseDiv) {
+          // console.log("THE SAME");
+          // console.log(backupItem);
+          // console.log(currentItem);
+
+          if (confirmCloseDiv) {
                 confirmCloseDiv.classList.remove("div-visible")
             }
             btnClose.classList.remove("btn-invisible");
@@ -142,7 +149,13 @@ export const restoreFormData = ({ state }) =>  {
         if (backupItem.hasOwnProperty(key)) {
             let element = document.getElementById(key);
             if (element) {
-                element.value = backupItem[key]
+              if (element.tagName !== "SELECT") {
+                element.value = backupItem[key];
+              } else if (element.tagName === "SELECT") {
+                element.value = backupItem[element.id].id;
+              } else {
+                console.log(element.tagName);
+              }
             }
         }
     }
@@ -250,3 +263,14 @@ export const onCloseDetails = ( {state} ) => {
     btnClose.classList.add("btn-invisible");
   }
 };
+
+
+export const getItemById = (array, id) => {
+  for (let i = 0, l = array.length; i < l; i++) {
+    if (array[i].id === id) {
+      return array[i]
+    }
+  }
+}
+
+

@@ -11,7 +11,8 @@ import {
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
-  onCloseDetails
+  onCloseDetails,
+  getItemById
 } from "../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
@@ -21,6 +22,7 @@ import DeleteWarningModal from "../common/DeleteWarningModal";
 import ItemDetailsModalHeader from "../common/ItemDetailsModalHeader";
 import TextInput from "../../elements/TextInput";
 import TextArea from "../../elements/TextArea";
+import Select from "../../elements/Select";
 import RelatedItemsList from "../common/RelatedItemsList";
 import useCrud from "../../../hooks/useCrud";
 import { Table } from "../../table/Table";
@@ -32,7 +34,7 @@ import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCirc
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons/faTrashAlt";
 import NumberInput from "../../elements/NumberInput";
 
-const Equipment = () => {
+const EquipmentSelect = () => {
 
   const dataUrl ="/equipment";
 
@@ -50,7 +52,6 @@ const Equipment = () => {
 
   const axiosPrivate = useAxiosPrivate();
   const axiosPrivateFileUpload = useAxiosPrivateFileUpload();;
-
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -233,78 +234,37 @@ const Equipment = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await getItems(dataUrl);
-      if (response.status === 200) {
+      const [itemsData, equipmentStatusData, equipmentOwnershipData, equipmentCategoriesData, equipmentBookingStatusData] =
+        await Promise.all([
+        getItems(dataUrl),
+        getItems(equipmentStatusUrl),
+        getItems(equipmentOwnershipUrl),
+        getItems(equipmentCategoryUrl),
+        getItems(equipmentBookingStatusUrl),
+      ]);
+
+      const success =
+        itemsData.status === 200 &&
+        equipmentStatusData.status === 200 &&
+        equipmentOwnershipData.status === 200 &&
+        equipmentCategoriesData.status === 200 &&
+        equipmentBookingStatusData.status === 200;
+
+      if (success) {
         setLoading(false);
-        setItems(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
+        setItems(itemsData.data);
+        setStatuses(equipmentStatusData.data);
+        setOwnershipTypes(equipmentOwnershipData.data);
+        setCategories(equipmentCategoriesData.data);
+        setBookingStatuses(equipmentBookingStatusData.data);
       } else {
-        alert("Could not get the requested data.");
+        navigate('/login', { state: { from: location }, replace: true})
       }
+
     };
     getData();
   }, [])
 
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentStatusUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setStatuses(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment statuses data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentOwnershipUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setOwnershipTypes(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment ownership types data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentCategoryUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setCategories(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment category data.");
-      }
-    };
-    getData();
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getItems(equipmentBookingStatusUrl);
-      if (response.status === 200) {
-        setLoading(false);
-        setBookingStatuses(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
-      } else {
-        alert("Could not get equipment category data.");
-      }
-    };
-    getData();
-  }, [])
 
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
@@ -312,6 +272,7 @@ const Equipment = () => {
       setBookingStatusColor(bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color);
     }
   }, [currentItem])
+
 
 
   const addDataButtonProps = {
@@ -323,6 +284,16 @@ const Equipment = () => {
     formDescription: `Here you can add new ${ itemName }.`,
     formHeader: `Add new ${ itemName }`,
     buttonTitle: `Add new ${ itemName }`
+  }
+
+  const setForegroundColor = (backgroundColorHex) => {
+    const red = parseInt(backgroundColorHex.substring(1,3), 16);
+    const green = parseInt(backgroundColorHex.substring(3,5), 16);
+    const blue = parseInt(backgroundColorHex.substring(5), 16);
+    console.log(backgroundColorHex);
+    console.log(red + "." + green + "." + blue);
+    console.log(red*0.299 + green*0.587 + blue*0.114);
+    return (red*0.299 + green*0.587 + blue*0.114) > 5 ? "white" : "black"
   }
 
 
@@ -343,6 +314,7 @@ const Equipment = () => {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
   }
 
+
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
@@ -358,11 +330,12 @@ const Equipment = () => {
         state = { state }
         onDelete = { onDelete }
         deleteItemName ={ itemName } />
-      <Modal show={currentFormState.showForm}
-             size="xl"
-             backdrop="static"
-             keyboard={false}
-             onHide={onCloseDetails}>
+      <Modal
+        show={currentFormState.showForm}
+        size="xl"
+        backdrop="static"
+        keyboard={false}
+        onHide={onCloseDetails}>
         <ItemDetailsModalHeader title ={ currentFormState.formHeader } />
         <Modal.Body>
           <section className="mb-4">
@@ -382,42 +355,28 @@ const Equipment = () => {
                       <div className="row">
                         <div className="md-form mb-0">
                           <label htmlFor="name" className="">Equipment name <span className="required">*</span></label>
-                          <TextInput propertyName="name" required="true" state={ state }/>
+                          <TextInput propertyName="name" required={true} state={ state }/>
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-md-8">
                           <div className="md-form mb-0">
-                            <label htmlFor="category" className="">Category <span className="required">*</span></label>
-                            <select className="form-select"
-                                    aria-label="Equipment category"
-                                    id="equipmentCategoryId"
-                                    name="equipmentCategoryId"
-                                    defaultValue = {
-                                      currentItem.equipmentCategory?.id > 0
-                                        ? currentItem.equipmentCategory.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      setCurrentItem({...currentItem, equipmentCategory: {...currentItem.equipmentCategory, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentCategoryId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Category -- </option>
-                              {categoriesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
+                            <label htmlFor="equipmentCategory" className="">Category <span className="required">*</span></label>
+                            <Select
+                              label = "Equipment category"
+                              propertyName = "equipmentCategoryId"
+                              required = { false }
+                              state = { state }
+                              itemsList = { categoriesList }
+                              itemName = "equipmentCategory"
+                            />
                           </div>
                         </div>
                         <div className="col-md-4">
                           <div className="md-form mb-0">
                             Sequence<div className="form_tooltip"><FontAwesomeIcon icon={faQuestionCircle}/><span
                             className="form_tooltip_text">Setting the sequence allows you to control the placement of items in the Scheduler.</span></div>
-                            <NumberInput propertyName="powerRequired" state = { state } min = "0" max = "255" disabled ={ false } />
+                            <NumberInput propertyName="sortingId" state = { state } min = "0" max = "255" disabled ={ false } />
                           </div>
                         </div>
                       </div>
@@ -426,7 +385,7 @@ const Equipment = () => {
                           <div className="md-form mb-0">
                             <label htmlFor="description"
                                    className="">Description</label>
-                            <TextArea propertyName="notes" required="false" rows = "2" state = { state }/>
+                            <TextArea propertyName="notes" required={false} rows = "2" state = { state }/>
                           </div>
                         </div>
                       </div>
@@ -529,53 +488,24 @@ const Equipment = () => {
                                 }}
                               />
                             </div>
-                            <label htmlFor="ownership" className="">Ownership</label>
-                            <select className="form-select"
-                                    aria-label="Ownership type"
-                                    id="equipmentOwnershipId"
-                                    name="equipmentOwnershipId"
-                                    defaultValue = {
-                                      currentItem.equipmentOwnership?.id > 0
-                                        ? currentItem.equipmentOwnership.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      console.log(currentItem.equipmentOwnership);
-                                      setCurrentItem({...currentItem, equipmentOwnership: {...currentItem.equipmentOwnership, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentOwnershipId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Ownership -- </option>
-                              {ownershipTypesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
-                            <label htmlFor="status" className="">Status</label>
-                            <select className="form-select"
-                                    aria-label="Equipment status"
-                                    id="equipmentStatusId"
-                                    name="equipmentStatusId"
-                                    defaultValue = {
-                                      currentItem.equipmentStatus?.id > 0
-                                        ? currentItem.equipmentStatus.id
-                                        : ""
-                                    }
-                                    onChange={(e) => {
-                                      setCurrentItem({...currentItem, equipmentStatus: {...currentItem.equipmentStatus, id: parseInt(e.target.value)} })
-                                      setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                                    }}
-                                    onClick={() => {
-                                      resetInvalidInputField("equipmentStatusId");
-                                    }}
-                            >
-                              <option disabled value=""> -- Select Status -- </option>
-                              {statusesList.map((e) => (
-                                <option key={e.id} value={e.id}>{e.name}</option>))
-                              }
-                            </select>
+                            <label htmlFor="equipmentOwnership" className="">Ownership</label>
+                            <Select
+                              label = "Ownership type"
+                              propertyName = "equipmentOwnershipId"
+                              required = { false }
+                              state = { state }
+                              itemsList = { ownershipTypesList }
+                              itemName = "equipmentOwnership"
+                            />
+                            <label htmlFor="equipmentStatus" className="">Status</label>
+                            <Select
+                              label = "Equipment status"
+                              propertyName = "equipmentStatusId"
+                              required = { false }
+                              state = { state }
+                              itemsList = { statusesList }
+                              itemName = "equipmentStatus"
+                            />
                           </div>
                         </div>
                       </div>
@@ -587,7 +517,7 @@ const Equipment = () => {
                         </div>
                         <div className="card-body">
                           <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
-                          <input
+                          <input style={{backgroundColor: `${bookingStatusColor}`, color: setForegroundColor(bookingStatusColor)}}
                             disabled
                             type="text"
                             id="equipmentBookingStatusId"
@@ -595,7 +525,6 @@ const Equipment = () => {
                             value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
                             className="form-control"
                             readOnly
-                            style={{backgroundColor: `${bookingStatusColor}`}}
                           />
                         </div>
                       </div>
@@ -618,4 +547,4 @@ const Equipment = () => {
 
 }
 
-export default Equipment;
+export default EquipmentSelect;
