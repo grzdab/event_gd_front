@@ -5,13 +5,13 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclama
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
-import { equipmentBookingStatusDefault } from "../../../../defaults/Items";
+import { userRoleDefault } from "../../../../defaults/Items";
 import {
   onSaveAndClose,
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
-  onCloseDetails, setForegroundColor
+  onCloseDetails
 } from "../../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../../common/AppComponentCardHeader";
@@ -20,19 +20,17 @@ import AppAddDataButton from "../../common/AppAddDataButton";
 import DeleteWarningModal from "../../common/DeleteWarningModal";
 import ItemDetailsModalHeader from "../../common/ItemDetailsModalHeader";
 import TextInput from "../../../elements/TextInput";
-import TextArea from "../../../elements/TextArea";
 import RelatedItemsList from "../../common/RelatedItemsList";
 import useCrud from "../../../../hooks/useCrud";
 import { Table } from "../../../table/Table";
-import {HexColorPicker} from "react-colorful";
 
-const EquipmentBookingStatus = () => {
+const Roles = () => {
 
-  const dataUrl ="/equipment-booking-status";
-  const relatedItemsUrl = "/equipment/booking-status"; // if no need to check it, initialize with null and remove RelatedItemsList from details modal
-  const defaultItem = equipmentBookingStatusDefault;
-  const itemName = "booking status";
-  const itemNames = "booking statuses";
+  const dataUrl = "/admin/role";
+  const userRolesUrl = "/user/role"
+  const defaultItem = userRoleDefault;
+  const itemName = "user role";
+  const itemNames = "user roles";
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,13 +44,10 @@ const EquipmentBookingStatus = () => {
   const [backupItem, setBackupItem] = useState(defaultItem);
   const [itemChanged, setItemChanged] = useState(false);
   // elements related to the item
-  const [equipmentList, setEquipmentList] = useState([]);
-  const [equipmentBookingStatusColor, setEquipmentBookingStatusColor] = useState("#ffffff")
+  const [userRolesList, setUserRolesList] = useState([]);
   const columns = [
-    {label: "Id", accessor: "id", sortable: true, searchable: false},
+    {label: "Id", accessor: "id", sortable: true, searchable: false, visible: true},
     {label: "Name", accessor: "name", sortable: true, searchable: true},
-    {label: "Description", accessor: "description", sortable: true, searchable: true},
-    {label: "Color", accessor: "color", sortable: false, searchable: false, type: "color"},
     {label: "details", accessor: "editBtn", sortable: false, searchable: false},
     {label: "delete", accessor: "deleteBtn", sortable: false, searchable: false},
   ];
@@ -63,7 +58,7 @@ const EquipmentBookingStatus = () => {
     currentFormState, setCurrentFormState,
     defaultItem, backupItem, setBackupItem, itemChanged, setItemChanged,
     setAllowDelete,
-    setRelatedItems: setEquipmentList
+    setRelatedItems: setUserRolesList
   }
 
   const onDelete = async () => {
@@ -82,7 +77,7 @@ const EquipmentBookingStatus = () => {
       return;
     }
     let response;
-    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description, color: currentItem.color };
+    const item = { id: currentItem.id, name: currentItem.name };
     if (currentFormState.formAddingDataMode) {
       response = await createItem(dataUrl, item, state);
     } else {
@@ -93,21 +88,13 @@ const EquipmentBookingStatus = () => {
   }
 
   const checkRelatedItems = async (id) => {
-    const data = await getRelatedChildrenByParentId(`${ relatedItemsUrl }/${ id }`, id, setEquipmentList);
+    const data = await getRelatedChildrenByParentId(`${ userRolesUrl }/${ id }`, id, setUserRolesList);
     data.length === 0 ? setAllowDelete(true) : setAllowDelete(false);
   }
 
   const onClose = () => {
     onCloseDetails({ state })
   };
-
-  const changeColor = (equipmentBookingStatusColor) => {
-    setItemChanged(!itemChanged);
-    setEquipmentBookingStatusColor(equipmentBookingStatusColor)
-    setCurrentItem({...currentItem,
-      color: equipmentBookingStatusColor});
-    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-  }
 
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
@@ -158,7 +145,7 @@ const EquipmentBookingStatus = () => {
         state = { state }
         checkRelatedItems = { checkRelatedItems }
         formHeader = {`Edit ${ itemName }`}
-        relatedItemsUrl = { relatedItemsUrl }
+        relatedItemsUrl = { userRolesUrl }
       />
   } else {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
@@ -180,10 +167,10 @@ const EquipmentBookingStatus = () => {
         onDelete = { onDelete }
         deleteItemName ={ itemName } />
 
-      <Modal show={currentFormState.showForm}
+      <Modal show={ currentFormState.showForm }
              size="xl"
              backdrop="static"
-             keyboard={false}
+             keyboard={ false }
              onHide={ onClose }>
         <ItemDetailsModalHeader title ={ currentFormState.formHeader } />
         <Modal.Body>
@@ -196,42 +183,21 @@ const EquipmentBookingStatus = () => {
                 Cancel all changes
               </Button>
             </div>
-
             <div className="row">
               <div className="col-md-12 mb-md-0 mb-5">
-                <form id="add-equipment-booking-status-form" name="add-equipment-booking-status-form">
+                <form id="add-item-form" name="add-item-form">
                   <div className="row">
-                    <div className="col-md-9">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="md-form mb-0">
-                            <label htmlFor="name" className="">Name</label>
-                            <TextInput propertyName="name" required="true" state={ state } style = {{backgroundColor: `${currentItem.color}`, color: setForegroundColor(currentItem.color)}}/>
-                          </div>
-                        </div>
-                        <div className="col-md-12">
-                          <div className="md-form mb-0">
-                            <label htmlFor="description" className="">Description</label>
-                            <TextArea propertyName="description" required="false" rows = "2" state = { state }/>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div className="row">
-                        <div>Booking Status Color
-                          <HexColorPicker
-                            style={{width: "100%"}}
-                            color={currentItem?.id > 0 ? currentItem.color : equipmentBookingStatusColor}
-                            onChange={changeColor}/>
-                        </div>
+                    <div className="col-md-12">
+                      <div className="md-form mb-0">
+                        <label htmlFor="name" className="">Name</label>
+                        <TextInput propertyName="name" required="true" state={ state }/>
                       </div>
                     </div>
                   </div>
                   { !currentFormState.formAddingDataMode &&
                     <RelatedItemsList
-                      itemsList = { equipmentList }
-                      titleWhenPopulated ={`Items using this ${ itemName }`}
+                      itemsList = { userRolesList }
+                      titleWhenPopulated ={`Users using this ${ itemName }`}
                       titleWhenEmpty = "No usages found"/>
                   }
                 </form>
@@ -239,17 +205,18 @@ const EquipmentBookingStatus = () => {
             </div>
           </section>
         </Modal.Body>
+
         <ModalFooter
           onDelete = { onDelete }
           onCloseDetails = { onClose }
           onSubmit = { onSaveItemClick }
           state = { state }
         />
-      </Modal>
 
+      </Modal>
     </div>
   )
 
 }
 
-export default EquipmentBookingStatus;
+export default Roles;

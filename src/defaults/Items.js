@@ -50,3 +50,15 @@ export const equipmentDefault = {
     id: 0
   }
 }
+
+export const userDefault = {
+  id: 0,
+  login: "",
+  firstName: "",
+  lastName: ""
+}
+
+export const userRoleDefault = {
+  id: "",
+  name: ""
+}

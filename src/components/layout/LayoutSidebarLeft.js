@@ -56,26 +56,30 @@ const LayoutSidebarLeft = () => {
               {auth?.roles?.includes("ROLE_ADMIN") ?
                 <>
                   <div className="sb-sidenav-menu-heading">Settings</div>
+                  <a className="nav-link" href="/app/roles">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    User roles
+                  </a>
                   <a className="nav-link" href="/app/users">
                   <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                   Application users
-                </a>
-                <a className="nav-link" href="/app/equipment-category">
-                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                  Equipment categories
-                </a>
-                <a className="nav-link" href="/app/equipment-status">
-                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                  Equipment statuses
-                </a>
-                <a className="nav-link" href="/app/equipment-ownership">
-                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                  Equipment ownership types
-                </a>
-                <a className="nav-link" href="/app/equipment-booking-status">
-                  <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                  Equipment booking statuses
-                </a>
+                  </a>
+                  <a className="nav-link" href="/app/equipment-category">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    Equipment categories
+                  </a>
+                  <a className="nav-link" href="/app/equipment-status">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    Equipment statuses
+                  </a>
+                  <a className="nav-link" href="/app/equipment-ownership">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    Equipment ownership types
+                  </a>
+                  <a className="nav-link" href="/app/equipment-booking-status">
+                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
+                    Equipment booking statuses
+                  </a>
                   <a className="nav-link" href="/app/client-type">
                     <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                     Client types

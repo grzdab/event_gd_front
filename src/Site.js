@@ -20,7 +20,8 @@ import EquipmentStatus from "./components/app/admin/equipment_statuses/Equipment
 import EquipmentOwnership from "./components/app/admin/equipment_ownership_types/EquipmentOwnership";
 import EquipmentBookingStatus from "./components/app/admin/equipment_booking_statuses/EquipmentBookingStatus";
 import Client from "./components/app/client/Client";
-import User from "./components/app/user/User";
+import User from "./components/app/admin/users/Users";
+import Roles from "./components/app/admin/roles/Roles";
 
 
 const ROLES = {
@@ -53,6 +54,7 @@ function Site() {
             <Route path="equipment-booking-status" element={<EquipmentBookingStatus />} />
             <Route path="clients" element={<Client />} />
             <Route path="users" element={<User />} />
+            <Route path="roles" element={<Roles />} />
             <Route path="equipment-category" element={<EquipmentCategory />} />
           </Route>
         </Route>

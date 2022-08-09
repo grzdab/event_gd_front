@@ -41,39 +41,44 @@ const TableHead = ({
     <thead style={{backgroundColor: "#D9DFF0"}}>
     <tr className = "table-settings-header">
       {columns.map((column) => {
-        const sortIcon = () => {
-          if (column.accessor === sort.orderBy) {
-            if (sort.order === 'asc') {
-              return <FontAwesomeIcon icon={ faSortUp }/>
+        if (column.visible !== false) {
+          const sortIcon = () => {
+            if (column.accessor === sort.orderBy) {
+              if (sort.order === 'asc') {
+                return <FontAwesomeIcon icon={faSortUp}/>
+              }
+              return <FontAwesomeIcon icon={faSortDown}/>
+            } else {
+              return <FontAwesomeIcon icon={faSort}/>
             }
-            return <FontAwesomeIcon icon={ faSortDown }/>
-          } else {
-            return <FontAwesomeIcon icon={ faSort }/>
           }
-        }
 
-        return (
-          <th key={column.accessor}>
-            <span>{column.label}</span>
-            {column.sortable && <button className = "sort-button" onClick={() => handleSort(column.accessor)}>{sortIcon()}</button>}
-          </th>
-        )
+          return (
+            <th key={column.accessor}>
+              <span>{column.label}</span>
+              {column.sortable &&
+                <button className="sort-button" onClick={() => handleSort(column.accessor)}>{sortIcon()}</button>}
+            </th>
+          )
+        }
       })}
     </tr>
     <tr className = "table-settings-header">
       {columns.map((column) => {
-        return (
-          <th>
-            {column.searchable &&
-              <input
-                key={`${column.accessor}-search`}
-                type="search"
-                placeholder={`Search ${column.label}`}
-                value={filters[column.accessor]}
-                onChange={(event) => handleSearch(event.target.value, column.accessor)}
-              />}
-          </th>
-        )
+        if (column.visible !== false) {
+          return (
+            <th>
+              {column.searchable &&
+                <input
+                  key={`${column.accessor}-search`}
+                  type="search"
+                  placeholder={`Search ${column.label}`}
+                  value={filters[column.accessor]}
+                  onChange={(event) => handleSearch(event.target.value, column.accessor)}
+                />}
+            </th>
+          )
+        }
       })}
     </tr>
     </thead>
