@@ -5,13 +5,13 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclama
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
-import {equipmentBookingStatusDefault, ownershipTypeDefault} from "../../../../defaults/Items";
+import { equipmentBookingStatusDefault } from "../../../../defaults/Items";
 import {
   onSaveAndClose,
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
-  onCloseDetails
+  onCloseDetails, setForegroundColor
 } from "../../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../../common/AppComponentCardHeader";
@@ -206,7 +206,7 @@ const EquipmentBookingStatus = () => {
                         <div className="col-md-12">
                           <div className="md-form mb-0">
                             <label htmlFor="name" className="">Name</label>
-                            <TextInput propertyName="name" required="true" state={ state }/>
+                            <TextInput propertyName="name" required="true" state={ state } style = {{backgroundColor: `${currentItem.color}`, color: setForegroundColor(currentItem.color)}}/>
                           </div>
                         </div>
                         <div className="col-md-12">

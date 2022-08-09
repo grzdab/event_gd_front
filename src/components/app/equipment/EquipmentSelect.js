@@ -12,7 +12,7 @@ import {
   restoreFormData,
   onItemsListDeleteButtonClick,
   onCloseDetails,
-  getItemById
+  getItemById, setForegroundColor
 } from "../../../helpers/ComponentHelper";
 
 import AppComponentCardHeader from "../common/AppComponentCardHeader";
@@ -286,16 +286,6 @@ const EquipmentSelect = () => {
     buttonTitle: `Add new ${ itemName }`
   }
 
-  const setForegroundColor = (backgroundColorHex) => {
-    const red = parseInt(backgroundColorHex.substring(1,3), 16);
-    const green = parseInt(backgroundColorHex.substring(3,5), 16);
-    const blue = parseInt(backgroundColorHex.substring(5), 16);
-    console.log(backgroundColorHex);
-    console.log(red + "." + green + "." + blue);
-    console.log(red*0.299 + green*0.587 + blue*0.114);
-    return (red*0.299 + green*0.587 + blue*0.114) > 5 ? "white" : "black"
-  }
-
 
   let dataSectionContent;
   if (loading) {
@@ -517,7 +507,7 @@ const EquipmentSelect = () => {
                         </div>
                         <div className="card-body">
                           <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
-                          <input style={{backgroundColor: `${bookingStatusColor}`, color: setForegroundColor(bookingStatusColor)}}
+                          <input style={{backgroundColor: `${currentItem.bookingStatus.color}`, color: setForegroundColor(currentItem.bookingStatus.color)}}
                             disabled
                             type="text"
                             id="equipmentBookingStatusId"
