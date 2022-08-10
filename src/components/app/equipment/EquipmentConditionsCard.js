@@ -15,7 +15,7 @@ const EquipmentConditionsCard = ({ state }) => {
         <NumberInput propertyName="staffNeeded" state = { state } min = "0" disabled ={ false } />
         <label htmlFor="minimum_age" className="">Minimum age</label>
         <NumberInput propertyName="minimumAge" state = { state } min = "0" max = "99" disabled ={ false } />
-        <label htmlFor="max_participants>" className="">Max participants</label>
+        <label htmlFor="max_participants" className="">Max participants</label>
         <NumberInput propertyName="maxParticipants" state = { state } min = "0" disabled ={ false } />
       </div>
     </>

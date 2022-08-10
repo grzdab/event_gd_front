@@ -55,7 +55,7 @@ const Equipment = () => {
   const equipmentBookingStatusUrl="/equipment-booking-status";
 
   const axiosPrivate = useAxiosPrivate();
-  const axiosPrivateFileUpload = useAxiosPrivateFileUpload();;
+  const axiosPrivateFileUpload = useAxiosPrivateFileUpload();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +72,7 @@ const Equipment = () => {
   const [statusesList, setStatuses] = useState([]);
   const [ownershipTypesList, setOwnershipTypes] = useState([]);
   const [bookingStatusesList, setBookingStatuses] = useState([]);
-  const [bookingStatusColor, setBookingStatusColor] = useState("#ffffff");
+  const [setBookingStatusColor] = useState("#ffffff");
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
   // elements related to the item

@@ -22,7 +22,6 @@ const EquipmentStatusCard = ({ state, statusesList, ownershipTypesList }) => {
             id="inUse"
             name="inUse"
             checked={currentItem.inUse}
-            // defaultChecked={currentItem.inUse}
             onChange={(e) => {
               setCurrentItem({...currentItem,
                 inUse: e.currentTarget.checked});

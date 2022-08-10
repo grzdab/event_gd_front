@@ -209,6 +209,7 @@ const EquipmentOwnership = () => {
                   { !currentFormState.formAddingDataMode &&
                     <RelatedItemsList
                       itemsList = { equipmentList }
+                      itemProperties ={["name"]}
                       titleWhenPopulated ={`Items using this ${ itemName }`}
                       titleWhenEmpty = "No usages found"/>
                   }

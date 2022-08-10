@@ -1,12 +1,20 @@
 import React from 'react';
 
-const RelatedItemsList = ({itemsList, titleWhenPopulated, titleWhenEmpty }) => {
+const RelatedItemsList = ({itemsList, titleWhenPopulated, titleWhenEmpty, itemProperties }) => {
+
+  const listDetails = (item) => {
+    let properties = "";
+    for (const property of itemProperties) {
+      properties = properties + item[property]
+    }
+    return properties;
+  }
 
   const listContent =
     <>
       {itemsList.map((item) => (
         <div key={item.id}>
-          {item.name}
+          { listDetails(item) }
         </div>
       ))}
     </>

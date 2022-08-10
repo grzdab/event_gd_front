@@ -24,6 +24,8 @@ import TextArea from "../../../elements/TextArea";
 import RelatedItemsList from "../../common/RelatedItemsList";
 import useCrud from "../../../../hooks/useCrud";
 import { Table } from "../../../table/Table";
+import UserContactCard from "./UserContactCard";
+import UserRolesCard from "./UserRolesCard";
 
 const Users = () => {
 
@@ -192,17 +194,39 @@ const Users = () => {
               <div className="col-md-12 mb-md-0 mb-5">
                 <form id="add-item-form" name="add-item-form">
                   <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                       <div className="md-form mb-0">
-                        <label htmlFor="login" className="">Name</label>
+                        <label htmlFor="login" className="">Login</label>
                         <TextInput propertyName="login" required="true" state={ state }/>
                       </div>
                     </div>
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                       <div className="md-form mb-0">
-                        <label htmlFor="firstName" className="">Description</label>
+                        <label htmlFor="password" className="">Password</label>
+                        <TextInput propertyName="password" required="true" state={ state }/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="md-form mb-0">
+                        <label htmlFor="firstName" className="">First name</label>
                         <TextInput propertyName="firstName" required="true" state={ state }/>
                       </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="md-form mb-0">
+                        <label htmlFor="lastName" className="">Last name</label>
+                        <TextInput propertyName="lastName" required="true" state={ state }/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row margin-top">
+                    <div className="col-md-6">
+                      <UserContactCard state = { state }/>
+                    </div>
+                    <div className="col-md-6">
+                      <UserRolesCard state = { state }/>
                     </div>
                   </div>
                 </form>
