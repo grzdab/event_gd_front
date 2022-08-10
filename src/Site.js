@@ -22,6 +22,9 @@ import EquipmentBookingStatus from "./components/app/admin/equipment_booking_sta
 import Client from "./components/app/client/Client";
 import User from "./components/app/admin/users/Users";
 import Roles from "./components/app/admin/roles/Roles";
+import ClientBranches from "./components/app/admin/client_branches/ClientBranches";
+import ClientType from "./components/app/admin/client_type/ClientType";
+import ClientCategories from "./components/app/admin/client_categories/ClientCategories";
 
 
 const ROLES = {
@@ -56,6 +59,9 @@ function Site() {
             <Route path="users" element={<User />} />
             <Route path="roles" element={<Roles />} />
             <Route path="equipment-category" element={<EquipmentCategory />} />
+            <Route path="client-branches" element={<ClientBranches />} />
+            <Route path="client-type" element={<ClientType />} />
+            <Route path="client-category" element={<ClientCategories />} />
           </Route>
         </Route>
 
