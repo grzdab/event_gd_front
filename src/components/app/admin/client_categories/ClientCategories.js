@@ -197,12 +197,12 @@ const ClientCategories = () => {
                                                 <TextInput propertyName="name" required="true" state={ state }/>
                                             </div>
                                         </div>
-                                        <div className="col-md-12">
-                                            <div className="md-form mb-0">
-                                                <label htmlFor="description" className="">Description</label>
-                                                <TextArea propertyName="description" required="false" rows = "2" state = { state }/>
-                                            </div>
-                                        </div>
+                                        {/*<div className="col-md-12">*/}
+                                        {/*    <div className="md-form mb-0">*/}
+                                        {/*        <label htmlFor="description" className="">Description</label>*/}
+                                        {/*        <TextArea propertyName="description" required="false" rows = "2" state = { state }/>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
                                     </div>
                                     { !currentFormState.formAddingDataMode &&
                                         <RelatedItemsList

@@ -88,10 +88,6 @@ const LayoutSidebarLeft = () => {
                     <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                     Client branches
                   </a>
-                  <a className="nav-link" href="/app/client-type">
-                    <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
-                    Client types
-                  </a>
                   <a className="nav-link" href="/app/client-category">
                     <div className="sb-nav-link-icon"><i className="fas fa-chart-area"></i></div>
                     Client categories
