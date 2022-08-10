@@ -5,7 +5,7 @@ const RelatedItemsList = ({itemsList, titleWhenPopulated, titleWhenEmpty, itemPr
   const listDetails = (item) => {
     let properties = "";
     for (const property of itemProperties) {
-      properties = properties + item[property]
+      properties = properties + item[property] + " "
     }
     return properties;
   }

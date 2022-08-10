@@ -197,7 +197,7 @@ const Roles = () => {
                   { !currentFormState.formAddingDataMode &&
                     <RelatedItemsList
                       itemsList = { userRolesList }
-                      itemProperties ={["login", "firstName", "lastName"]}
+                      itemProperties ={["firstName", "lastName"]}
                       titleWhenPopulated ={`Users using this ${ itemName }`}
                       titleWhenEmpty = "No usages found"/>
                   }
