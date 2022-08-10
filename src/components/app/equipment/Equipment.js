@@ -72,7 +72,7 @@ const Equipment = () => {
   const [statusesList, setStatuses] = useState([]);
   const [ownershipTypesList, setOwnershipTypes] = useState([]);
   const [bookingStatusesList, setBookingStatuses] = useState([]);
-  const [setBookingStatusColor] = useState("#ffffff");
+  const [bookingStatusColor, setBookingStatusColor] = useState("#ffffff");
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
   // elements related to the item
