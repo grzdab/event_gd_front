@@ -1,7 +1,13 @@
 import React from 'react';
 import TextInput from "../../../elements/TextInput";
 
-const UserRolesCard = ({ state }) => {
+const UserRolesCard = ({ state, appRoles }) => {
+
+  const userRoles = state.currentItem.userRoles;
+  const currentItem = state.currentItem;
+  const setCurrentItem = state.setCurrentItem;
+  const setCurrentFormState = state.setCurrentFormState;
+  const currentFormState = state.currentFormState;
 
   return (
     <>
@@ -10,10 +16,40 @@ const UserRolesCard = ({ state }) => {
           User roles
         </div>
         <div className="card-body">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-              <label className="form-check-label" htmlFor="flexCheckDefault">Default checkbox</label>
-            </div>
+          { userRoles && appRoles?.map((role) => {
+            let contains = false;
+            for (const userRole of userRoles) {
+              if (userRole.name === role.name) {
+                contains = true;
+              }
+            }
+              return (
+                <div className="form-check">
+                  <label className="form-check-label" htmlFor={role.name}>{role.name}</label>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    defaultValue={role.name}
+                    id={role.name}
+                    defaultChecked={contains}
+                    onChange={(e) => {
+                      console.log(userRoles?.filter(e => e.name === role.name).length > 0);
+                      // var filtered = someArray.filter(function(el) { return el.Name != "Kristian"; });
+
+                      // muszę wziąć obiekt userRoles z currentItem
+                      // sprawdzić jego nazwę i czy jest checked
+                      // jeśli jest checked (e.currentTarget.checked), to upewnić się że jest na liście ról użytkownika
+                      // jeśli nie jest checked, to usunąć go z listy ról użytkownika
+                      // zastąpić obiekt userRoles zaktualizowanym obiektem
+
+                      // setCurrentItem({...currentItem,
+                      //   userRoles: e.currentTarget.checked});
+                      // setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                    }}
+                  />
+                </div>
+            )
+          })}
         </div>
       </div>
     </>
