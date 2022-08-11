@@ -3,8 +3,9 @@ import TextInput from "../../../elements/TextInput";
 
 const UserRolesCard = ({ state, appRoles }) => {
 
-  const userRoles = state.currentItem.userRoles;
+
   const currentItem = state.currentItem;
+  const userRoles = currentItem.userRoles;
   const setCurrentItem = state.setCurrentItem;
   const setCurrentFormState = state.setCurrentFormState;
   const currentFormState = state.currentFormState;
@@ -34,8 +35,8 @@ const UserRolesCard = ({ state, appRoles }) => {
                     defaultChecked={contains}
                     onChange={(e) => {
                       console.log(userRoles?.filter(e => e.name === role.name).length > 0);
-                      // var filtered = someArray.filter(function(el) { return el.Name != "Kristian"; });
-
+                      let filtered = userRoles.filter(function(el) { return el.id !== "Kristian"; });
+                      // TODO complete
                       // muszę wziąć obiekt userRoles z currentItem
                       // sprawdzić jego nazwę i czy jest checked
                       // jeśli jest checked (e.currentTarget.checked), to upewnić się że jest na liście ról użytkownika
