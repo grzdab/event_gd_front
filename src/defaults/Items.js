@@ -13,7 +13,8 @@ export const equipmentBookingStatusDefault = {
   id: "",
   name: "",
   description: "",
-  color: ""
+  color: "",
+  defaultSetting: false
 }
 
 export const equipmentCategoryDefault = {

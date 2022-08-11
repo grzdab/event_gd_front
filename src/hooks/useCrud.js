@@ -52,6 +52,9 @@ const useCrud = (dataUrl) => {
       return response.data;
     } catch (err) {
       console.log(err);
+      // TODO returns empty array only for testing where there are no endpoints for related items
+      return [];
+
     }
   }
 
