@@ -22,6 +22,7 @@ import EquipmentBookingStatus from "./components/app/admin/equipment_booking_sta
 import Client from "./components/app/client/Client";
 import User from "./components/app/admin/users/Users";
 import Roles from "./components/app/admin/roles/Roles";
+import Scheduler from "./components/app/scheduler/Scheduler";
 
 
 const ROLES = {
@@ -48,6 +49,7 @@ function Site() {
         <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin]} />}>
           <Route path="/app" element={<App />} >
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="scheduler" element={<Scheduler />} />
             <Route path="equipment" element={<Equipment />} />
             <Route path="equipment-status" element={<EquipmentStatus />} />
             <Route path="equipment-ownership" element={<EquipmentOwnership />} />
