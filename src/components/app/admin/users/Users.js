@@ -5,7 +5,7 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclama
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
-import { userDefault } from "../../../../defaults/Items";
+import { userCompactedDefault, userDefault } from "../../../../defaults/Items";
 import {
   onSaveAndClose,
   compareData,
@@ -30,10 +30,13 @@ import UserRolesCard from "./UserRolesCard";
 const Users = () => {
 
   const dataUrl = "/user-compact";
+  const dataFullUrl = "/user";
   const userClientsUrl = "/equipment/category"
+  const appRolesUrl = "/admin/role"
   const userClientRepresentativesUrl = ""
   const userEventsUrl = "";
-  const defaultItem = userDefault;
+  const defaultItem = userCompactedDefault;
+  const defaultFullItem = userDefault;
   const itemName = "user";
   const itemNames = "users";
 
@@ -45,9 +48,10 @@ const Users = () => {
   const [allowDelete, setAllowDelete] = useState(null);
   const [currentFormState, setCurrentFormState] = useState(defaultFormState);
   const [itemsList, setItems] = useState([]);
-  const [currentItem, setCurrentItem] = useState(defaultItem);
+  const [currentItem, setCurrentItem] = useState(defaultFullItem);
   const [backupItem, setBackupItem] = useState(defaultItem);
   const [itemChanged, setItemChanged] = useState(false);
+  const [appRoles, setAppRoles] = useState([]);
   // elements related to the item
   const [userClientsList, setUserClientsList] = useState([]);
   const columns = [
@@ -115,18 +119,50 @@ const Users = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await getItems(dataUrl);
-      if (response.status === 200) {
+      const [itemsData, appRoles] =
+        await Promise.all([
+          getItems(dataUrl),
+          getItems(appRolesUrl),
+        ]);
+
+      const success =
+        itemsData.status === 200 &&
+        appRoles.status === 200;
+
+      if (success) {
         setLoading(false);
-        setItems(response.data);
-      } else if (response.status === 401 || response.status === 403) {
-        navigate('/login', { state: { from: location }, replace: true})
+        setItems(itemsData.data);
+        setAppRoles(appRoles.data);
       } else {
-        alert("Could not get the requested data.");
+        navigate('/login', { state: { from: location }, replace: true})
       }
     };
+
+    // const getData = async () => {
+    //   const response = await getItems(dataUrl);
+    //   if (response.status === 200) {
+    //     setLoading(false);
+    //     setItems(response.data);
+    //   } else if (response.status === 401 || response.status === 403) {
+    //     navigate('/login', { state: { from: location }, replace: true})
+    //   } else {
+    //     alert("Could not get the requested data.");
+    //   }
+    // };
     getData();
   }, [])
+
+
+  const getCompleteItem = async (id) => {
+    const response = await getItems(`${dataFullUrl}/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    } else if (response.status === 401 || response.status === 403) {
+      navigate('/login', { state: { from: location }, replace: true})
+    } else {
+      alert("Could not get the requested data.");
+    }
+  }
 
 
   const addDataButtonProps = {
@@ -153,6 +189,7 @@ const Users = () => {
         checkRelatedItems = { checkRelatedItems }
         formHeader = {`Edit ${ itemName }`}
         relatedItemsUrl = { userClientsUrl }
+        getCompleteItem = { getCompleteItem }
       />
   } else {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
@@ -200,10 +237,9 @@ const Users = () => {
                         <TextInput propertyName="login" required="true" state={ state }/>
                       </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 mt-auto d-flex flex-row-reverse">
                       <div className="md-form mb-0">
-                        <label htmlFor="password" className="">Password</label>
-                        <TextInput propertyName="password" required="true" state={ state }/>
+                        <Button>Change password</Button>
                       </div>
                     </div>
                   </div>
@@ -226,7 +262,7 @@ const Users = () => {
                       <UserContactCard state = { state }/>
                     </div>
                     <div className="col-md-6">
-                      <UserRolesCard state = { state }/>
+                      <UserRolesCard state = { state } appRoles = { appRoles }/>
                     </div>
                   </div>
                 </form>

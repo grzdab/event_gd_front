@@ -15,7 +15,8 @@ const TableBody = ({
                      state,
                      checkRelatedItems,
                      formHeader,
-                     relatedItemsUrl
+                     relatedItemsUrl,
+                     getCompleteItem
                    }) => {
 
   const sortedRows = useMemo(() => sortRows(filteredRows, sort), [filteredRows, sort])
@@ -27,6 +28,7 @@ const TableBody = ({
   const setCurrentFormState = state.setCurrentFormState;
   const relatedItems = state.setRelatedItems;
 
+
   return (
     <tbody>
     {calculatedRows.map((item) => {
@@ -37,10 +39,16 @@ const TableBody = ({
               if (column.accessor === "editBtn") {
                 return (
                   <td>
-                    <button className='btn btn-outline-info' onClick={() => {
+                    <button className='btn btn-outline-info' onClick={async () => {
                       relatedItemsUrl && getRelatedChildrenByParentId(`${relatedItemsUrl}/${item.id}`, item.id, relatedItems);
-                      setCurrentItem(item);
-                      setBackupItem(item);
+                      if (getCompleteItem) {
+                        const completeItem = await getCompleteItem(item.id);
+                        setCurrentItem(completeItem);
+                        setBackupItem(completeItem);
+                      } else {
+                        setCurrentItem(item);
+                        setBackupItem(item);
+                      }
                       onItemsListInfoButtonClick(currentFormState, setCurrentFormState, formHeader);
                     }}><FontAwesomeIcon icon={faEye}/></button>
                   </td>

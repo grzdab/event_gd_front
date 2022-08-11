@@ -2,32 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
-import ModalFooter from "../../common/ModalFooter";
+import ModalFooter from "../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
-import { defaultFormState } from "../../../../defaults/Forms";
+import { defaultFormState } from "../../../defaults/Forms";
 import {
   equipmentStatusDefault
-} from "../../../../defaults/Items";
+} from "../../../defaults/Items";
 import {
   onSaveAndClose,
   compareData,
   restoreFormData,
   onItemsListDeleteButtonClick,
   onCloseDetails
-} from "../../../../helpers/ComponentHelper";
+} from "../../../helpers/ComponentHelper";
 
-import AppComponentCardHeader from "../../common/AppComponentCardHeader";
-import LoadingDataDiv from "../../common/LoadingDataDiv";
-import AppAddDataButton from "../../common/AppAddDataButton";
-import DeleteWarningModal from "../../common/DeleteWarningModal";
-import ItemDetailsModalHeader from "../../common/ItemDetailsModalHeader";
-import TextInput from "../../../elements/TextInput";
-import TextArea from "../../../elements/TextArea";
-import RelatedItemsList from "../../common/RelatedItemsList";
-import useCrud from "../../../../hooks/useCrud";
-import { Table } from "../../../table/Table";
+import AppComponentCardHeader from "../common/AppComponentCardHeader";
+import LoadingDataDiv from "../common/LoadingDataDiv";
+import AppAddDataButton from "../common/AppAddDataButton";
+import DeleteWarningModal from "../common/DeleteWarningModal";
+import ItemDetailsModalHeader from "../common/ItemDetailsModalHeader";
+import TextInput from "../../elements/TextInput";
+import TextArea from "../../elements/TextArea";
+import RelatedItemsList from "../common/RelatedItemsList";
+import useCrud from "../../../hooks/useCrud";
+import { Table } from "../../table/Table";
 
-const EquipmentStatus = () => {
+const Scheduler = () => {
 
   const dataUrl ="/equipment-status";
   const relatedItemsUrl = "/equipment/status"; // if no need to check it, initialize with null and remove RelatedItemsList from details modal
@@ -229,4 +229,4 @@ const EquipmentStatus = () => {
 
 }
 
-export default EquipmentStatus;
+export default Scheduler;

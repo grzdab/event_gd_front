@@ -51,12 +51,28 @@ export const equipmentDefault = {
   }
 }
 
-export const userDefault = {
+export const userCompactedDefault = {
   id: 0,
   login: "",
   firstName: "",
   lastName: ""
 }
+
+
+export const userDefault = {
+  id: 0,
+  login: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  contact: {
+    id: "",
+    email: "",
+    phone: ""
+  },
+  userRoles: [{}]
+}
+
 
 export const userRoleDefault = {
   id: "",
