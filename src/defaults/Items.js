@@ -79,3 +79,17 @@ export const userRoleDefault = {
   id: "",
   name: ""
 }
+
+export const clientBranchDefault = {
+  id: "",
+  name: ""
+}
+
+export const clientTypeDefault = {
+  id: "",
+  name: ""
+}
+export const clientCategoryDefault = {
+  id: "",
+  name: ""
+}
