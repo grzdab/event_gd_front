@@ -31,7 +31,7 @@ const Select = ({label, propertyName, required, disabled, state, itemsList, item
           setItemChanged(!itemChanged);
         }}
         onClick={() => {
-          resetInvalidInputField(propertyName);
+          resetInvalidInputField(itemName);
         }}
       >
         <option disabled value=""> -- Select { label } -- </option>

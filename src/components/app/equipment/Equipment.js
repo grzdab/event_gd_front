@@ -122,17 +122,17 @@ const Equipment = () => {
       }
 
       if(currentItem.equipmentCategory.id === 0) {
-        let categoryOption = document.getElementById("equipmentCategoryId");
+        let categoryOption = document.getElementById("equipmentCategory");
         categoryOption.classList.add("form-input-invalid");
       }
 
       if(currentItem.equipmentStatus.id === 0) {
-        let statusOption = document.getElementById("equipmentStatusId");
+        let statusOption = document.getElementById("equipmentStatus");
         statusOption.classList.add("form-input-invalid");
       }
 
       if(currentItem.equipmentOwnership.id === 0) {
-        let ownershipOption = document.getElementById("equipmentOwnershipId");
+        let ownershipOption = document.getElementById("equipmentOwnership");
         ownershipOption.classList.add("form-input-invalid");
       }
       return;
@@ -170,6 +170,7 @@ const Equipment = () => {
     let response;
 
     if (currentFormState.formAddingDataMode) {
+      item.bookingStatus.id = 1;
       response = await createItem(dataUrl, item, state);
     } else {
       response = await updateItem(`${ dataUrl }/${ item.id }`, item, state);
@@ -271,6 +272,9 @@ const Equipment = () => {
 
 
   useEffect(() => {
+
+    console.log(currentItem);
+
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
     if (currentItem.id !== 0) {
       setBookingStatusColor(bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color);
@@ -390,10 +394,9 @@ const Equipment = () => {
                         <img
                           id="photos"
                           onClick={() => fileInput.current.click()}
-                          src={ currentItem?.id > 0 ?
-                            (currentItem.photos !== [] ?
+                          src={ currentItem.photos.length > 0 ?
                               imagesFolder + currentItem.photos[0] :
-                              equipmentImagePlaceholder) : ""} className="img-fluid" alt="Image"/>
+                              equipmentImagePlaceholder } className="img-fluid" alt="Image"/>
                       </div>
                       <div>
                         <div className="mb-1 mt-1">

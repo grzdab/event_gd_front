@@ -4,6 +4,12 @@ import {setForegroundColor} from "../../../helpers/ComponentHelper";
 const EquipmentBookingStatusCard = ({ state, bookingStatusesList }) => {
 
   const currentItem = state.currentItem;
+  const value = currentItem.bookingStatus?.id !== 0 ?
+    bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name :
+    bookingStatusesList.find(x => x.defaultSetting === true).name;
+  const backgroundColor = currentItem.bookingStatus?.id !== 0 ?
+    bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color :
+    bookingStatusesList.find(x => x.defaultSetting === true).color;
 
   return (
     <>
@@ -12,12 +18,12 @@ const EquipmentBookingStatusCard = ({ state, bookingStatusesList }) => {
       </div>
       <div className="card-body">
         <label htmlFor="equipmentBookingStatusId" className="">Current booking status</label>
-        <input style={{backgroundColor: `${currentItem.bookingStatus.color}`, color: setForegroundColor(currentItem.bookingStatus.color)}}
+        <input style={{backgroundColor: `${backgroundColor}`}}
                disabled
                type="text"
                id="equipmentBookingStatusId"
                name="equipmentBookingStatusId"
-               value={currentItem.bookingStatus?.id !== 0 ? bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).name : ""}
+               value={ value }
                className="form-control"
                readOnly
         />

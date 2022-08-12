@@ -279,9 +279,6 @@ export const setForegroundColor = (backgroundColorHex) => {
     const red = parseInt(backgroundColorHex.substring(1, 3), 16);
     const green = parseInt(backgroundColorHex.substring(3, 5), 16);
     const blue = parseInt(backgroundColorHex.substring(5), 16);
-    console.log(backgroundColorHex);
-    console.log(red + "." + green + "." + blue);
-    console.log(red * 0.299 + green * 0.587 + blue * 0.114);
     return (red * 0.299 + green * 0.587 + blue * 0.114) > 140 ? "black" : "white"
   }
 }

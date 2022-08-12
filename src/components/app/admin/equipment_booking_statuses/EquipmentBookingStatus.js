@@ -82,8 +82,16 @@ const EquipmentBookingStatus = () => {
       return;
     }
     let response;
-    const item = { id: currentItem.id, name: currentItem.name, description: currentItem.description, color: currentItem.color };
+    const item = {
+      id: currentItem.id,
+      name: currentItem.name,
+      description: currentItem.description,
+      color: currentItem.color,
+      defaultSetting: currentItem.defaultSetting
+    };
+
     if (currentFormState.formAddingDataMode) {
+      item.defaultSetting = true;
       response = await createItem(dataUrl, item, state);
     } else {
       response = await updateItem(`${ dataUrl }/${ item.id }`, item, state);
@@ -201,6 +209,7 @@ const EquipmentBookingStatus = () => {
               <div className="col-md-12 mb-md-0 mb-5">
                 <form id="add-equipment-booking-status-form" name="add-equipment-booking-status-form">
                   <div className="row">
+
                     <div className="col-md-9">
                       <div className="row">
                         <div className="col-md-12">
@@ -215,8 +224,29 @@ const EquipmentBookingStatus = () => {
                             <TextArea propertyName="description" required="false" rows = "2" state = { state }/>
                           </div>
                         </div>
+                        <div className="col-md-12">
+                          <div className="md-form mb-0">
+                            <div className="form-check form-switch">
+                              <label htmlFor="in_use" className="form-check-label">Default booking status</label>
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="defaultSetting"
+                                name="defaultSetting"
+                                checked={ currentItem.defaultSetting }
+                                onChange={(e) => {
+                                  setCurrentItem({...currentItem,
+                                    defaultSetting: e.currentTarget.checked});
+                                  setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+                                }}
+                              />
+                            </div>
+
+                          </div>
+                        </div>
                       </div>
                     </div>
+
                     <div className="col-md-3">
                       <div className="row">
                         <div>Booking Status Color
