@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+import { faExclamationCircle, faInfoCircle, faEye } from "@fortawesome/free-solid-svg-icons";
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
@@ -26,6 +26,10 @@ import useCrud from "../../../../hooks/useCrud";
 import { Table } from "../../../table/Table";
 import UserContactCard from "./UserContactCard";
 import UserRolesCard from "./UserRolesCard";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // must start with letter a-Z, then has to be 3 to 23 chars long 0-9, a-Z or _
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // requires 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special char and has to be 8-24 chars long
 
 const Users = () => {
 
@@ -39,6 +43,7 @@ const Users = () => {
   const defaultFullItem = userDefault;
   const itemName = "user";
   const itemNames = "users";
+  const axiosPrivate = useAxiosPrivate();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,6 +57,8 @@ const Users = () => {
   const [backupItem, setBackupItem] = useState(defaultItem);
   const [itemChanged, setItemChanged] = useState(false);
   const [appRoles, setAppRoles] = useState([]);
+  const [validPassword, setValidPassword] = useState(true);
+  const [pwd, setPwd] = useState('');
   // elements related to the item
   const [userClientsList, setUserClientsList] = useState([]);
   const columns = [
@@ -62,6 +69,7 @@ const Users = () => {
     {label: "details", accessor: "editBtn", sortable: false, searchable: false},
     {label: "delete", accessor: "deleteBtn", sortable: false, searchable: false},
   ];
+  const passwordRef = useRef();
 
   const state = {
     itemsList, setItems,
@@ -79,6 +87,20 @@ const Users = () => {
     }
   }
 
+  const validatePassword = (newPassword) => {
+
+    if (newPassword && !PWD_REGEX.test(newPassword)) {
+      setValidPassword(false);
+      console.log("Password has to consist of" +
+        " 8 to 24 characters. " +
+        " Must include uppercase and lowercase letters, a number and a special character.)");
+      return false;
+    }
+
+    return true;
+  }
+
+
   const onSaveItemClick = async (e) => {
     e.preventDefault();
     if(!currentItem.login) {
@@ -87,12 +109,35 @@ const Users = () => {
       nameInput.placeholder = `${itemName} name cannot be empty`;
       return;
     }
+
+    const newPassword = document.getElementById("password");
+
+    if (!validatePassword(newPassword.value)) return;
+
     let response;
-    const item = { id: currentItem.id, name: currentItem.name };
+    let password;
+    if (!currentFormState.formAddingDataMode) {
+      password = newPassword.value ? newPassword.value : currentItem.password;
+    }
+
+    const item = {
+      id: currentItem.id,
+      login: currentItem.login,
+      password: password,
+      firstName: currentItem.firstName,
+      lastName: currentItem.lastName,
+      contact: {
+        id: currentItem.contact.id,
+        email: currentItem.contact.email,
+        phone: currentItem.contact.phone
+      },
+      userRoles: currentItem.userRoles
+    }
+
     if (currentFormState.formAddingDataMode) {
-      response = await createItem(dataUrl, item, state);
+      response = await createItem(dataFullUrl, item, state);
     } else {
-      response = await updateItem(`${ dataUrl }/${ item.id }`, item, state);
+      response = await updateItem(`${ dataFullUrl }/${ item.id }`, item, state);
     }
     if (response === 401 || response === 403) navigate('/login', { state: { from: location }, replace: true });
     response && onSaveAndClose({state});
@@ -104,6 +149,7 @@ const Users = () => {
   }
 
   const onClose = () => {
+    setPwd('');
     onCloseDetails({ state })
   };
 
@@ -116,6 +162,28 @@ const Users = () => {
       onItemsListDeleteButtonClick(currentFormState, setCurrentFormState, itemName, allowDelete);
     }
   }, [allowDelete])
+
+
+  const passwordToggler = () => {
+    const password = document.getElementById("password");
+    const toggler = document.getElementById("password_toggler");
+    if (password.type === "password") {
+      password.type = "text";
+      toggler.classList.add("pwd_visible");
+    } else {
+      password.type = "password";
+      toggler.classList.remove("pwd_visible")
+    }
+  }
+
+  useEffect(() => {
+    if (currentItem === backupItem) {
+      console.log("THE SAME")
+      setPwd('');
+    }
+  }, [currentItem])
+
+
 
   useEffect(() => {
     const getData = async () => {
@@ -138,19 +206,17 @@ const Users = () => {
       }
     };
 
-    // const getData = async () => {
-    //   const response = await getItems(dataUrl);
-    //   if (response.status === 200) {
-    //     setLoading(false);
-    //     setItems(response.data);
-    //   } else if (response.status === 401 || response.status === 403) {
-    //     navigate('/login', { state: { from: location }, replace: true})
-    //   } else {
-    //     alert("Could not get the requested data.");
-    //   }
-    // };
     getData();
   }, [])
+
+
+  useEffect(() => {
+    if (pwd !== '') {
+      setValidPassword(PWD_REGEX.test(pwd))
+    } else {
+      setValidPassword(true);
+    }
+  }, [pwd])
 
 
   const getCompleteItem = async (id) => {
@@ -195,6 +261,14 @@ const Users = () => {
     dataSectionContent = <h6>NO DATA FOUND, PLEASE ADD A NEW `${itemName.toUpperCase()}`</h6>
   }
 
+  const onPasswordChange = (e) => {
+    setItemChanged(!itemChanged);
+    setCurrentItem(currentItem => ({...currentItem,
+      password: e.target.value === "" ? backupItem.password : e.target.value}));
+    setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
+    setPwd(e.target.value);
+  }
+
   return (
     <div id="layoutSidenav_content">
       <div className="container-fluid px-4">
@@ -227,33 +301,56 @@ const Users = () => {
                 Cancel all changes
               </Button>
             </div>
+
             <div className="row">
               <div className="col-md-12 mb-md-0 mb-5">
                 <form id="add-item-form" name="add-item-form">
                   <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="md-form mb-0">
                         <label htmlFor="login" className="">Login</label>
                         <TextInput propertyName="login" required="true" state={ state }/>
                       </div>
                     </div>
-                    <div className="col-md-6 mt-auto d-flex flex-row-reverse">
-                      <div className="md-form mb-0">
-                        <Button>Change password</Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="md-form mb-0">
                         <label htmlFor="firstName" className="">First name</label>
                         <TextInput propertyName="firstName" required="true" state={ state }/>
                       </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                       <div className="md-form mb-0">
                         <label htmlFor="lastName" className="">Last name</label>
                         <TextInput propertyName="lastName" required="true" state={ state }/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-8 mt-3">
+                      <div className="md-form mb-0">
+                        Please provide a new password only if you want to change your password
+                      </div>
+                    </div>
+                    <div className="col-md-4 mt-3">
+                      <div className="md-form mb-0">
+                        <label  htmlFor="password" className="">New password</label>
+                        <div style={{position: "relative"}}>
+                        <input
+                          className="form-control"
+                          type="password"
+                          id="password"
+                          onChange={(e) => onPasswordChange(e)}
+                          defaultValue={pwd}
+                          required
+                          ref={passwordRef}
+                        />
+                          <span id="password_toggler" className="password_toggler" onClick={()=>passwordToggler()}><FontAwesomeIcon icon={faEye}></FontAwesomeIcon></span>
+                      </div>
+                        <p id="pwdnote" className={!validPassword ? "pwd_info" : "offscreen"}>
+                          <FontAwesomeIcon icon={faInfoCircle} />&nbsp;
+                          8 to 24 characters. Must include uppercase and lowercase letters, a number and a special character.
+                          Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -268,6 +365,7 @@ const Users = () => {
                 </form>
               </div>
             </div>
+
           </section>
         </Modal.Body>
 

@@ -149,10 +149,13 @@ export const restoreFormData = ({ state }) =>  {
         if (backupItem.hasOwnProperty(key)) {
             let element = document.getElementById(key);
             if (element) {
-              if (element.tagName !== "SELECT") {
+              if (element.id === "password") {
+                element.value = '';
+              } else if (element.tagName !== "SELECT") {
                 element.value = backupItem[key];
               } else if (element.tagName === "SELECT") {
                 element.value = backupItem[element.id].id;
+
               } else {
                 console.log(element.tagName);
               }

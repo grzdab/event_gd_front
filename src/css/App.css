@@ -11878,3 +11878,33 @@ body {
     height: 1.6rem;
     margin-left: 10px;
 }
+
+.pwd_info {
+    font-size: 0.8rem;
+    border-radius: 0.3rem;
+    background: #a20f0f;
+    color: #fff;
+    padding: 0.25rem;
+    position: relative;
+    bottom: -10px;
+}
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+}
+
+.password_toggler {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    color: grey;
+}
+
+.password_toggler:hover {
+    cursor: pointer;
+}
+
+.password_toggler.pwd_visible {
+    color: black;
+}
