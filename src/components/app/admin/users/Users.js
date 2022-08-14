@@ -28,7 +28,6 @@ import UserContactCard from "./UserContactCard";
 import UserRolesCard from "./UserRolesCard";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // must start with letter a-Z, then has to be 3 to 23 chars long 0-9, a-Z or _
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // requires 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special char and has to be 8-24 chars long
 
 const Users = () => {
@@ -182,7 +181,6 @@ const Users = () => {
       setPwd('');
     }
   }, [currentItem])
-
 
 
   useEffect(() => {
