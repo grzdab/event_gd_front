@@ -70,15 +70,6 @@ const Users = () => {
   ];
   const passwordRef = useRef();
 
-  const state = {
-    itemsList, setItems,
-    currentItem, setCurrentItem,
-    currentFormState, setCurrentFormState,
-    defaultItem, backupItem, setBackupItem, itemChanged, setItemChanged,
-    setAllowDelete,
-    setRelatedItems: setUserClientsList
-  }
-
   const onDelete = async () => {
     const response = await deleteItem(`${ dataUrl }/${ currentItem.id }`, currentItem.id, state);
     if (response === 401 || response === 403) {
@@ -106,6 +97,12 @@ const Users = () => {
       let nameInput = document.getElementById("login");
       nameInput.classList.add("form-input-invalid");
       nameInput.placeholder = `${itemName} name cannot be empty`;
+      return;
+    }
+
+    if(currentItem.userRoles.length === 0) {
+      let userRolesDiv = document.getElementById("userRoles");
+      userRolesDiv.classList.add("form-input-invalid");
       return;
     }
 
@@ -154,6 +151,10 @@ const Users = () => {
 
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
+    console.log("item changed")
+    console.log(currentItem)
+    console.log(currentFormState);
+
   }, [itemChanged])
 
   useEffect(() => {
@@ -177,7 +178,6 @@ const Users = () => {
 
   useEffect(() => {
     if (currentItem === backupItem) {
-      console.log("THE SAME")
       setPwd('');
     }
   }, [currentItem])
@@ -240,6 +240,14 @@ const Users = () => {
     buttonTitle: `Add new ${ itemName }`
   }
 
+  const state = {
+    itemsList, setItems,
+    currentItem, setCurrentItem,
+    currentFormState, setCurrentFormState,
+    defaultItem, backupItem, setBackupItem, itemChanged, setItemChanged,
+    setAllowDelete,
+    setRelatedItems: setUserClientsList
+  }
 
   let dataSectionContent;
   if (loading) {
@@ -266,6 +274,8 @@ const Users = () => {
     setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
     setPwd(e.target.value);
   }
+
+
 
   return (
     <div id="layoutSidenav_content">
@@ -344,7 +354,7 @@ const Users = () => {
                         />
                           <span id="password_toggler" className="password_toggler" onClick={()=>passwordToggler()}><FontAwesomeIcon icon={faEye}></FontAwesomeIcon></span>
                       </div>
-                        <p id="pwdnote" className={!validPassword ? "pwd_info" : "offscreen"}>
+                        <p id="pwdnote" className={!validPassword ? "err_info" : "offscreen"}>
                           <FontAwesomeIcon icon={faInfoCircle} />&nbsp;
                           8 to 24 characters. Must include uppercase and lowercase letters, a number and a special character.
                           Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>

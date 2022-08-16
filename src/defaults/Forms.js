@@ -9,5 +9,6 @@ export const defaultFormState = {
   "formSaveButtonDisabled": false,
   "warningDescription":"",
   "warningDeleteButtonDisabled": false,
-  "warningWarningIconVisible":false
+  "warningWarningIconVisible": false,
+  "formDataValid": true
 }
