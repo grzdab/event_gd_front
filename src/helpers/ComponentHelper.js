@@ -101,7 +101,6 @@ export const compareData = (currentFormState, setCurrentFormState, currentItem, 
     if (!compareObjects(backupItem, currentItem)) {
       dataChangedInfo.classList.add("visible");
       btnRestore.classList.add("visible");
-      console.log("different")
       setCurrentFormState({...currentFormState, formSaveButtonDisabled: !currentFormState.formDataValid})
     } else {
       if (confirmCloseDiv) {
@@ -270,10 +269,11 @@ export const onCloseDetails = ( {state} ) => {
 };
 
 
-export const getItemById = (array, id) => {
-  for (let i = 0, l = array.length; i < l; i++) {
-    if (array[i].id === id) {
-      return array[i]
+export const getItemById = (objectsArray, id) => {
+  // returns object from array of objects
+  for (let i = 0, l = objectsArray.length; i < l; i++) {
+    if (objectsArray[i].id === id) {
+      return objectsArray[i];
     }
   }
 }

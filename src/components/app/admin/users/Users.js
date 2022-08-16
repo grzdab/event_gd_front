@@ -151,10 +151,6 @@ const Users = () => {
 
   useEffect(() => {
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
-    console.log("item changed")
-    console.log(currentItem)
-    console.log(currentFormState);
-
   }, [itemChanged])
 
   useEffect(() => {
@@ -302,6 +298,7 @@ const Users = () => {
         <Modal.Body>
           <section className="mb-4">
             <p className="text-center w-responsive mx-auto mb-1 form_test">{ currentFormState.formDescription }</p>
+            <button onClick={() => console.log(currentItem)}>currentItem</button>
             <div>
               <p className="text-center w-responsive mx-auto mb-1 data_changed" id="data-changed"><FontAwesomeIcon icon={ faExclamationCircle }/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
               <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {

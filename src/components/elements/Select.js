@@ -26,6 +26,7 @@ const Select = ({label, propertyName, required, disabled, state, itemsList, item
         }
         onChange={(e) => {
           const relatedObject = getItemById(itemsList, parseInt(e.target.value));
+          console.log(relatedObject)
           setCurrentItem({...currentItem, [itemName]: relatedObject })
           setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
           setItemChanged(!itemChanged);
