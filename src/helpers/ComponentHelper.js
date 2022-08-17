@@ -145,17 +145,28 @@ export const restoreFormData = ({ state }) =>  {
 
   setCurrentItem(backupItem);
     for (let key in backupItem) {
+
         if (backupItem.hasOwnProperty(key)) {
             let element = document.getElementById(key);
             element?.classList.remove("form-input-invalid");
             if (element) {
+
               if (element.id === "password") {
                 element.value = '';
+              } else if (element.classList.contains("form-obj")) {
+
+                const elements = element.getElementsByTagName("input");
+                for (const e of elements) {
+                  const propertyName = element.id;
+                  const propertyValue = e.id;
+                  e.value = backupItem[propertyName][propertyValue];
+                }
+
+
               } else if (element.tagName !== "SELECT") {
                 element.value = backupItem[key];
               } else if (element.tagName === "SELECT") {
                 element.value = backupItem[element.id].id;
-
               } else {
                 console.log(element.tagName);
               }
@@ -242,6 +253,8 @@ export function resetInvalidInputField(fieldId) {
 }
 
 export const onCloseDetails = ( {state} ) => {
+
+
   const currentItem = state.currentItem;
   const setCurrentItem = state.setCurrentItem;
   const currentFormState = state.currentFormState;
@@ -266,6 +279,7 @@ export const onCloseDetails = ( {state} ) => {
     closeWithoutSaving.classList.add("div-visible");
     btnClose.classList.add("btn-invisible");
   }
+
 };
 
 

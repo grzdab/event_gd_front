@@ -17,13 +17,17 @@ const TextInput = ({propertyName, itemName, itemData, state, required, disabled,
         type = "text"
         id = { propertyName }
         name = { propertyName }
-        defaultValue = { currentItem[propertyName] }
+        defaultValue = {
+          itemName ?
+            currentItem[itemName][propertyName] :
+            currentItem[propertyName]}
         className = "form-control"
         required = { required }
         disabled={ disabled }
         readOnly = { readonly }
         value = { value }
         onChange = {(item) => {
+          console.log("itemName: " + itemName)
           setItemChanged(!itemChanged);
           setCurrentItem(currentItem => !itemName ?
             ({...currentItem, [propertyName]: item.target.value}) :
