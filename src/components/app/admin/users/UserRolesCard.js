@@ -1,14 +1,43 @@
-import React from 'react';
-import TextInput from "../../../elements/TextInput";
+import React, {useEffect, useState} from 'react';
+import {resetInvalidInputField} from "../../../../helpers/ComponentHelper";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 
 const UserRolesCard = ({ state, appRoles }) => {
 
-
   const currentItem = state.currentItem;
-  const userRoles = currentItem.userRoles;
+  let userRoles = currentItem?.userRoles?.slice();
   const setCurrentItem = state.setCurrentItem;
   const setCurrentFormState = state.setCurrentFormState;
   const currentFormState = state.currentFormState;
+  const itemChanged = state.itemChanged;
+  const setItemChanged = state.setItemChanged;
+  const backupItem = state.backupItem;
+  const [rolesNote, setRolesNote] = useState(false);
+
+  const onUserRolesChange = (e, role) => {
+    if (e.currentTarget.checked) {
+      userRoles.push({id: role.id, name: role.name});
+    } else {
+      userRoles = userRoles.filter((o) => {
+        return o.id !== role.id;
+      })
+    }
+
+    setCurrentItem(currentItem => ({...currentItem, userRoles: userRoles}));
+    setItemChanged(!itemChanged);
+
+    const userRolesDiv = document.getElementById("userRoles");
+    if (userRoles.length > 0) {
+      setCurrentFormState(currentFormState => ({...currentFormState, formSaveButtonDisabled: false, formDataValid: true}));
+      setRolesNote(false);
+    } else {
+      userRolesDiv.classList.add("form-input-invalid");
+      setCurrentFormState(currentFormState => ({...currentFormState, formDataValid: false}
+      ));
+      setRolesNote(true);
+    }
+  }
 
   return (
     <>
@@ -16,7 +45,7 @@ const UserRolesCard = ({ state, appRoles }) => {
         <div className="card-header">
           User roles
         </div>
-        <div className="card-body">
+        <div className="card-body" id="userRoles" >
           { userRoles && appRoles?.map((role) => {
             let contains = false;
             for (const userRole of userRoles) {
@@ -32,27 +61,19 @@ const UserRolesCard = ({ state, appRoles }) => {
                     type="checkbox"
                     defaultValue={role.name}
                     id={role.name}
-                    defaultChecked={contains}
-                    onChange={(e) => {
-                      console.log(userRoles?.filter(e => e.name === role.name).length > 0);
-                      let filtered = userRoles.filter(function(el) { return el.id !== "Kristian"; });
-                      // TODO complete
-                      // muszę wziąć obiekt userRoles z currentItem
-                      // sprawdzić jego nazwę i czy jest checked
-                      // jeśli jest checked (e.currentTarget.checked), to upewnić się że jest na liście ról użytkownika
-                      // jeśli nie jest checked, to usunąć go z listy ról użytkownika
-                      // zastąpić obiekt userRoles zaktualizowanym obiektem
-
-                      // setCurrentItem({...currentItem,
-                      //   userRoles: e.currentTarget.checked});
-                      // setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
-                    }}
+                    checked={contains}
+                    onChange={(e) => onUserRolesChange(e, role)}
+                    onClick={() => resetInvalidInputField("userRoles")}
                   />
                 </div>
             )
           })}
         </div>
       </div>
+      <p id="roles_note" className={rolesNote ? "err_info" : "offscreen"}>
+        <FontAwesomeIcon icon={faInfoCircle} />&nbsp;
+        You have to asign a role to the user
+      </p>
     </>
   );
 };

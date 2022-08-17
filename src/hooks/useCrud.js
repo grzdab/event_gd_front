@@ -24,8 +24,6 @@ const useCrud = (dataUrl) => {
 
     const response = await axiosPrivate.put(url, item);
     const data = await response.data;
-    console.log("UPDATED");
-    console.log(response.data);
     setItems(
       itemsList.map((i) =>
         i.id === item.id ? data : i));

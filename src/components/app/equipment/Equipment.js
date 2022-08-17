@@ -272,9 +272,6 @@ const Equipment = () => {
 
 
   useEffect(() => {
-
-    console.log(currentItem);
-
     compareData(currentFormState, setCurrentFormState, currentItem, backupItem);
     if (currentItem.id !== 0) {
       setBookingStatusColor(bookingStatusesList.find(x => x.id === currentItem.bookingStatus.id).color);

@@ -46,7 +46,7 @@ export const onSaveAndClose = ({ state }) => {
   setCurrentFormState({...currentFormState,
         showForm: false,
         formSaveButtonDisabled: true,
-        formAddingDataMode: false
+        formAddingDataMode: false,
     })
     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
 }
@@ -93,32 +93,26 @@ export const onItemsListInfoButtonClick = (currentFormState, setCurrentFormState
 }
 
 export const compareData = (currentFormState, setCurrentFormState, currentItem, backupItem) => {
-    let dataChangedInfo = document.getElementById("data-changed");
-    let confirmCloseDiv = document.getElementById("confirm-close");
-    let btnClose = document.getElementById("btn-close");
-    let btnRestore = document.getElementById("btn-restore");
-    if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
-        if (!compareObjects(backupItem, currentItem)) {
-            // console.log("NOT THE SAME");
-            // console.log(backupItem);
-            // console.log(currentItem);
-            dataChangedInfo.classList.add("visible");
-            btnRestore.classList.add("visible");
-            setCurrentFormState({...currentFormState, formSaveButtonDisabled: false})
-        } else {
-          // console.log("THE SAME");
-          // console.log(backupItem);
-          // console.log(currentItem);
+  let dataChangedInfo = document.getElementById("data-changed");
+  let confirmCloseDiv = document.getElementById("confirm-close");
+  let btnClose = document.getElementById("btn-close");
+  let btnRestore = document.getElementById("btn-restore");
+  if (dataChangedInfo && currentFormState.showForm && !currentFormState.formAddingDataMode) {
+    if (!compareObjects(backupItem, currentItem)) {
+      dataChangedInfo.classList.add("visible");
+      btnRestore.classList.add("visible");
+      setCurrentFormState({...currentFormState, formSaveButtonDisabled: !currentFormState.formDataValid})
+    } else {
+      if (confirmCloseDiv) {
+        confirmCloseDiv.classList.remove("div-visible")
+      }
+      btnClose.classList.remove("btn-invisible");
+      dataChangedInfo.classList.remove("visible");
+      btnRestore.classList.remove("visible");
 
-          if (confirmCloseDiv) {
-                confirmCloseDiv.classList.remove("div-visible")
-            }
-            btnClose.classList.remove("btn-invisible");
-            dataChangedInfo.classList.remove("visible");
-            btnRestore.classList.remove("visible");
-            setCurrentFormState({...currentFormState, formSaveButtonDisabled: true})
-        }
+      setCurrentFormState({...currentFormState, formSaveButtonDisabled: true})
     }
+  }
 }
 
 export const onFormCloseWithoutSavingButtonClick = (currentFormState, setCurrentFormState, setCurrentItem, setBackupItem, defaultItem) => {
@@ -144,12 +138,32 @@ export const restoreFormData = ({ state }) =>  {
   const currentFormState = state.currentFormState;
   const setCurrentFormState = state.setCurrentFormState;
 
+  let error_notes = document.getElementsByClassName("err_info");
+  for (const note of error_notes) {
+    note.className = "offscreen";
+  }
+
   setCurrentItem(backupItem);
     for (let key in backupItem) {
+
         if (backupItem.hasOwnProperty(key)) {
             let element = document.getElementById(key);
+            element?.classList.remove("form-input-invalid");
             if (element) {
-              if (element.tagName !== "SELECT") {
+
+              if (element.id === "password") {
+                element.value = '';
+              } else if (element.classList.contains("form-obj")) {
+
+                const elements = element.getElementsByTagName("input");
+                for (const e of elements) {
+                  const propertyName = element.id;
+                  const propertyValue = e.id;
+                  e.value = backupItem[propertyName][propertyValue];
+                }
+
+
+              } else if (element.tagName !== "SELECT") {
                 element.value = backupItem[key];
               } else if (element.tagName === "SELECT") {
                 element.value = backupItem[element.id].id;
@@ -239,6 +253,8 @@ export function resetInvalidInputField(fieldId) {
 }
 
 export const onCloseDetails = ( {state} ) => {
+
+
   const currentItem = state.currentItem;
   const setCurrentItem = state.setCurrentItem;
   const currentFormState = state.currentFormState;
@@ -249,12 +265,13 @@ export const onCloseDetails = ( {state} ) => {
 
 
   if (compareObjects(backupItem, currentItem)) {
-    setCurrentFormState({
+    setCurrentFormState(currentFormState => ({
       ...currentFormState,
       showForm: false,
       formSaveButtonDisabled: true,
       formAddingDataMode: false
     })
+    )
     clearCurrentItem(setCurrentItem, setBackupItem, defaultItem);
   } else {
     let closeWithoutSaving = document.getElementById("confirm-close");
@@ -262,13 +279,15 @@ export const onCloseDetails = ( {state} ) => {
     closeWithoutSaving.classList.add("div-visible");
     btnClose.classList.add("btn-invisible");
   }
+
 };
 
 
-export const getItemById = (array, id) => {
-  for (let i = 0, l = array.length; i < l; i++) {
-    if (array[i].id === id) {
-      return array[i]
+export const getItemById = (objectsArray, id) => {
+  // returns object from array of objects
+  for (let i = 0, l = objectsArray.length; i < l; i++) {
+    if (objectsArray[i].id === id) {
+      return objectsArray[i];
     }
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {resetInvalidInputField} from "../../helpers/ComponentHelper";
 
-const TextInput = ({propertyName, state, required, disabled, readonly, value, style}) => {
+const TextInput = ({propertyName, itemName, itemData, state, required, disabled, readonly, value, style}) => {
 
   const currentItem = state.currentItem;
   const setCurrentItem = state.setCurrentItem;
@@ -9,7 +9,7 @@ const TextInput = ({propertyName, state, required, disabled, readonly, value, st
   const setCurrentFormState = state.setCurrentFormState;
   const itemChanged = state.itemChanged;
   const setItemChanged = state.setItemChanged;
-
+  const getItemData = itemData;
 
   return (
     <>
@@ -17,16 +17,21 @@ const TextInput = ({propertyName, state, required, disabled, readonly, value, st
         type = "text"
         id = { propertyName }
         name = { propertyName }
-        defaultValue = { currentItem[propertyName] }
+        defaultValue = {
+          itemName ?
+            currentItem[itemName][propertyName] :
+            currentItem[propertyName]}
         className = "form-control"
         required = { required }
         disabled={ disabled }
         readOnly = { readonly }
         value = { value }
-        onChange = { (item) => {
+        onChange = {(item) => {
           setItemChanged(!itemChanged);
-          setCurrentItem(currentItem => ({...currentItem,
-            [propertyName]: item.target.value}));
+          setCurrentItem(currentItem => !itemName ?
+            ({...currentItem, [propertyName]: item.target.value}) :
+            ({...currentItem, [itemName]: getItemData()})
+          );
           setCurrentFormState({...currentFormState, formSaveButtonDisabled: false});
         }}
         onClick = {() => {
