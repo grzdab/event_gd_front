@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle, faInfoCircle, faEye } from "@fortawesome/free-solid-svg-icons";
+import {faExclamationCircle, faInfoCircle, faEye, faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 import ModalFooter from "../../common/ModalFooter";
 import { useNavigate, useLocation } from "react-router-dom";
 import { defaultFormState } from "../../../../defaults/Forms";
@@ -114,6 +114,15 @@ const Users = () => {
     let password;
     if (!currentFormState.formAddingDataMode) {
       password = newPassword.value ? newPassword.value : currentItem.password;
+    } else {
+      password = currentItem.password;
+    }
+
+    let contactId;
+    if (currentFormState.formAddingDataMode) {
+      contactId = (currentItem.contact.phone !== "" || currentItem.contact.email !== "") ? 0 : -1;
+    } else {
+      contactId = currentItem.contact.id;
     }
 
     const item = {
@@ -123,15 +132,28 @@ const Users = () => {
       firstName: currentItem.firstName,
       lastName: currentItem.lastName,
       contact: {
-        id: currentItem.contact.id,
-        email: currentItem.contact.email,
-        phone: currentItem.contact.phone
+        id: contactId,
+        phone: currentItem.contact.phone,
+        email: currentItem.contact.email
       },
       userRoles: currentItem.userRoles
     }
 
+    const itemToSave = {
+      login: currentItem.login,
+      password: password,
+      firstName: currentItem.firstName,
+      lastName: currentItem.lastName,
+      userRoles: currentItem.userRoles,
+      contact: {
+        id: currentItem.contact.id,
+        email: currentItem.contact.email,
+        phone: currentItem.contact.phone
+      },
+    }
+
     if (currentFormState.formAddingDataMode) {
-      response = await createItem(dataFullUrl, item, state);
+      response = await createItem(dataFullUrl, itemToSave, state);
     } else {
       response = await updateItem(`${ dataFullUrl }/${ item.id }`, item, state);
     }
@@ -228,7 +250,7 @@ const Users = () => {
   const addDataButtonProps = {
     setCurrentItem,
     setBackupItem,
-    defaultItem,
+    defaultItem: defaultFullItem,
     currentFormState,
     setCurrentFormState,
     formDescription: `Here you can add new ${ itemName }.`,
@@ -298,7 +320,7 @@ const Users = () => {
         <Modal.Body>
           <section className="mb-4">
             <p className="text-center w-responsive mx-auto mb-1 form_test">{ currentFormState.formDescription }</p>
-            <button onClick={() => console.log(currentItem)}>currentItem</button>
+            <span onClick={() => console.log(currentItem)}><FontAwesomeIcon icon={ faQuestionCircle }/></span>
             <div>
               <p className="text-center w-responsive mx-auto mb-1 data_changed" id="data-changed"><FontAwesomeIcon icon={ faExclamationCircle }/>&nbsp;{ currentFormState.formDataChangedWarning }</p>
               <Button variant="secondary" id="btn-restore" className="btn-restore" onClick={ () => {

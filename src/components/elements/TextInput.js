@@ -27,7 +27,6 @@ const TextInput = ({propertyName, itemName, itemData, state, required, disabled,
         readOnly = { readonly }
         value = { value }
         onChange = {(item) => {
-          console.log("itemName: " + itemName)
           setItemChanged(!itemChanged);
           setCurrentItem(currentItem => !itemName ?
             ({...currentItem, [propertyName]: item.target.value}) :

@@ -71,7 +71,7 @@ export const userDefault = {
     email: "",
     phone: ""
   },
-  userRoles: [{}]
+  userRoles: []
 }
 
 
