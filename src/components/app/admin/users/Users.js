@@ -71,13 +71,19 @@ const Users = () => {
   const passwordRef = useRef();
 
   const onDelete = async () => {
-    const response = await deleteItem(`${ dataUrl }/${ currentItem.id }`, currentItem.id, state);
+    const response = await deleteItem(`${ dataFullUrl }/${ currentItem.id }`, currentItem.id, state);
     if (response === 401 || response === 403) {
       navigate('/login', { state: { from: location }, replace: true });
     }
   }
 
   const validatePassword = (newPassword) => {
+
+    if (newPassword === "") {
+      setValidPassword(false);
+      console.log("Password cannot be empty")
+      return;
+    }
 
     if (newPassword && !PWD_REGEX.test(newPassword)) {
       setValidPassword(false);
@@ -86,14 +92,13 @@ const Users = () => {
         " Must include uppercase and lowercase letters, a number and a special character.)");
       return false;
     }
-
     return true;
   }
 
 
   const onSaveItemClick = async (e) => {
     e.preventDefault();
-    if(!currentItem.login) {
+    if(!currentItem.login || currentItem.login.length < 4) {
       let nameInput = document.getElementById("login");
       nameInput.classList.add("form-input-invalid");
       nameInput.placeholder = `${itemName} name cannot be empty`;
@@ -107,8 +112,10 @@ const Users = () => {
     }
 
     const newPassword = document.getElementById("password");
-
-    if (!validatePassword(newPassword.value)) return;
+    if (!validatePassword(newPassword.value)) {
+      newPassword.classList.add("form-input-invalid");
+      return
+    };
 
     let response;
     let password;
